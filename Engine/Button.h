@@ -20,6 +20,7 @@
 
  // !!!!!!!!!!!!!!!!!! IMPORTANT  !!!!!!!!!!!!!!!!!!!!!  
  // > Use `box-sizing: content-box;` (for sizeWidth and sizeHeight).  
+ // > To be honest there is not sense to make border-box
  // > There's no need to set up the button during creation.  
  // > `MenuButton` is a type of button that must be placed  
  //   within a class that contains an `enum class`.  
@@ -27,7 +28,6 @@
 
 
 #pragma once
-
 #include <string>
 
 #include "Graphics.h"
@@ -171,8 +171,8 @@ public:
 	// size
 	void SetSize(int width, int height)
 	{
-		sizeWidth = width;
-		sizeHeight = height;
+		sizeWidth = width > font->GetWidthChar() * text.size() ? width : font->GetWidthChar() * (int)text.size();
+		sizeHeight = height > font->GetHeightChar() ? height : font->GetHeightChar();
 	}
 	void SetSizePadding(int paddingX = 12, int paddingY = 8)
 	{
@@ -212,7 +212,7 @@ private:
 	std::string text;
 	bool hovered = false;
 	bool clicked = false;
-	Sound hoverSound = { L"Sounds/menu_boop.wav" };
+	Sound hoverSound = { L"Files/Sounds/menu_boop.wav" };
 	bool hoveredAlready = false;
 
 	//*********** STYLES ***********//

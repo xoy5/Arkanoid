@@ -31,6 +31,8 @@
 #include "Button.h"
 
 #include "BricksGrid.h"
+#include "Paddle.h"
+#include "Ball.h"
 
 class Game
 {
@@ -51,8 +53,12 @@ private:
 	Graphics gfx;
 	FrameTimer ft;
 	float precision = 0.01f;
+	Font fontSm = Font("Files/Fonts/font16x28.bmp");
+	Font fontLg = Font("Files/Fonts/font32x56.bmp");
 	/********************************/
 	/*  User Variables              */
 	BricksGrid bricksGrid;
+	Paddle paddle;
+	Ball ball = Ball(Vec2{400, 450});
 	/********************************/
 };

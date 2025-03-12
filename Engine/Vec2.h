@@ -54,6 +54,9 @@ public:
 	{
 		return *this = *this - rhs;
 	}
+	Vec2_ operator-() const {
+		return Vec2_(-x, -y);
+	}
 	bool operator==(const Vec2_& rhs) const
 	{
 		return this->x == rhs.x && this->y == rhs.y;

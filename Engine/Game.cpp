@@ -55,10 +55,16 @@ void Game::ProcessInput()
 
 void Game::UpdateModel(float dt)
 {
-	
+	paddle.Update(dt, wnd.kbd);
+	ball.Update(dt);
+
+	if (paddle.IsBallCollision(ball)) ball.ChangeDir();
+	if (bricksGrid.IsAndUpdateBallCollision(ball)) ball.ChangeDir();
 }
 
 void Game::ComposeFrame()
 {
 	bricksGrid.Draw(gfx);
+	paddle.Draw(gfx);
+	ball.Draw(gfx);
 }

@@ -39,9 +39,6 @@
     <ClInclude Include="Animation.h">
       <Filter>Header Files\Xoy5 Files</Filter>
     </ClInclude>
-    <ClInclude Include="Ball.h">
-      <Filter>Header Files\Xoy5 Files</Filter>
-    </ClInclude>
     <ClInclude Include="Brick.h">
       <Filter>Header Files\Xoy5 Files</Filter>
     </ClInclude>
@@ -58,9 +55,6 @@
       <Filter>Header Files\Xoy5 Files</Filter>
     </ClInclude>
     <ClInclude Include="FrameTimer.h">
-      <Filter>Header Files\Xoy5 Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Laser.h">
       <Filter>Header Files\Xoy5 Files</Filter>
     </ClInclude>
     <ClInclude Include="Rect.h">
@@ -108,10 +102,16 @@
     <ClInclude Include="Xoy5Math.h">
       <Filter>Header Files\Xoy5 Files</Filter>
     </ClInclude>
-    <ClInclude Include="DrawOptimizer.h">
+    <ClInclude Include="SpriteEffect.h">
       <Filter>Header Files\Xoy5 Files</Filter>
     </ClInclude>
-    <ClInclude Include="SpriteEffect.h">
+    <ClInclude Include="Paddle.h">
+      <Filter>Header Files\Xoy5 Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ball.h">
+      <Filter>Header Files\Xoy5 Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Attributes.h">
       <Filter>Header Files\Xoy5 Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -163,6 +163,12 @@
     </ClCompile>
     <ClCompile Include="Surface.cpp">
       <Filter>Source Files\Xoy5 Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Paddle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ball.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
