@@ -164,11 +164,11 @@
     <ClCompile Include="Surface.cpp">
       <Filter>Source Files\Xoy5 Files</Filter>
     </ClCompile>
-    <ClCompile Include="Paddle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Ball.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Xoy5 Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Paddle.cpp">
+      <Filter>Source Files\Xoy5 Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

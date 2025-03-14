@@ -9,11 +9,15 @@
 class Ball
 {
 public:
-	explicit Ball(const Vec2& posCenter, float speed = 200.0f, int radius = 10, const Color& color = Colors::White);
-	explicit Ball(float speed = 200.0f, int radius = 10, const Color& color = Colors::White);
+	explicit Ball(const Vec2& posCenter, float speed = 300.0f, int radius = 10, const Color& color = Colors::White);
+	explicit Ball(float speed = 300.0f, int radius = 10, const Color& color = Colors::White);
 	void Draw(Graphics& gfx) const;
 	void Update(float dt);
-	void ChangeDir();
+	void BounceBoth();
+	void BounceX();
+	void BounceY();
+	void ReflectFromBricksAndWalls(const RectI& rectI); 
+	void RecflectFromPaddle(const RectF& paddleRectF);
 	RectF GetRectF() const;
 	Vec2 GetPosCenter() const;
 private:

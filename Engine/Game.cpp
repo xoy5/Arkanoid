@@ -58,8 +58,18 @@ void Game::UpdateModel(float dt)
 	paddle.Update(dt, wnd.kbd);
 	ball.Update(dt);
 
-	if (paddle.IsBallCollision(ball)) ball.ChangeDir();
-	if (bricksGrid.IsAndUpdateBallCollision(ball)) ball.ChangeDir();
+	if (!(RectI(ball.GetRectF()).IsContainedBy(gfx.GetScreenRect())))
+	{
+		ball.ReflectFromBricksAndWalls(gfx.GetScreenRect());
+	}
+	else if (paddle.IsBallCollision(ball))
+	{
+		ball.RecflectFromPaddle(paddle.GetRectF());
+	}
+	/*else if (bricksGrid.IsAndUpdateBallCollision(ball))
+	{
+		ball.ReflectFromBricksAndWalls();
+	}*/
 }
 
 void Game::ComposeFrame()

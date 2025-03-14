@@ -33,11 +33,12 @@ void BricksGrid::Draw(Graphics& gfx) const
 	}
 }
 
-bool BricksGrid::IsAndUpdateBallCollision(const Ball& ball)
+RectI BricksGrid::IsAndUpdateBallCollision(const Ball& ball)
 {
-	bool collisionHappened = false;
+	RectI* brickRectI = nullptr;
 
 	if (ball.GetRectF().IsOverlappingWith(RectF(gridRect))) {
+		bool collisionHappened = false;
 		float minBrickDistSq;
 		int brickIndex;
 		for (int i = 0; i < bricks.size(); i++)
@@ -58,6 +59,7 @@ bool BricksGrid::IsAndUpdateBallCollision(const Ball& ball)
 		}
 
 		if (collisionHappened) {
+			 
 			bricks[brickIndex].Hitted();
 			if (bricks[brickIndex].GetHp() <= 0) {
 				bricks[brickIndex] = std::move(bricks.back());
@@ -66,5 +68,5 @@ bool BricksGrid::IsAndUpdateBallCollision(const Ball& ball)
 		}
 	}
 
-	return collisionHappened;
+	return RectI{};
 }
