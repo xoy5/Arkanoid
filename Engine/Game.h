@@ -57,8 +57,9 @@ private:
 	Font fontLg = Font("Files/Fonts/font32x56.bmp");
 	/********************************/
 	/*  User Variables              */
+	RectF walls = RectF(Graphics::GetScreenRect());
 	BricksGrid bricksGrid;
 	Paddle paddle;
-	Ball ball = Ball(Vec2{400, 450});
+	Ball ball;
 	/********************************/
 };

@@ -58,18 +58,24 @@ void Game::UpdateModel(float dt)
 	paddle.Update(dt, wnd.kbd);
 	ball.Update(dt);
 
-	if (!(RectI(ball.GetRectF()).IsContainedBy(gfx.GetScreenRect())))
+	paddle.DoWallCollision(walls);
+	ball.DoWallCollision(walls);
+	
+	paddle.DoBallCollision(ball);
+
+	/*if (!(RectI(ball.GetRectF()).IsContainedBy(gfx.GetScreenRect())))
 	{
 		ball.ReflectFromBricksAndWalls(gfx.GetScreenRect());
 	}
 	else if (paddle.IsBallCollision(ball))
 	{
 		ball.RecflectFromPaddle(paddle.GetRectF());
-	}
+	}*/
 	/*else if (bricksGrid.IsAndUpdateBallCollision(ball))
 	{
 		ball.ReflectFromBricksAndWalls();
 	}*/
+	//float cum = 0.1d + 0.2d;
 }
 
 void Game::ComposeFrame()

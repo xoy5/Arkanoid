@@ -63,14 +63,35 @@ public:
 	}
 	void PutPixel( int x,int y, Color c );
 	void PutPixelIfInRect(int x, int y, Color c, RectI rect = RectI({ 0,0 }, Graphics::ScreenWidth, Graphics::ScreenHeight));
+
 	void DrawLine(const Vei2& p, const Vei2& q, int thickness = 1, const Color& c = Colors::White);
+	void DrawLine(const Vec2& p, const Vec2& q, int thickness = 1, const Color& c = Colors::White)
+	{
+		DrawLine(Vei2(p), Vei2(q), thickness, c);
+	}
+
 	void DrawCircle(const Vei2& pos, float radius, const Color& c, float angleStart = 0.0f, float angleEnd = 360.0f);
+	void DrawCircle(const Vec2& pos, float radius, const Color& c, float angleStart = 0.0f, float angleEnd = 360.0f)
+	{
+		DrawCircle(Vei2{ pos }, radius, c, angleStart, angleEnd);
+	}
+
 	void DrawCircleOutline(const Vei2& center, float radius, const Color& c, int thickness = 2, int segments = 100);
+	void DrawCircleOutline(const Vec2& center, float radius, const Color& c, int thickness = 2, int segments = 100)
+	{
+		DrawCircleOutline(Vei2{ center }, radius, thickness, segments);
+	}
+
 	void DrawRect(int x0, int y0, int x1, int y1, Color c);
 	void DrawRect(const RectI& rect, Color c)
 	{
 		DrawRect(rect.left, rect.top, rect.right, rect.bottom, c);
 	}
+	void DrawRect(const RectF& rect, Color c)
+	{
+		DrawRect((int)rect.left, (int)rect.top, (int)rect.right, (int)rect.bottom, c);
+	}
+
 	template<typename E>
 	void DrawSprite( int x,int y,const Surface& s,E effect )
 	{

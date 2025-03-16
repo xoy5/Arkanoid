@@ -20,9 +20,9 @@ public:
 	void SetSpeed(float speed);
 	void SetWidth(int width);
 	void SetColor(const Color& color);
-	bool IsBallCollision(const Ball& ball) const;
+	bool DoBallCollision(Ball& ball) const;
+	void DoWallCollision(const RectF& walls);
 
-	RectI GetRectI() const;
 	RectF GetRectF() const;
 private:
 	Vec2 pos;

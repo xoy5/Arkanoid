@@ -13,15 +13,17 @@ public:
 	explicit Ball(float speed = 300.0f, int radius = 10, const Color& color = Colors::White);
 	void Draw(Graphics& gfx) const;
 	void Update(float dt);
-	void BounceBoth();
-	void BounceX();
-	void BounceY();
-	void ReflectFromBricksAndWalls(const RectI& rectI); 
-	void RecflectFromPaddle(const RectF& paddleRectF);
+	void ReboundX();
+	void ReboundY();
+
+	bool DoWallCollision(const RectF& walls);
+	void SetDirection(const Vec2& dir);
+
 	RectF GetRectF() const;
 	Vec2 GetPosCenter() const;
+	Vec2 GetVelocity() const;
 private:
-	Vec2 posCenter;
-	Vec2 dir;
 	BallAttributes attr;
+	Vec2 posCenter;
+	Vec2 vel;
 };

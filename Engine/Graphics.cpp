@@ -254,14 +254,15 @@ Graphics::~Graphics()
 	if( pImmediateContext ) pImmediateContext->ClearState();
 }
 
-Vei2 Graphics::GetScreenCenter()
-{
-	return Vei2(Graphics::ScreenWidth / 2, Graphics::ScreenHeight/2);
-}
 
 RectI Graphics::GetScreenRect()
 {
-	return{ 0,ScreenWidth,0,ScreenHeight };
+	return{ 0, Graphics::ScreenWidth, 0, Graphics::ScreenHeight};
+}
+
+Vei2 Graphics::GetScreenCenter()
+{
+	return Vei2(Graphics::ScreenWidth / 2, Graphics::ScreenHeight / 2);
 }
 
 void Graphics::EndFrame()
@@ -380,8 +381,8 @@ void Graphics::DrawCircle(const Vei2& pos, float radius, const Color& c, float a
 	const int radiusPow2 = int(std::pow(radius, 2));
 
 	// to do: add drawing rect inside circle
-	for (int y = -roundedRadius; y <= roundedRadius; y++) {
-		for (int x = -roundedRadius; x <= roundedRadius; x++) {
+	for (int y = -roundedRadius; y < roundedRadius; y++) {
+		for (int x = -roundedRadius; x < roundedRadius; x++) {
 			Vec2 vec = Vec2(float(x), float(y));
 			float r = vec.x * vec.x + vec.y * vec.y;
 			if (r <= radiusPow2) {

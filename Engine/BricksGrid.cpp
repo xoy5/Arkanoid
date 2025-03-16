@@ -13,15 +13,15 @@ BricksGrid::BricksGrid(int bricksGridWidth, int topOffset, int paddingX, int pad
 	nRowBricks(nRowBricks),
 	// dynamic calculated
 	nColBricks((bricksGridWidth + paddingX) / (widthBrick + paddingX)),
-	gridPos(Vei2{ ((Graphics::ScreenWidth - bricksGridWidth) / 2) + (((bricksGridWidth + paddingX) % (widthBrick + paddingX)) / 2), topOffset }),
-	gridRect(RectI{ gridPos, bricksGridWidth, bricksGridHeight })
+	gridPos(Vec2{ ((Graphics::ScreenWidth - bricksGridWidth) / 2.0f) + (((bricksGridWidth + paddingX) % (widthBrick + paddingX)) / 2.0f), (float)topOffset }),
+	gridRect(RectF{ gridPos, (float)bricksGridWidth, (float)bricksGridHeight })
 {
 	assert(Graphics::ScreenWidth >= bricksGridWidth);
-	Vei2 brickPos = gridPos;
+	Vec2 brickPos = gridPos;
 
-	for (int y = 0; y < nRowBricks; y++, brickPos = Vei2{ gridPos.x, brickPos.y + heightBrick + paddingY }) {
-		for (int x = 0; x < nColBricks; x++, brickPos += Vei2{ widthBrick + paddingX, 0 }) {
-			bricks.emplace_back(RectI(brickPos, brickPos + Vei2{ widthBrick, heightBrick }), colorsBricks[y % colorsBricksSize], 1);
+	for (int y = 0; y < nRowBricks; y++, brickPos = Vec2{ gridPos.x, brickPos.y + heightBrick + paddingY }) {
+		for (int x = 0; x < nColBricks; x++, brickPos += Vec2{ (float)widthBrick + (float)paddingX, 0 }) {
+			bricks.emplace_back(RectF(brickPos, brickPos + Vec2{ (float)widthBrick, (float)heightBrick }), colorsBricks[y % colorsBricksSize], 1);
 		}
 	}
 }
@@ -33,19 +33,19 @@ void BricksGrid::Draw(Graphics& gfx) const
 	}
 }
 
-RectI BricksGrid::IsAndUpdateBallCollision(const Ball& ball)
+RectF BricksGrid::IsAndUpdateBallCollision(const Ball& ball)
 {
-	RectI* brickRectI = nullptr;
+	RectF* brickRectF = nullptr;
 
-	if (ball.GetRectF().IsOverlappingWith(RectF(gridRect))) {
+	if (ball.GetRectF().IsOverlappingWith(gridRect)) {
 		bool collisionHappened = false;
 		float minBrickDistSq;
 		int brickIndex;
 		for (int i = 0; i < bricks.size(); i++)
 		{
-			if (ball.GetRectF().IsOverlappingWith(RectF(bricks[i].GetRectI())))
+			if (ball.GetRectF().IsOverlappingWith(bricks[i].GetRectF()))
 			{
-				const float distance = (ball.GetPosCenter() - Vec2(bricks[i].GetPosCenter())).GetLengthSq();
+				const float distance = (ball.GetPosCenter() - bricks[i].GetPosCenter()).GetLengthSq();
 				if (!collisionHappened) {
 					minBrickDistSq = distance;
 					brickIndex = i;
@@ -68,5 +68,5 @@ RectI BricksGrid::IsAndUpdateBallCollision(const Ball& ball)
 		}
 	}
 
-	return RectI{};
+	return RectF{};
 }

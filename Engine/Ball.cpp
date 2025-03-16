@@ -2,69 +2,87 @@
 
 Ball::Ball(const Vec2& posCenter, float speed, int radius, const Color& color)
 	:
+	attr({ speed, radius, color }),
 	posCenter(posCenter),
-	dir(Vec2{ 0.0f, 1.0f }),
-	attr({ speed, radius, color })
+	vel(Vec2{ 0.0f, 1.0f * attr.speed })
 {}
 Ball::Ball(float speed, int radius, const Color& color)
 	:
+	attr({ speed, radius, color }),
 	posCenter(Vec2{ float((Graphics::ScreenWidth / 2) - (radius / 2)), float(Graphics::ScreenHeight / 5 * 3)}),
-	dir(Vec2{ 0.0f, 1.0f }),
-	attr({ speed, radius, color })
+	vel({0, 1.0f * attr.speed})
 {
 }
 
 void Ball::Draw(Graphics & gfx) const
 {
-	gfx.DrawCircle(Vei2(posCenter), attr.radius, attr.color);
+	gfx.DrawCircle(posCenter, attr.radius, attr.color);
 }
+
 void Ball::Update(float dt)
 {
-	posCenter += dir * attr.speed * dt;
+	posCenter += vel * dt;
 }
 
 
-void Ball::BounceBoth()
+void Ball::ReboundX()
 {
-	dir = -dir;
+	vel.x = -vel.x;
 }
-void Ball::BounceX()
+void Ball::ReboundY()
 {
-	dir = Vec2{ -dir.x, dir.y };
-}
-void Ball::BounceY()
-{
-	dir = Vec2{ dir.x, -dir.y };
+	vel.y = -vel.y;
 }
 
-void Ball::ReflectFromBricksAndWalls(const RectI& rectI)
+bool Ball::DoWallCollision(const RectF& walls)
 {
-	Vei2 posCenter = Vei2(this->posCenter);
-	if (posCenter.x < rectI.left || posCenter.x > rectI.right) {
-		BounceX();
+	bool collided = false;
+	const RectF rect = GetRectF();
+	if (rect.left < walls.left)
+	{
+		collided = true;
+		posCenter.x += walls.left - rect.left;
+		ReboundX();
+	} 
+	else if (rect.right > walls.right)
+	{
+		collided = true;
+		posCenter.x -= rect.right - walls.right;
+		ReboundX();
 	}
-	else {
-		BounceY();
+	
+	if (rect.top < walls.top)
+	{
+		collided = true;
+		posCenter.y += walls.top - rect.top;
+		ReboundY();
 	}
+	else if (rect.bottom > walls.bottom)
+	{
+		collided = true;
+		posCenter.y -= rect.bottom - walls.bottom;
+		ReboundY();
+	}
+
+	return collided;
 }
 
-void Ball::RecflectFromPaddle(const RectF& paddleRectF)
+void Ball::SetDirection(const Vec2& dir)
 {
-	if (posCenter.x < paddleRectF.left || posCenter.x > paddleRectF.right) {
-		BounceX();
-	}
-	else {
-		float halfSizePaddle = (paddleRectF.right - paddleRectF.left) / 2.0f;
-		float a = (posCenter.x - (paddleRectF.left + halfSizePaddle)) / halfSizePaddle;
-		dir = Vec2{ a * 2.0f, -1.0f }.GetNormalized();
-	}
+	vel = dir.GetNormalized() * attr.speed;
 }
 
 RectF Ball::GetRectF() const
 {
 	return RectF::FromCenter(posCenter, attr.radius, attr.radius);
 }
+
 Vec2 Ball::GetPosCenter() const
 {
 	return posCenter;
+}
+
+Vec2 Ball::GetVelocity() const
+{
+	return vel;
 }

@@ -7,15 +7,15 @@
 class Brick
 {
 public:
-	Brick(const RectI& rect, const Color& color, int hp);
+	Brick(const RectF& rect, const Color& color, int hp);
 	void Draw(Graphics& gfx) const;
 	void Hitted();
 
-	RectI GetRectI() const;
-	Vei2 GetPosCenter() const;
+	RectF GetRectF() const;
+	Vec2 GetPosCenter() const;
 	int GetHp() const;
 private:
-	RectI rect;
+	RectF rect;
 	Color color;
 	int hp;
 };

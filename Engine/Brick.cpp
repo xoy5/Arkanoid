@@ -1,6 +1,6 @@
 #include "Brick.h"
 
-Brick::Brick(const RectI& rect, const Color& color, int hp)
+Brick::Brick(const RectF& rect, const Color& color, int hp)
 	:
 	rect(rect),
 	color(color),
@@ -17,12 +17,12 @@ void Brick::Hitted()
 	hp -= 1;
 }
 
-RectI Brick::GetRectI() const
+RectF Brick::GetRectF() const
 {
 	return rect;
 }
 
-Vei2 Brick::GetPosCenter() const
+Vec2 Brick::GetPosCenter() const
 {
 	return rect.GetCenter();
 }
