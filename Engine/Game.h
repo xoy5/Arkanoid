@@ -57,6 +57,7 @@ private:
 	Font fontLg = Font("Files/Fonts/font32x56.bmp");
 	/********************************/
 	/*  User Variables              */
+	friend class BricksGrid;
 	RectF walls = RectF(Graphics::GetScreenRect());
 	BricksGrid bricksGrid;
 	Paddle paddle;

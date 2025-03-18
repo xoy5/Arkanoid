@@ -381,8 +381,8 @@ void Graphics::DrawCircle(const Vei2& pos, float radius, const Color& c, float a
 	const int radiusPow2 = int(std::pow(radius, 2));
 
 	// to do: add drawing rect inside circle
-	for (int y = -roundedRadius; y < roundedRadius; y++) {
-		for (int x = -roundedRadius; x < roundedRadius; x++) {
+	for (int y = -roundedRadius + 1; y < roundedRadius; y++) {
+		for (int x = -roundedRadius + 1; x < roundedRadius; x++) {
 			Vec2 vec = Vec2(float(x), float(y));
 			float r = vec.x * vec.x + vec.y * vec.y;
 			if (r <= radiusPow2) {
