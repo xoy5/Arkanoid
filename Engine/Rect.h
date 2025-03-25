@@ -72,7 +72,7 @@ public:
 public:
 	T left;
 	T right;
-	T top;
+	T top; 
 	T bottom;
 };
 

@@ -59,7 +59,7 @@ void Game::UpdateModel(float dt)
 	ball.Update(dt);
 
 	paddle.DoWallCollision(walls);
-	//ball.DoWallCollision(walls);
+	ball.DoWallCollision(walls);
 	
 	paddle.DoBallCollision(ball);
 	bricksGrid.DoBallCollision(ball);

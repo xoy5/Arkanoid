@@ -35,44 +35,58 @@ void BricksGrid::Draw(Graphics& gfx) const
 
 bool BricksGrid::DoBallCollision(Ball& ball)
 {
-	bool collisionHappened = false;
-	if (ball.GetRectF().IsOverlappingWith(gridRect)) {
-		float minBrickDistSq;
-		int brickIndex;
-		for (int i = 0; i < bricks.size(); i++)
-		{
-			if (ball.GetRectF().IsOverlappingWith(bricks[i].GetRectF()))
-			{
-				const float distance = (ball.GetPosCenter() - bricks[i].GetPosCenter()).GetLengthSq();
-				if (!collisionHappened) {
-					minBrickDistSq = distance;
-					brickIndex = i;
-					collisionHappened = true;
-				}
-				else if (minBrickDistSq > distance) {
-					minBrickDistSq = distance;
-					brickIndex = i;
-				}
-			}
-		}
+    bool collisionHappened = false;
+    if (ball.GetRectF().IsOverlappingWith(gridRect)) {
+        float minBrickDistSq;
+        int brickIndex = -1;
+        const Vec2 ballPosCenter = ball.GetPosCenter();
 
-		if (collisionHappened) {
-			if (ball.GetPosCenter().x < bricks[brickIndex].GetRectF().left || bricks[brickIndex].GetRectF().right < ball.GetPosCenter().x)
-			{
-				ball.ReboundX();
-			}
-			else
-			{
-				ball.ReboundY();
-			}
-			bricks[brickIndex].Hitted();
-			if (bricks[brickIndex].GetHp() <= 0) 
-			{
-				bricks[brickIndex] = std::move(bricks.back());
-				bricks.pop_back();
-			}
-		}
-	}
+        for (int i = 0; i < bricks.size(); i++)
+        {
+            if (ball.GetRectF().IsOverlappingWith(bricks[i].GetRectF()))
+            {
+                float distance = (ballPosCenter - bricks[i].GetPosCenter()).GetLengthSq();
+                if (!collisionHappened || distance < minBrickDistSq) {
+                    minBrickDistSq = distance;
+                    brickIndex = i;
+                    collisionHappened = true;
+                }
+            }
+        }
 
-	return collisionHappened;
+        if (collisionHappened && brickIndex >= 0) {
+            ball.ResetPaddleCooldown();
+
+            const float epsilon = 0.001f;
+            Vec2 ballVelocity = ball.GetVelocity();
+            RectF brickRect = bricks[brickIndex].GetRectF();
+
+            bool horizontalOverlap = (ballPosCenter.x >= brickRect.left && ballPosCenter.x <= brickRect.right);
+
+            if (fabs(ballVelocity.x) < epsilon) {
+                ball.ReboundY();
+                // ball.DoBrickPrecisionMoveY(brickRect);
+            }
+            else if (std::signbit(ballVelocity.x) == std::signbit(ballPosCenter.x - bricks[brickIndex].GetPosCenter().x)) {
+                ball.ReboundY();
+                //ball.DoBrickPrecisionMoveY(brickRect);
+            }
+            else if (horizontalOverlap) {
+                ball.ReboundY();
+                //ball.DoBrickPrecisionMoveY(brickRect);
+            }
+            else {
+                ball.ReboundX();
+                //ball.DoBrickPrecisionMoveX(brickRect);
+            }
+
+            bricks[brickIndex].Hitted();
+            if (bricks[brickIndex].GetHp() <= 0) {
+                bricks[brickIndex] = std::move(bricks.back());
+                bricks.pop_back();
+            }
+        }
+    }
+    return collisionHappened;
 }
+

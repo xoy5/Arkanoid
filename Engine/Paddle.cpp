@@ -50,19 +50,23 @@ void Paddle::SetColor(const Color& color)
 
 bool Paddle::DoBallCollision(Ball& ball) const
 {
-	const RectF rect = GetRectF();
-	if (rect.IsOverlappingWith(ball.GetRectF()))
+	if (!ball.GetPaddleCooldown())
 	{
-		const Vec2 ballPos = ball.GetPosCenter();
-		if (ballPos.x < rect.left || rect.right < ballPos.x) {
-			ball.ReboundX();
+		const RectF rect = GetRectF();
+		if (rect.IsOverlappingWith(ball.GetRectF()))
+		{
+			const Vec2 ballPos = ball.GetPosCenter();
+			if (ballPos.x < rect.left || rect.right < ballPos.x) {
+				ball.ReboundX();
+			}
+			else {
+				float halfSizePaddle = (rect.right - rect.left) / 2.0f;
+				float a = (ballPos.x - (rect.left + halfSizePaddle)) / halfSizePaddle;
+				ball.SetDirection( Vec2{ a * 2.0f, -1.0f } );
+			}
+			ball.SetPaddleCooldown();
+			return true;
 		}
-		else {
-			float halfSizePaddle = (rect.right - rect.left) / 2.0f;
-			float a = (ballPos.x - (rect.left + halfSizePaddle)) / halfSizePaddle;
-			ball.SetDirection( Vec2{ a * 2.0f, -1.0f } );
-		}
-		return true;
 	}
 
 	return false;

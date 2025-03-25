@@ -52,7 +52,7 @@ private:
 	MainWindow& wnd;
 	Graphics gfx;
 	FrameTimer ft;
-	float precision = 0.01f;
+	float precision = 0.0025f;
 	Font fontSm = Font("Files/Fonts/font16x28.bmp");
 	Font fontLg = Font("Files/Fonts/font32x56.bmp");
 	/********************************/
