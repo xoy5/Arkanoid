@@ -17,7 +17,7 @@ public:
 	BricksGrid(int bricksGridWidth = 600, int topOffset = 15, int paddingX = 4, int paddingY = 4, int widthBrick = 80, int heightBrick = 30, int nRowBricks = 8);
 	~BricksGrid();
 	void Draw(Graphics& gfx) const;
-	bool DoBallCollision(Ball& ball);
+	bool DoBallCollision(Ball& ball, Vec2* pHitPos = nullptr);
 private:
 	std::vector<Brick*> bricks;
 	const int bricksGridWidth;
@@ -31,7 +31,7 @@ private:
 	const int nRowBricks;
 	const int nColBricks; // in BrickGrid() calculating
 	const Vec2 gridPos;
-	//const RectF gridRect; because I can't add some bricks off the grid
+	// const RectF gridRect; because I can't add some bricks off the grid
 
 	constexpr static Color colorsBricks[] = { Colors::Red, Colors::Grapefruit, Colors::Pink, Colors::Purple, Colors::Green, Colors::Yellow, Colors::Blue, Colors::Cyan };
 	constexpr static int colorsBricksSize = 8;

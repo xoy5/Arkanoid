@@ -33,7 +33,7 @@ public:
 	void SetPaddleCooldown();
 	bool GetPaddleCooldown() const;
 
-	RectF GetRectF() const;
+	RectF GetRect() const;
 	Vec2 GetPosCenter() const;
 	Vec2 GetVelocity() const;
 private:

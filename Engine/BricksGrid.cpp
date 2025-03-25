@@ -14,7 +14,7 @@ BricksGrid::BricksGrid(int bricksGridWidth, int topOffset, int paddingX, int pad
 	// dynamic calculated
 	nColBricks((bricksGridWidth + paddingX) / (widthBrick + paddingX)),
 	gridPos(Vec2{ ((Graphics::ScreenWidth - bricksGridWidth) / 2.0f) + (((bricksGridWidth + paddingX) % (widthBrick + paddingX)) / 2.0f), (float)topOffset })
-	//gridRect(RectF{ gridPos, (float)bricksGridWidth, (float)bricksGridHeight })
+	// gridRect(RectF{ gridPos, (float)bricksGridWidth, (float)bricksGridHeight })
 {
 	assert(Graphics::ScreenWidth >= bricksGridWidth);
 	Vec2 brickPos = gridPos;
@@ -48,17 +48,17 @@ void BricksGrid::Draw(Graphics& gfx) const
 	}
 }
 
-bool BricksGrid::DoBallCollision(Ball& ball)
+bool BricksGrid::DoBallCollision(Ball& ball, Vec2* pHitPos)
 {
 	bool collisionHappened = false;
-	//if (ball.GetRectF().IsOverlappingWith(gridRect)) {
+	//if (ball.GetRect().IsOverlappingWith(gridRect)) {
 	float minBrickDistSq;
 	int brickIndex = -1;
 	const Vec2 ballPosCenter = ball.GetPosCenter();
 
 	for (int i = 0; i < bricks.size(); i++)
 	{
-		if (ball.GetRectF().IsOverlappingWith(bricks[i]->GetRectF()))
+		if (ball.GetRect().IsOverlappingWith(bricks[i]->GetRectF()))
 		{
 			float distance = (ballPosCenter - bricks[i]->GetPosCenter()).GetLengthSq();
 			if (!collisionHappened || distance < minBrickDistSq) {
@@ -70,6 +70,10 @@ bool BricksGrid::DoBallCollision(Ball& ball)
 	}
 
 	if (collisionHappened && brickIndex >= 0) {
+		if (pHitPos) {
+			*pHitPos = bricks[brickIndex]->GetPosCenter();
+		}
+
 		ball.ResetPaddleCooldown();
 
 		const float epsilon = 0.001f;
@@ -84,15 +88,15 @@ bool BricksGrid::DoBallCollision(Ball& ball)
 		}
 		else if (std::signbit(ballVelocity.x) == std::signbit(ballPosCenter.x - bricks[brickIndex]->GetPosCenter().x)) {
 			ball.ReboundY();
-			//ball.DoBrickPrecisionMoveY(brickRect);
+			// ball.DoBrickPrecisionMoveY(brickRect);
 		}
 		else if (horizontalOverlap) {
 			ball.ReboundY();
-			//ball.DoBrickPrecisionMoveY(brickRect);
+			// ball.DoBrickPrecisionMoveY(brickRect);
 		}
 		else {
 			ball.ReboundX();
-			//ball.DoBrickPrecisionMoveX(brickRect);
+			// ball.DoBrickPrecisionMoveX(brickRect);
 		}
 
 		bricks[brickIndex]->Hitted();

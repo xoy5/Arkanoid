@@ -23,7 +23,7 @@ public:
 	bool DoBallCollision(Ball& ball) const;
 	void DoWallCollision(const RectF& walls);
 
-	RectF GetRectF() const;
+	RectF GetRect() const;
 private:
 	Vec2 pos;
 	const PaddleAttributes defaultAttr;

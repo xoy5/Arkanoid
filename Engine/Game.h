@@ -33,6 +33,7 @@
 #include "BricksGrid.h"
 #include "Paddle.h"
 #include "Ball.h"
+#include "PowerUpManager.h"
 
 class Game
 {
@@ -60,6 +61,7 @@ private:
 	friend class BricksGrid;
 	RectF walls = RectF(Graphics::GetScreenRect());
 	BricksGrid bricksGrid;
+	PowerUpManager powerUpManager;
 	Paddle paddle;
 	Ball ball;
 	/********************************/

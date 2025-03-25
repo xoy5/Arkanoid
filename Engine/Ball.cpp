@@ -37,7 +37,7 @@ void Ball::ReboundY()
 
 void Ball::DoBrickPrecisionMoveX(const RectF& rect)
 {
-	RectF ballRect = GetRectF();
+	RectF ballRect = GetRect();
 	if (ballRect.left < rect.left) {
 		posCenter.x -= ballRect.left - rect.left;
 	}
@@ -48,7 +48,7 @@ void Ball::DoBrickPrecisionMoveX(const RectF& rect)
 
 void Ball::DoBrickPrecisionMoveY(const RectF& rect)
 {
-	RectF ballRect = GetRectF();
+	RectF ballRect = GetRect();
 	if (ballRect.top < rect.top) {
 		posCenter.y -= ballRect.top - rect.top;
 	}
@@ -60,7 +60,7 @@ void Ball::DoBrickPrecisionMoveY(const RectF& rect)
 Ball::WallHit Ball::DoWallCollision(const RectF& walls)
 {
 	WallHit hit = WallHit::NoHit;
-	const RectF rect = GetRectF();
+	const RectF rect = GetRect();
 	if (rect.left < walls.left)
 	{
 		hit = WallHit::WallHit;
@@ -111,7 +111,7 @@ bool Ball::GetPaddleCooldown() const
 	return isPaddleCooldown;
 }
 
-RectF Ball::GetRectF() const
+RectF Ball::GetRect() const
 {
 	RectF rect = RectF::FromCenter(posCenter, attr.radius, attr.radius);
 	rect.left += 1;

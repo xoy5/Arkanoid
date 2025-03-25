@@ -55,32 +55,29 @@ void Game::ProcessInput()
 
 void Game::UpdateModel(float dt)
 {
+	powerUpManager.Update(dt);
 	paddle.Update(dt, wnd.kbd);
 	ball.Update(dt);
 
 	paddle.DoWallCollision(walls);
 	ball.DoWallCollision(walls);
-	
+
 	paddle.DoBallCollision(ball);
-	bricksGrid.DoBallCollision(ball);
-	/*if (!(RectI(ball.GetRectF()).IsContainedBy(gfx.GetScreenRect())))
+
 	{
-		ball.ReflectFromBricksAndWalls(gfx.GetScreenRect());
+		Vec2 pPos;
+		if (bricksGrid.DoBallCollision(ball, &pPos)) {
+			powerUpManager.Add({ pPos });
+		}
 	}
-	else if (paddle.IsBallCollision(ball))
-	{
-		ball.RecflectFromPaddle(paddle.GetRectF());
-	}*/
-	/*else if (bricksGrid.IsAndUpdateBallCollision(ball))
-	{
-		ball.ReflectFromBricksAndWalls();
-	}*/
-	//float cum = 0.1d + 0.2d;
+
+	powerUpManager.CheckPaddlePowerUpCollision(paddle.GetRect());
 }
 
 void Game::ComposeFrame()
 {
 	bricksGrid.Draw(gfx);
+	powerUpManager.Draw(gfx);
 	paddle.Draw(gfx);
 	ball.Draw(gfx);
 }
