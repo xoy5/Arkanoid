@@ -37,7 +37,7 @@ BricksGrid::BricksGrid(int bricksGridWidth, int topOffset, int paddingX, int pad
 BricksGrid::~BricksGrid()
 {
 	for (Brick* b : bricks) {
-		delete b;
+		delete b; 
 	}
 }
 
@@ -48,7 +48,7 @@ void BricksGrid::Draw(Graphics& gfx) const
 	}
 }
 
-bool BricksGrid::DoBallCollision(Ball& ball, Vec2* pHitPos)
+bool BricksGrid::DoBallCollision(Ball& ball, Vec2* pHitPos, bool* pDestroyed)
 {
 	bool collisionHappened = false;
 	//if (ball.GetRect().IsOverlappingWith(gridRect)) {
@@ -70,10 +70,6 @@ bool BricksGrid::DoBallCollision(Ball& ball, Vec2* pHitPos)
 	}
 
 	if (collisionHappened && brickIndex >= 0) {
-		if (pHitPos) {
-			*pHitPos = bricks[brickIndex]->GetPosCenter();
-		}
-
 		ball.ResetPaddleCooldown();
 
 		const float epsilon = 0.001f;
@@ -101,7 +97,10 @@ bool BricksGrid::DoBallCollision(Ball& ball, Vec2* pHitPos)
 
 		bricks[brickIndex]->Hitted();
 		if (BreakableBrick* brick = dynamic_cast<BreakableBrick*>(bricks[brickIndex])) {
-			if (brick->IsDestroyed()) {
+			if (*pDestroyed = brick->IsDestroyed()) {
+				if (pHitPos) {
+					*pHitPos = bricks[brickIndex]->GetPosCenter();
+				}
 				delete bricks[brickIndex];
 				bricks[brickIndex] = std::move(bricks.back());
 				bricks.pop_back();

@@ -31,3 +31,16 @@ void PowerUpManager::CheckPaddlePowerUpCollision(const RectF& rect)
 		}
 	}
 }
+
+void PowerUpManager::DoWallCollision(const RectF& rect)
+{
+	for (int i = 0; i < powerUps.size();) {
+		if (!powerUps[i].GetRect().IsContainedBy(rect)) {
+			powerUps[i] = std::move(powerUps.back());
+			powerUps.pop_back();
+		}
+		else {
+			i++;
+		}
+	}
+}

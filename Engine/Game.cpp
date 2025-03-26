@@ -59,15 +59,19 @@ void Game::UpdateModel(float dt)
 	paddle.Update(dt, wnd.kbd);
 	ball.Update(dt);
 
+	powerUpManager.DoWallCollision(walls);
 	paddle.DoWallCollision(walls);
 	ball.DoWallCollision(walls);
 
 	paddle.DoBallCollision(ball);
 
 	{
-		Vec2 pPos;
-		if (bricksGrid.DoBallCollision(ball, &pPos)) {
-			powerUpManager.Add({ pPos });
+		Vec2 pos;
+		bool destroyed = false;
+		if (bricksGrid.DoBallCollision(ball, &pos, &destroyed)) {
+			if (destroyed) {
+				powerUpManager.Add(pos);
+			}
 		}
 	}
 
