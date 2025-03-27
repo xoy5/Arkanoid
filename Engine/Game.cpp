@@ -26,9 +26,9 @@
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
-	gfx(wnd)
-{
-}
+	gfx(wnd),
+	powerUpManager(rng)
+{}
 
 void Game::Go()
 {
@@ -57,31 +57,21 @@ void Game::UpdateModel(float dt)
 {
 	powerUpManager.Update(dt);
 	paddle.Update(dt, wnd.kbd);
-	ball.Update(dt);
+	ballManager.Update(dt);
 
 	powerUpManager.DoWallCollision(walls);
 	paddle.DoWallCollision(walls);
-	ball.DoWallCollision(walls);
+	ballManager.DoWallCollision(walls);
 
-	paddle.DoBallCollision(ball);
-
-	{
-		Vec2 pos;
-		bool destroyed = false;
-		if (bricksGrid.DoBallCollision(ball, &pos, &destroyed)) {
-			if (destroyed) {
-				powerUpManager.Add(pos);
-			}
-		}
-	}
-
-	powerUpManager.CheckPaddlePowerUpCollision(paddle.GetRect());
+	ballManager.Paddle_DoBallCollision(*this);
+	ballManager.BrickGrid_DoBallCollision(*this);
+	powerUpManager.DoCollectAndUsePowerUp(*this);
 }
 
 void Game::ComposeFrame()
 {
-	bricksGrid.Draw(gfx);
+	brickGrid.Draw(gfx);
 	powerUpManager.Draw(gfx);
+	ballManager.Draw(gfx);
 	paddle.Draw(gfx);
-	ball.Draw(gfx);
 }

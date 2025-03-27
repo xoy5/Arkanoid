@@ -30,9 +30,9 @@
 #include "Font.h"
 #include "Button.h"
 
-#include "BricksGrid.h"
+#include "BrickGrid.h"
 #include "Paddle.h"
-#include "Ball.h"
+#include "BallManager.h"
 #include "PowerUpManager.h"
 
 class Game
@@ -52,17 +52,20 @@ private:
 private:
 	MainWindow& wnd;
 	Graphics gfx;
+	std::mt19937 rng = std::mt19937(std::random_device{}());
 	FrameTimer ft;
 	float precision = 0.0025f;
 	Font fontSm = Font("Files/Fonts/font16x28.bmp");
 	Font fontLg = Font("Files/Fonts/font32x56.bmp");
 	/********************************/
 	/*  User Variables              */
-	friend class BricksGrid;
+	//friend class BrickGrid;
+	friend class PowerUpManager;
+	friend class BallManager;
 	RectF walls = RectF(Graphics::GetScreenRect());
-	BricksGrid bricksGrid;
+	BrickGrid brickGrid;
+	BallManager ballManager;
 	PowerUpManager powerUpManager;
 	Paddle paddle;
-	Ball ball;
 	/********************************/
 };

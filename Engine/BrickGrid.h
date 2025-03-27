@@ -11,17 +11,17 @@
 #include "Ball.h"
 
 
-class BricksGrid
+class BrickGrid
 {
 public:
-	BricksGrid(int bricksGridWidth = 600, int topOffset = 15, int paddingX = 4, int paddingY = 4, int widthBrick = 80, int heightBrick = 30, int nRowBricks = 8);
-	~BricksGrid();
+	BrickGrid(int brickGridWidth = 600, int topOffset = 15, int paddingX = 4, int paddingY = 4, int widthBrick = 80, int heightBrick = 30, int nRowBricks = 8);
+	~BrickGrid();
 	void Draw(Graphics& gfx) const;
 	bool DoBallCollision(Ball& ball, Vec2* pHitPos  = nullptr, bool* pDestroyed = nullptr);
 private:
 	std::vector<Brick*> bricks;
-	const int bricksGridWidth;
-	const int bricksGridHeight;
+	const int brickGridWidth;
+	const int brickGridWHeight;
 	const int topOffset;
 	const int paddingX;
 	const int paddingY;

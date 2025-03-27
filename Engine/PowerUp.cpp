@@ -1,7 +1,8 @@
 #include "PowerUp.h"
 
-PowerUp::PowerUp(Vec2 pos, int size, float speed)
+PowerUp::PowerUp(Type type, Vec2 pos, int size, float speed)
 	:
+	type(type),
 	pos(pos),
 	size(size),
 	speed(speed)
@@ -19,5 +20,10 @@ void PowerUp::Update(float dt)
 
 RectF PowerUp::GetRect() const
 {
-	return RectF(pos, size, size);
+	return RectF(pos, (float)size, (float)size);
+}
+
+PowerUp::Type PowerUp::GetType() const
+{
+	return type;
 }

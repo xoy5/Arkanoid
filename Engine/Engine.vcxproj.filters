@@ -42,7 +42,7 @@
     <ClInclude Include="Brick.h">
       <Filter>Header Files\Xoy5 Files</Filter>
     </ClInclude>
-    <ClInclude Include="BricksGrid.h">
+    <ClInclude Include="BrickGrid.h">
       <Filter>Header Files\Xoy5 Files</Filter>
     </ClInclude>
     <ClInclude Include="Button.h">
@@ -120,6 +120,9 @@
     <ClInclude Include="PowerUp.h">
       <Filter>Header Files\Xoy5 Files</Filter>
     </ClInclude>
+    <ClInclude Include="BallManager.h">
+      <Filter>Header Files\Xoy5 Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -134,7 +137,7 @@
     <ClCompile Include="Brick.cpp">
       <Filter>Source Files\Xoy5 Files</Filter>
     </ClCompile>
-    <ClCompile Include="BricksGrid.cpp">
+    <ClCompile Include="BrickGrid.cpp">
       <Filter>Source Files\Xoy5 Files</Filter>
     </ClCompile>
     <ClCompile Include="Character.cpp">
@@ -176,11 +179,14 @@
     <ClCompile Include="Paddle.cpp">
       <Filter>Source Files\Xoy5 Files</Filter>
     </ClCompile>
+    <ClCompile Include="BallManager.cpp">
+      <Filter>Source Files\Xoy5 Files</Filter>
+    </ClCompile>
     <ClCompile Include="PowerUpManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Xoy5 Files</Filter>
     </ClCompile>
     <ClCompile Include="PowerUp.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Xoy5 Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

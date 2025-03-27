@@ -1,10 +1,10 @@
-#include "BricksGrid.h"
+#include "BrickGrid.h"
 #include "algorithm"
 
-BricksGrid::BricksGrid(int bricksGridWidth, int topOffset, int paddingX, int paddingY, int widthBrick, int heightBrick, int nRowBricks)
+BrickGrid::BrickGrid(int brickGridWidth, int topOffset, int paddingX, int paddingY, int widthBrick, int heightBrick, int nRowBricks)
 	:
-	bricksGridWidth(bricksGridWidth),
-	bricksGridHeight(nRowBricks* (heightBrick + paddingY) - paddingY),
+	brickGridWidth(brickGridWidth),
+	brickGridWHeight(nRowBricks* (heightBrick + paddingY) - paddingY),
 	topOffset(topOffset),
 	paddingX(paddingX),
 	paddingY(paddingY),
@@ -12,11 +12,11 @@ BricksGrid::BricksGrid(int bricksGridWidth, int topOffset, int paddingX, int pad
 	heightBrick(heightBrick),
 	nRowBricks(nRowBricks),
 	// dynamic calculated
-	nColBricks((bricksGridWidth + paddingX) / (widthBrick + paddingX)),
-	gridPos(Vec2{ ((Graphics::ScreenWidth - bricksGridWidth) / 2.0f) + (((bricksGridWidth + paddingX) % (widthBrick + paddingX)) / 2.0f), (float)topOffset })
-	// gridRect(RectF{ gridPos, (float)bricksGridWidth, (float)bricksGridHeight })
+	nColBricks((brickGridWidth + paddingX) / (widthBrick + paddingX)),
+	gridPos(Vec2{ ((Graphics::ScreenWidth - brickGridWidth) / 2.0f) + (((brickGridWidth + paddingX) % (widthBrick + paddingX)) / 2.0f), (float)topOffset })
+	// gridRect(RectF{ gridPos, (float)brickGridWidth, (float)brickGridWHeight })
 {
-	assert(Graphics::ScreenWidth >= bricksGridWidth);
+	assert(Graphics::ScreenWidth >= brickGridWidth);
 	Vec2 brickPos = gridPos;
 
 	for (int y = 0; y < nRowBricks; y++, brickPos = Vec2{ gridPos.x, brickPos.y + heightBrick + paddingY }) {
@@ -34,21 +34,21 @@ BricksGrid::BricksGrid(int bricksGridWidth, int topOffset, int paddingX, int pad
 	}
 }
 
-BricksGrid::~BricksGrid()
+BrickGrid::~BrickGrid()
 {
 	for (Brick* b : bricks) {
 		delete b; 
 	}
 }
 
-void BricksGrid::Draw(Graphics& gfx) const
+void BrickGrid::Draw(Graphics& gfx) const
 {
 	for (Brick* b : bricks) {
 		b->Draw(gfx);
 	}
 }
 
-bool BricksGrid::DoBallCollision(Ball& ball, Vec2* pHitPos, bool* pDestroyed)
+bool BrickGrid::DoBallCollision(Ball& ball, Vec2* pHitPos, bool* pDestroyed)
 {
 	bool collisionHappened = false;
 	//if (ball.GetRect().IsOverlappingWith(gridRect)) {

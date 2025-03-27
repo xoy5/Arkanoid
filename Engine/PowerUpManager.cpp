@@ -1,4 +1,10 @@
 #include "PowerUpManager.h"
+#include "Game.h"
+
+PowerUpManager::PowerUpManager(std::mt19937& rng)
+	:
+	rng(rng)
+{}
 
 void PowerUpManager::Draw(Graphics& gfx) const
 {
@@ -14,15 +20,27 @@ void PowerUpManager::Update(float dt)
 	}
 }
 
-void PowerUpManager::Add(const Vec2& posBrickCenter)
+void PowerUpManager::AddRng(const Vec2& posBrickCenter)
 {
-	powerUps.emplace_back(PowerUp{ posBrickCenter - Vec2{powerUpSizeDimension / 2 - 0.5f, powerUpSizeDimension / 2 - 0.5f}, powerUpSizeDimension, powerUpSpeed});
+	if (from1to100(rng) <= 8) {
+		powerUps.emplace_back(PowerUp{PowerUp::Type::BiggerPaddle, posBrickCenter - Vec2{powerUpSizeDimension / 2 - 0.5f, powerUpSizeDimension / 2 - 0.5f}, powerUpSizeDimension, powerUpSpeed});
+	}
 }
 
-void PowerUpManager::CheckPaddlePowerUpCollision(const RectF& rect)
+void PowerUpManager::DoCollectAndUsePowerUp(Game& game)
 {
 	for (int i = 0; i < powerUps.size();) {
-		if (powerUps[i].GetRect().IsOverlappingWith(rect)) {
+		if (powerUps[i].GetRect().IsOverlappingWith(game.paddle.GetRect())) {
+			switch (powerUps[i].GetType())
+			{
+				case PowerUp::Type::AddBall:
+					break;
+				case PowerUp::Type::BiggerPaddle:
+					game.paddle.SetWidth(20);
+					break;
+				case PowerUp::Type::DoubleBalls:
+					break;
+			}
 			powerUps[i] = std::move(powerUps.back());
 			powerUps.pop_back();
 		}
