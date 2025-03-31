@@ -22,6 +22,10 @@ public:
 	void SetColor(const Color& color);
 	bool DoBallCollision(Ball& ball) const;
 	void DoWallCollision(const RectF& walls);
+	int GetHeight() const;
+	int GetWidth() const;
+
+	void GrowWidth();
 
 	RectF GetRect() const;
 private:

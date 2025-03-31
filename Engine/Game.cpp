@@ -27,7 +27,8 @@ Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	powerUpManager(rng)
+	gf_powerUpManager(*this),
+	gf_ballManager(*this, paddle.GetRect().GetCenter() - Vec2{0.0f, float(paddle.GetHeight()) / 2.0f + 15.0f}, true)
 {}
 
 void Game::Go()
@@ -46,6 +47,36 @@ void Game::Go()
 
 void Game::ProcessInput()
 {
+	if (wnd.kbd.KeyIsPressed('M') && powerUpAddBall == false) {
+		gf_ballManager.AddBallOnPaddle();	
+		powerUpAddBall = true;
+	}
+	else {
+		if (!wnd.kbd.KeyIsPressed('M')) {
+			powerUpAddBall = false;
+		}
+	}
+
+	if (wnd.kbd.KeyIsPressed('K') && powerUpDoubleBall == false) {
+		gf_ballManager.DoubleBallsX();
+		powerUpDoubleBall = true;
+	}
+	else {
+		if (!wnd.kbd.KeyIsPressed('K')) {
+			powerUpDoubleBall = false;
+		}
+	}
+
+	if (wnd.kbd.KeyIsPressed('L') && powerUpGrowWidth == false) {
+		paddle.GrowWidth();
+		powerUpGrowWidth = true;
+	}
+	else {
+		if (!wnd.kbd.KeyIsPressed('L')) {
+			powerUpGrowWidth = false;
+		}
+	}
+
 	while (!wnd.mouse.IsEmpty())
 	{
 		const auto e = wnd.mouse.Read();
@@ -55,23 +86,23 @@ void Game::ProcessInput()
 
 void Game::UpdateModel(float dt)
 {
-	powerUpManager.Update(dt);
 	paddle.Update(dt, wnd.kbd);
-	ballManager.Update(dt);
+	gf_ballManager.Update(dt, wnd.kbd);
+	gf_powerUpManager.Update(dt);
 
-	powerUpManager.DoWallCollision(walls);
 	paddle.DoWallCollision(walls);
-	ballManager.DoWallCollision(walls);
+	gf_ballManager.DoWallCollision();
+	gf_powerUpManager.DoWallCollision();
 
-	ballManager.Paddle_DoBallCollision(*this);
-	ballManager.BrickGrid_DoBallCollision(*this);
-	powerUpManager.DoCollectAndUsePowerUp(*this);
+	gf_ballManager.BrickGrid_DoBallCollision();
+	gf_ballManager.Paddle_DoBallCollision();
+	gf_powerUpManager.DoCollectAndUsePowerUp();
 }
 
 void Game::ComposeFrame()
 {
 	brickGrid.Draw(gfx);
-	powerUpManager.Draw(gfx);
-	ballManager.Draw(gfx);
+	gf_powerUpManager.Draw(gfx);
 	paddle.Draw(gfx);
+	gf_ballManager.Draw(gfx);
 }

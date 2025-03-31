@@ -59,13 +59,16 @@ private:
 	Font fontLg = Font("Files/Fonts/font32x56.bmp");
 	/********************************/
 	/*  User Variables              */
+	bool powerUpDoubleBall = false;
+	bool powerUpAddBall = false;
+	bool powerUpGrowWidth = false; 
 	//friend class BrickGrid;
 	friend class PowerUpManager;
 	friend class BallManager;
 	RectF walls = RectF(Graphics::GetScreenRect());
-	BrickGrid brickGrid;
-	BallManager ballManager;
-	PowerUpManager powerUpManager;
 	Paddle paddle;
+	BrickGrid brickGrid;
+	BallManager gf_ballManager;
+	PowerUpManager gf_powerUpManager;
 	/********************************/
 };

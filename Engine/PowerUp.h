@@ -9,7 +9,7 @@ public:
 	enum class Type
 	{
 		AddBall,
-		BiggerPaddle,
+		GrowWidthPaddle,
 		DoubleBalls,
 		Count
 	};

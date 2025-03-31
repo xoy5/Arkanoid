@@ -1,20 +1,19 @@
 #include "Ball.h"
 
-Ball::Ball(const Vec2& posCenter, float speed, int radius, const Color& color)
+Ball::Ball(const Vec2& posCenter, bool onPaddle, float speed, int radius, const Color& color)
 	:
 	attr({ speed, radius, color }),
 	posCenter(posCenter),
-	vel(Vec2{ 0.0f, 1.0f * attr.speed })
+	isStillAddedOnPaddle(onPaddle),
+	vel(Vec2{ 0.0f, (onPaddle ? -1.0f : 1.0f) * attr.speed })
 {}
 Ball::Ball(float speed, int radius, const Color& color)
 	:
 	attr({ speed, radius, color }),
-	posCenter(Vec2{ float((Graphics::ScreenWidth / 2) - (radius / 2)), float(Graphics::ScreenHeight / 5 * 3)}),
+	posCenter(Vec2{ float((Graphics::ScreenWidth / 2) - (radius / 2)), float(Graphics::ScreenHeight / 5 * 3) }),
 	//posCenter(Vec2{190, 500}),
-	vel(Vec2{0.0f, 1.0f * attr.speed})
-{
-}
-
+	vel(Vec2{ 0.0f, 1.0f * attr.speed}) 
+{}
 void Ball::Draw(Graphics & gfx) const
 {
 	gfx.DrawCircle(posCenter, attr.radius, attr.color);
@@ -23,6 +22,11 @@ void Ball::Draw(Graphics & gfx) const
 void Ball::Update(float dt)
 {
 	posCenter += vel * dt;
+}
+
+void Ball::UpdateByPaddleX(float x)
+{
+	posCenter.x = x;
 }
 
 
@@ -127,4 +131,14 @@ Vec2 Ball::GetPosCenter() const
 Vec2 Ball::GetVelocity() const
 {
 	return vel;
+}
+
+bool Ball::GetIsStillAddedOnPaddle() const
+{
+	return isStillAddedOnPaddle;
+}
+
+void Ball::SetIsStillAddedOnPaddleToFalse()
+{
+	isStillAddedOnPaddle = false;
 }

@@ -16,10 +16,11 @@ public:
 		BottomWallHit
 	};
 public:
-	explicit Ball(const Vec2& posCenter, float speed = 300.0f, int radius = 10, const Color& color = Colors::White);
+	explicit Ball(const Vec2& posCenter, bool onPaddle = false, float speed = 300.0f, int radius = 10, const Color& color = Colors::White);
 	explicit Ball(float speed = 300.0f, int radius = 10, const Color& color = Colors::White);
 	void Draw(Graphics& gfx) const;
 	void Update(float dt);
+	void UpdateByPaddleX(float x);
 	void ReboundX();
 	void ReboundY();
 
@@ -36,9 +37,12 @@ public:
 	RectF GetRect() const;
 	Vec2 GetPosCenter() const;
 	Vec2 GetVelocity() const;
+	bool GetIsStillAddedOnPaddle() const;
+	void SetIsStillAddedOnPaddleToFalse();
 private:
 	BallAttributes attr;
 	Vec2 posCenter;
 	Vec2 vel;
 	bool isPaddleCooldown = false;
+	bool isStillAddedOnPaddle = false;
 };

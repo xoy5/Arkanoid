@@ -86,7 +86,22 @@ void Paddle::DoWallCollision(const RectF& walls)
 	}
 }
 
+int Paddle::GetHeight() const
+{
+	return attr.height;
+}
+
+int Paddle::GetWidth() const
+{
+	return attr.width;
+}
+
+void Paddle::GrowWidth()
+{
+	attr.width = std::min(int(attr.width * 1.1f), 300);
+}
+
 RectF Paddle::GetRect() const
 {
-	return RectF{ pos, float(attr.width), float(attr.height) };
+	return RectF::FromCenter(pos, float(attr.width) / 2.0f, float(attr.height) / 2.0f);
 }
