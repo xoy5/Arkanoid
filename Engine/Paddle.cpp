@@ -1,15 +1,15 @@
 #include "Paddle.h"
 
-Paddle::Paddle(const Vec2& pos, float speed, int width, int height, const Color& color)
+Paddle::Paddle(const Vec2& posCenter, float speed, int width, int height, const Color& color)
 	:
-	pos(pos),
+	posCenter(posCenter),
 	defaultAttr(PaddleAttributes{ speed, width, height, color }),
 	attr(defaultAttr)
 {}
 
 Paddle::Paddle(float speed, int width, int height, const Color& color)
 	:
-	pos(Vec2{float(Graphics::ScreenWidth / 2) - float(width / 2), float(Graphics::ScreenHeight) - float((Graphics::ScreenHeight) / 8)}),
+	posCenter(Vec2{float(Graphics::ScreenWidth / 2), float(Graphics::ScreenHeight - Graphics::ScreenHeight / 8)}),
 	defaultAttr(PaddleAttributes{ speed, width, height, color }),
 	attr(defaultAttr)
 {}
@@ -25,7 +25,8 @@ void Paddle::Update(float dt, const Keyboard& kbd)
 	if (kbd.KeyIsPressed('A')) xDir += -1.0f;
 	if (kbd.KeyIsPressed('D')) xDir += 1.0f;
 
-	pos.x += xDir * attr.speed * dt;
+	vel = Vec2{ xDir * attr.speed, 0 };
+	posCenter += vel * dt;
 }
 
 void Paddle::SetAttributesToDefault()
@@ -56,14 +57,22 @@ bool Paddle::DoBallCollision(Ball& ball) const
 		if (rect.IsOverlappingWith(ball.GetRect()))
 		{
 			const Vec2 ballPos = ball.GetPosCenter();
-			if (ballPos.x < rect.left || rect.right < ballPos.x) {
-				ball.ReboundX();
+			const RectF ballRect = ball.GetRect();
+			if (std::signbit(vel.x) != std::signbit(ball.GetVelocity().x)
+				||
+				( rect.right > ballRect.left || rect.left < ballRect.right ))
+			{
+				if (ballPos.x < rect.left || rect.right < ballPos.x) {
+					ball.ReboundX();
+				}
+				else{
+					float halfSizePaddle = (rect.right - rect.left) / 2.0f;
+					float a = (ballPos.x - (rect.left + halfSizePaddle)) / halfSizePaddle;
+					ball.SetDirection( Vec2{ a * 2.0f, -1.0f } );
+				}
 			}
-			else {
-				float halfSizePaddle = (rect.right - rect.left) / 2.0f;
-				float a = (ballPos.x - (rect.left + halfSizePaddle)) / halfSizePaddle;
-				ball.SetDirection( Vec2{ a * 2.0f, -1.0f } );
-			}
+			
+			ball.SetLastObjectReboundPtr(this);
 			ball.SetPaddleCooldown();
 			return true;
 		}
@@ -78,11 +87,11 @@ void Paddle::DoWallCollision(const RectF& walls)
 
 	if (rect.left < walls.left)
 	{
-		pos.x += walls.left - rect.left;
+		posCenter.x += walls.left - rect.left;
 	}
 	else if (rect.right > walls.right)
 	{
-		pos.x -= rect.right - walls.right;
+		posCenter.x -= rect.right - walls.right;
 	}
 }
 
@@ -103,5 +112,5 @@ void Paddle::GrowWidth()
 
 RectF Paddle::GetRect() const
 {
-	return RectF::FromCenter(pos, float(attr.width) / 2.0f, float(attr.height) / 2.0f);
+	return RectF::FromCenter(posCenter, float(attr.width) / 2.0f, float(attr.height) / 2.0f);
 }

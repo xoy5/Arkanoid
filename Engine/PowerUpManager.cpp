@@ -22,7 +22,7 @@ void PowerUpManager::Update(float dt)
 
 void PowerUpManager::AddRng(const Vec2& posBrickCenter)
 {
-	if (from1to100(game.rng) <= 10) {
+	if (from1to100(game.rng) <= 0) {
 		powerUps.emplace_back(PowerUp::Type(choosePowerUpType(game.rng)), posBrickCenter - Vec2{ powerUpSizeDimension / 2 - 0.5f, powerUpSizeDimension / 2 - 0.5f }, powerUpSizeDimension, powerUpSpeed);
 	}
 }

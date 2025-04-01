@@ -8,17 +8,16 @@ RectF Brick::GetRectF() const
 {
 	return rect;
 }
-
 Vec2 Brick::GetPosCenter() const
 {
 	return rect.GetCenter();
 }
 //////////////////////////////////////////////////////////////////////////////
-BreakableBrick::BreakableBrick(const RectF& rect, const Color& color, int hp)
+BreakableBrick::BreakableBrick(const RectF& rect, int hp, const Color& color)
 	:
 	Brick(rect),
-	color(color),
-	hp(hp)
+	hp(hp),
+	color(color)
 {}
 void BreakableBrick::Draw(Graphics & gfx) const
 {
@@ -35,6 +34,14 @@ void BreakableBrick::Hitted()
 bool BreakableBrick::IsDestroyed() const
 {
 	return hp <= 0;
+}
+void BreakableBrick::SetColor(const Color& color)
+{
+	this->color = color;
+}
+int BreakableBrick::GetHp() const
+{
+	return hp;
 }
 //////////////////////////////////////////////////////////////////////////////
 UnbreakableBrick::UnbreakableBrick(const RectF& rect)

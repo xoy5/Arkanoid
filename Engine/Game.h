@@ -71,5 +71,7 @@ private:
 	BrickGrid* brickGrid;
 	BallManager gf_ballManager;
 	PowerUpManager gf_powerUpManager;
+	Button buttonSave = Button(&fontSm, "Save", Vei2{ 100, 10 });
+	Button buttonLoad = Button(&fontSm, "Load", Vei2{ 100, 100 });
 	/********************************/
 };

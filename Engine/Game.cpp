@@ -29,7 +29,7 @@ Game::Game(MainWindow& wnd)
 	gfx(wnd),
 	gf_powerUpManager(*this),
 	gf_ballManager(*this, paddle.GetRect().GetCenter() - Vec2{ 0.0f, float(paddle.GetHeight()) / 2.0f + 15.0f }, true),
-	brickGrid(new BrickGrid(800))
+	brickGrid(new BrickGrid(Graphics::ScreenWidth))
 {}
 
 void Game::Go()
@@ -92,6 +92,15 @@ void Game::ProcessInput()
 	{
 		const auto e = wnd.mouse.Read();
 		// buttons
+		/*buttonSave.ProcessMouse(e);
+		buttonLoad.ProcessMouse(e);
+
+		if (buttonSave.IsClicked()) {
+			brickGrid->SaveBrickGrid();
+		}
+		else if (buttonLoad.IsClicked()) {
+			brickGrid = brickGrid->LoadNewBrickGrid();
+		}*/
 	}
 }
 
@@ -116,4 +125,6 @@ void Game::ComposeFrame()
 	gf_powerUpManager.Draw(gfx);
 	paddle.Draw(gfx);
 	gf_ballManager.Draw(gfx);
+	/*buttonLoad.Draw(gfx);
+	buttonSave.Draw(gfx);*/
 }

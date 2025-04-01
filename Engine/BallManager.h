@@ -23,5 +23,5 @@ private:
 	Game& game;
 	std::vector<Ball> balls;
 	bool curBallOnPaddle = false;
-	static constexpr int nMaxBalls = 50;
+	static constexpr int nMaxBalls = 100 ;
 };

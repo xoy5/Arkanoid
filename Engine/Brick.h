@@ -20,10 +20,12 @@ protected:
 class BreakableBrick : public Brick
 {
 public:
-	BreakableBrick(const RectF& rect, const Color& color, int hp);
+	BreakableBrick(const RectF& rect, int hp, const Color& color);
 	void Draw(Graphics& gfx) const override;
 	void Hitted() override;
 	bool IsDestroyed() const;
+	void SetColor(const Color& color);
+	int GetHp() const;
 private:
 	Color color;
 	int hp;

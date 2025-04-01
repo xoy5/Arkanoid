@@ -39,13 +39,13 @@ public:
 	bool GetIsStillAddedOnPaddle() const;
 	void SetIsStillAddedOnPaddleToFalse();
 	
-	void SetLastObjectReboundPtr(void* pObjectRebound);
-	void* GetLastObjectReboundPtr() const;
+	void SetLastObjectReboundPtr(const void* pObjectRebound);
+	const void* GetLastObjectReboundPtr() const;
 private:
 	BallAttributes attr;
 	Vec2 posCenter;
 	Vec2 vel;
 	bool isPaddleCooldown = false;
 	bool isStillAddedOnPaddle = false;
-	void* pLastObjectRebound = nullptr;
+	const void* pLastObjectRebound = nullptr;
 };

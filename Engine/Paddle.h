@@ -29,7 +29,8 @@ public:
 
 	RectF GetRect() const;
 private:
-	Vec2 pos;
+	Vec2 posCenter;
+	Vec2 vel = Vec2{0.0f, 0.0f};
 	const PaddleAttributes defaultAttr;
 	PaddleAttributes attr;
 };

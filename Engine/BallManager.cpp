@@ -56,6 +56,7 @@ void BallManager::BrickGrid_DoBallCollision()
 		std::pair<void*, int> pairBrick = game.brickGrid->CheckBallCollision(b);
 		if (pairBrick.first && pairBrick.first != b.GetLastObjectReboundPtr())
 		{
+			b.SetLastObjectReboundPtr(pairBrick.first);
 			Vec2 pos;
 			bool destroyed = false; // if destroyed change to true
 			game.brickGrid->ExecuteBallCollision(b, pairBrick.second, &pos, &destroyed);
@@ -70,18 +71,23 @@ void BallManager::BrickGrid_DoBallCollision()
 void BallManager::DoWallCollision()
 {
 	for (int i = 0; i < balls.size();) {
-		switch (balls[i].DoWallCollision(game.walls))
+		Ball::WallHit state = balls[i].DoWallCollision(game.walls);
+		switch(state)
 		{
 			case Ball::WallHit::BottomWallHit:
 				balls[i] = std::move(balls.back());
 				balls.pop_back();
 				break;
 			case Ball::WallHit::WallHit:
-				balls[i].SetLastObjectReboundPtr(nullptr);
-			case Ball::WallHit::NoWallHit:
+				balls[i].SetLastObjectReboundPtr(&game.walls);
+				[[fallthrough]];
+			/*case Ball::WallHit::NoWallHit:
+				balls[i].SetLastObjectReboundPtr(nullptr) DO NOT USE IT, IT GONNA FUCK UP ALL GAME
+				JUST SKIP THAT CASE, MAYBE I GONNA NEED NoWallHit ONE DAY TF*/
+			default:
 				i++;
 				break;
-		}		
+		}
 	}
 }
 
@@ -97,8 +103,8 @@ void BallManager::DoubleBallsX()
 {
 	if (balls.size() < nMaxBalls)
 	{
-		const int ballsSize = balls.size();
-		for (int i = 0; i < ballsSize; i++) 
+		const size_t ballsSize = balls.size();
+		for (size_t i = 0; i < ballsSize; i++)
 		{
 			Ball ball = balls[i];
 			ball.ReboundX();

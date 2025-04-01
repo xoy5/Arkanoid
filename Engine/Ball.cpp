@@ -143,12 +143,12 @@ void Ball::SetIsStillAddedOnPaddleToFalse()
 	isStillAddedOnPaddle = false;
 }
 
-void Ball::SetLastObjectReboundPtr(void* pObjectRebound)
+void Ball::SetLastObjectReboundPtr(const void* pObjectRebound)
 {
 	pLastObjectRebound = pObjectRebound;
 }
 
-void* Ball::GetLastObjectReboundPtr() const
+const void* Ball::GetLastObjectReboundPtr() const
 {
 	return pLastObjectRebound;
 }
