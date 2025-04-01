@@ -17,7 +17,11 @@ public:
 	BrickGrid(int brickGridWidth = 600, int topOffset = 15, int paddingX = 4, int paddingY = 4, int widthBrick = 80, int heightBrick = 30, int nRowBricks = 8);
 	~BrickGrid();
 	void Draw(Graphics& gfx) const;
-	bool DoBallCollision(Ball& ball, Vec2* pHitPos  = nullptr, bool* pDestroyed = nullptr);
+
+	bool DoBallCollision(Ball& ball, Vec2* pHitPos, bool* pDestroyed);
+	std::pair<void*, int> CheckBallCollision(const Ball& ball);
+	void ExecuteBallCollision(Ball& ball, int BrickIndex, Vec2* pHitPos = nullptr, bool* pDestroyed = nullptr);
+
 private:
 	std::vector<Brick*> bricks;
 	const int brickGridWidth;

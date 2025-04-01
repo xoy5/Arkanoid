@@ -53,9 +53,12 @@ void BallManager::Paddle_DoBallCollision()
 void BallManager::BrickGrid_DoBallCollision()
 {
 	for (auto& b : balls) {
-		Vec2 pos;
-		bool destroyed = false; // if destroyed change to true
-		if (game.brickGrid.DoBallCollision(b, &pos, &destroyed)) {
+		std::pair<void*, int> pairBrick = game.brickGrid->CheckBallCollision(b);
+		if (pairBrick.first && pairBrick.first != b.GetLastObjectReboundPtr())
+		{
+			Vec2 pos;
+			bool destroyed = false; // if destroyed change to true
+			game.brickGrid->ExecuteBallCollision(b, pairBrick.second, &pos, &destroyed);
 			if (destroyed) {
 				game.gf_powerUpManager.AddRng(pos);
 			}
@@ -63,30 +66,43 @@ void BallManager::BrickGrid_DoBallCollision()
 	}
 }
 
+
 void BallManager::DoWallCollision()
 {
 	for (int i = 0; i < balls.size();) {
-		if (balls[i].DoWallCollision(game.walls) == Ball::WallHit::BottomWallHit) {
-			balls[i] = std::move(balls.back());
-			balls.pop_back();
-		}
-		else {
-			i++;
-		}
+		switch (balls[i].DoWallCollision(game.walls))
+		{
+			case Ball::WallHit::BottomWallHit:
+				balls[i] = std::move(balls.back());
+				balls.pop_back();
+				break;
+			case Ball::WallHit::WallHit:
+				balls[i].SetLastObjectReboundPtr(nullptr);
+			case Ball::WallHit::NoWallHit:
+				i++;
+				break;
+		}		
 	}
 }
 
 void BallManager::AddBallOnPaddle()
 {
-	balls.emplace_back(Ball(game.paddle.GetRect().GetCenter() - Vec2{0.0f, game.paddle.GetHeight() / 2.0f + 15.0f}, true, 300.0f, 10.0f, Colors::White));
+	if (balls.size() < nMaxBalls)
+	{
+		balls.emplace_back(Ball(game.paddle.GetRect().GetCenter() - Vec2{ 0.0f, game.paddle.GetHeight() / 2.0f + 15.0f }, true, 300.0f, 10.0f, Colors::White));
+	}
 }
 
 void BallManager::DoubleBallsX()
 {
-	const int ballsSize = balls.size();
-	for (int i = 0; i < ballsSize; i++) {
-		Ball ball = balls[i];
-		ball.ReboundX();
-		balls.emplace_back(ball);
+	if (balls.size() < nMaxBalls)
+	{
+		const int ballsSize = balls.size();
+		for (int i = 0; i < ballsSize; i++) 
+		{
+			Ball ball = balls[i];
+			ball.ReboundX();
+			balls.emplace_back(ball);
+		}
 	}
 }

@@ -28,7 +28,8 @@ Game::Game(MainWindow& wnd)
 	wnd(wnd),
 	gfx(wnd),
 	gf_powerUpManager(*this),
-	gf_ballManager(*this, paddle.GetRect().GetCenter() - Vec2{0.0f, float(paddle.GetHeight()) / 2.0f + 15.0f}, true)
+	gf_ballManager(*this, paddle.GetRect().GetCenter() - Vec2{ 0.0f, float(paddle.GetHeight()) / 2.0f + 15.0f }, true),
+	brickGrid(new BrickGrid(800))
 {}
 
 void Game::Go()
@@ -47,6 +48,16 @@ void Game::Go()
 
 void Game::ProcessInput()
 {
+	if (wnd.kbd.KeyIsPressed('R') && mapReset == false) {
+		brickGrid = new BrickGrid(800);
+		mapReset = true;
+	}
+	else {
+		if (!wnd.kbd.KeyIsPressed('R')) {
+			mapReset = false;
+		}
+	}
+
 	if (wnd.kbd.KeyIsPressed('M') && powerUpAddBall == false) {
 		gf_ballManager.AddBallOnPaddle();	
 		powerUpAddBall = true;
@@ -101,7 +112,7 @@ void Game::UpdateModel(float dt)
 
 void Game::ComposeFrame()
 {
-	brickGrid.Draw(gfx);
+	brickGrid->Draw(gfx);
 	gf_powerUpManager.Draw(gfx);
 	paddle.Draw(gfx);
 	gf_ballManager.Draw(gfx);

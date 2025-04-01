@@ -3,7 +3,6 @@
 #include "Colors.h"
 #include "Vec2.h"
 #include "Rect.h"
-
 #include "Attributes.h"
 
 class Ball
@@ -11,7 +10,7 @@ class Ball
 public:
 	enum class WallHit
 	{
-		NoHit,
+		NoWallHit,
 		WallHit,
 		BottomWallHit
 	};
@@ -39,10 +38,14 @@ public:
 	Vec2 GetVelocity() const;
 	bool GetIsStillAddedOnPaddle() const;
 	void SetIsStillAddedOnPaddleToFalse();
+	
+	void SetLastObjectReboundPtr(void* pObjectRebound);
+	void* GetLastObjectReboundPtr() const;
 private:
 	BallAttributes attr;
 	Vec2 posCenter;
 	Vec2 vel;
 	bool isPaddleCooldown = false;
 	bool isStillAddedOnPaddle = false;
+	void* pLastObjectRebound = nullptr;
 };

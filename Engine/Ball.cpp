@@ -63,7 +63,7 @@ void Ball::DoBrickPrecisionMoveY(const RectF& rect)
 
 Ball::WallHit Ball::DoWallCollision(const RectF& walls)
 {
-	WallHit hit = WallHit::NoHit;
+	WallHit hit = WallHit::NoWallHit;
 	const RectF rect = GetRect();
 	if (rect.left < walls.left)
 	{
@@ -141,4 +141,14 @@ bool Ball::GetIsStillAddedOnPaddle() const
 void Ball::SetIsStillAddedOnPaddleToFalse()
 {
 	isStillAddedOnPaddle = false;
+}
+
+void Ball::SetLastObjectReboundPtr(void* pObjectRebound)
+{
+	pLastObjectRebound = pObjectRebound;
+}
+
+void* Ball::GetLastObjectReboundPtr() const
+{
+	return pLastObjectRebound;
 }
