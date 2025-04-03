@@ -2,20 +2,11 @@
 #include "algorithm"
 
 BrickGrid::BrickGrid(int brickGridWidth, int topOffset, int paddingX, int paddingY, int widthBrick, int heightBrick, int nRowBricks)
-	:
-	brickGridWidth(brickGridWidth),
-	brickGridWHeight(nRowBricks* (heightBrick + paddingY) - paddingY),
-	topOffset(topOffset),
-	paddingX(paddingX),
-	paddingY(paddingY),
-	widthBrick(widthBrick),
-	heightBrick(heightBrick),
-	nRowBricks(nRowBricks),
-	// dynamic calculated
-	nColBricks((brickGridWidth + paddingX) / (widthBrick + paddingX)),
-	gridPos(Vec2{ ((Graphics::ScreenWidth - brickGridWidth) / 2.0f) + (((brickGridWidth + paddingX) % (widthBrick + paddingX)) / 2.0f), (float)topOffset })
-	// gridRect(RectF{ gridPos, (float)brickGridWidth, (float)brickGridWHeight })
 {
+	int brickGridWHeight = nRowBricks * (heightBrick + paddingY) - paddingY;
+	int nColBricks = (brickGridWidth + paddingX) / (widthBrick + paddingX);
+	Vec2 gridPos{ ((Graphics::ScreenWidth - brickGridWidth) / 2.0f) + (((brickGridWidth + paddingX) % (widthBrick + paddingX)) / 2.0f), (float)topOffset };
+
 	assert(Graphics::ScreenWidth >= brickGridWidth);
 	Vec2 brickPos = gridPos;
 
@@ -61,16 +52,16 @@ void BrickGrid::Load(const std::string& filename)
 		Brick::Type type;
 		file.read(reinterpret_cast<char*>(&type), sizeof(type));
 		switch (type) {
-			case Brick::Type::Unbreakable:
-				brick = new UnbreakableBrick;
-				brick->Load(file);
-				break;
-			case Brick::Type::Breakable:
-				brick = new BreakableBrick;
-				brick->Load(file);
-				break;
-			default:
-				assert(false);
+		case Brick::Type::Unbreakable:
+			brick = new UnbreakableBrick;
+			brick->Load(file);
+			break;
+		case Brick::Type::Breakable:
+			brick = new BreakableBrick;
+			brick->Load(file);
+			break;
+		default:
+			assert(false);
 		}
 		bricks.emplace_back(brick);
 	}
@@ -85,7 +76,7 @@ void BrickGrid::Save(const std::string& filename)
 
 	size_t nBricks = bricks.size();
 	file.write(reinterpret_cast<char*>(&nBricks), sizeof(nBricks));
-	for (Brick* brick : bricks){
+	for (Brick* brick : bricks) {
 		brick->Save(file);
 	}
 

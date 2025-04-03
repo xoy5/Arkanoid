@@ -34,18 +34,6 @@ private:
 
 private:
 	std::vector<Brick*> bricks;
-	const int brickGridWidth;
-	const int brickGridWHeight;
-	const int topOffset;
-	const int paddingX;
-	const int paddingY;
-	const int widthBrick;
-	const int heightBrick;
-
-	const int nRowBricks;
-	const int nColBricks; // in BrickGrid() calculating
-	const Vec2 gridPos;
-	// const RectF gridRect; because I can't add some bricks off the grid
 
 	constexpr static Color colorsBricks[] = { Colors::Red, Colors::Grapefruit, Colors::Pink, Colors::Purple, Colors::Green, Colors::Yellow, Colors::Blue, Colors::Cyan };
 	constexpr static int colorsBricksSize = 8;
