@@ -92,15 +92,15 @@ void Game::ProcessInput()
 	{
 		const auto e = wnd.mouse.Read();
 		// buttons
-		/*buttonSave.ProcessMouse(e);
+		buttonSave.ProcessMouse(e);
 		buttonLoad.ProcessMouse(e);
 
 		if (buttonSave.IsClicked()) {
-			brickGrid->SaveBrickGrid();
+			brickGrid->Save();
 		}
 		else if (buttonLoad.IsClicked()) {
-			brickGrid = brickGrid->LoadNewBrickGrid();
-		}*/
+			brickGrid->Load();
+		}
 	}
 }
 
@@ -125,6 +125,6 @@ void Game::ComposeFrame()
 	gf_powerUpManager.Draw(gfx);
 	paddle.Draw(gfx);
 	gf_ballManager.Draw(gfx);
-	/*buttonLoad.Draw(gfx);
-	buttonSave.Draw(gfx);*/
+	buttonLoad.Draw(gfx);
+	buttonSave.Draw(gfx);
 }

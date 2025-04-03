@@ -18,10 +18,9 @@ class BrickGrid
 public:
 	BrickGrid(int brickGridWidth = 600, int topOffset = 15, int paddingX = 4, int paddingY = 4, int widthBrick = 80, int heightBrick = 30, int nRowBricks = 8);
 	~BrickGrid();
-
-	static BrickGrid* LoadNewBrickGrid(const std::string& filename = "default.dat");
-	//void LoadAtThisBrickGrid(const std::string& filename = "default.dat");
-	void SaveBrickGrid(const std::string& filename = "default.dat"); 
+	
+	void Load(const std::string& filename = "default.dat");
+	void Save(const std::string& filename = "default.dat"); 
 
 	void Draw(Graphics& gfx) const;
 

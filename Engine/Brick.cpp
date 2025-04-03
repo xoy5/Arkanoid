@@ -12,6 +12,14 @@ Vec2 Brick::GetPosCenter() const
 {
 	return rect.GetCenter();
 }
+void Brick::Save(std::ofstream& file) const
+{
+	file.write(reinterpret_cast<const char*>(&rect), sizeof(rect));
+}
+void Brick::Load(std::ifstream& file)
+{
+	file.read(reinterpret_cast<char*>(&rect), sizeof(rect));
+}
 //////////////////////////////////////////////////////////////////////////////
 BreakableBrick::BreakableBrick(const RectF& rect, int hp, const Color& color)
 	:
@@ -43,6 +51,20 @@ int BreakableBrick::GetHp() const
 {
 	return hp;
 }
+void BreakableBrick::Save(std::ofstream& file) const
+{
+	Type breakable = Type::Breakable;
+	file.write(reinterpret_cast<char*>(&breakable), sizeof(breakable));	
+	Brick::Save(file);
+	file.write(reinterpret_cast<const char*>(&hp), sizeof(hp));
+	file.write(reinterpret_cast<const char*>(&color), sizeof(color));
+}
+void BreakableBrick::Load(std::ifstream& file)
+{
+	Brick::Load(file);
+	file.read(reinterpret_cast<char*>(&hp), sizeof(hp));
+	file.read(reinterpret_cast<char*>(&color), sizeof(color));
+}
 //////////////////////////////////////////////////////////////////////////////
 UnbreakableBrick::UnbreakableBrick(const RectF& rect)
 	:
@@ -57,4 +79,16 @@ void UnbreakableBrick::Draw(Graphics & gfx) const
 void UnbreakableBrick::Hitted()
 {
 	// sound or effect
+}
+
+void UnbreakableBrick::Save(std::ofstream& file) const
+{
+	Type unbreakable = Type::Unbreakable;
+	file.write(reinterpret_cast<char*>(&unbreakable), sizeof(unbreakable));
+	Brick::Save(file);
+}
+
+void UnbreakableBrick::Load(std::ifstream& file)
+{
+	Brick::Load(file);
 }

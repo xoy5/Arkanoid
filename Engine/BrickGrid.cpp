@@ -47,22 +47,65 @@ BrickGrid::~BrickGrid()
 	}
 }
 
-BrickGrid* BrickGrid::LoadNewBrickGrid(const std::string& filename)
+void BrickGrid::Load(const std::string& filename)
 {
+	bricks.clear();
 	std::ifstream file(filename);
-	if(!file) return nullptr;
+	assert(file);
 
-	BrickGrid* newBrickGrid = new BrickGrid();
-	file.read(reinterpret_cast<char*>(newBrickGrid), sizeof(*newBrickGrid));
-	return newBrickGrid;
+	size_t nBricks;
+	file.read(reinterpret_cast<char*>(&nBricks), sizeof(nBricks));
+
+	for (size_t i = 0; i < nBricks; i++) {
+		Brick* brick = nullptr;
+		Brick::Type type;
+		file.read(reinterpret_cast<char*>(&type), sizeof(type));
+		switch (type) {
+			case Brick::Type::Unbreakable:
+				brick = new UnbreakableBrick;
+				brick->Load(file);
+				break;
+			case Brick::Type::Breakable:
+				brick = new BreakableBrick;
+				brick->Load(file);
+				break;
+			default:
+				assert(false);
+		}
+		bricks.emplace_back(brick);
+	}
+
+	file.close();
 }
 
-void BrickGrid::SaveBrickGrid(const std::string& filename)
+void BrickGrid::Save(const std::string& filename)
 {
 	std::ofstream file(filename);
-	if (!file) return;
+	assert(file);
 
-	file.write(reinterpret_cast<char*>(this), sizeof(*this));
+	size_t nBricks = bricks.size();
+	file.write(reinterpret_cast<char*>(&nBricks), sizeof(nBricks));
+	for (Brick* brick : bricks){
+		brick->Save(file);
+	}
+
+	//std::vector<Brick*> bricks;
+	//const int brickGridWidth;
+	//const int brickGridWHeight;
+	//const int topOffset;
+	//const int paddingX;
+	//const int paddingY;
+	//const int widthBrick;
+	//const int heightBrick;
+
+	//const int nRowBricks;
+	//const int nColBricks; // in BrickGrid() calculating
+	//const Vec2 gridPos
+
+
+
+
+	file.close();
 }
 
 void BrickGrid::Draw(Graphics& gfx) const
