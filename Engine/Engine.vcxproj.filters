@@ -16,17 +16,17 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{8b6c92a8-f65d-451e-80e3-d65773602b92}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Chili Files">
-      <UniqueIdentifier>{97816761-66cf-444f-9273-ca710286957d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Chili Files">
-      <UniqueIdentifier>{4583e180-2cf7-431a-be4a-f44d1103437b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Xoy5 Files">
       <UniqueIdentifier>{f4d4c219-3391-4fe8-bcce-7840829c0765}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Xoy5 Files">
       <UniqueIdentifier>{eb8425c6-9097-4905-ba4f-4da171598f6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Framework">
+      <UniqueIdentifier>{4583e180-2cf7-431a-be4a-f44d1103437b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Framework">
+      <UniqueIdentifier>{97816761-66cf-444f-9273-ca710286957d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -36,74 +36,47 @@
     <ClInclude Include="Graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>Header Files\Xoy5 Files</Filter>
-    </ClInclude>
     <ClInclude Include="Brick.h">
       <Filter>Header Files\Xoy5 Files</Filter>
     </ClInclude>
     <ClInclude Include="BrickGrid.h">
       <Filter>Header Files\Xoy5 Files</Filter>
     </ClInclude>
-    <ClInclude Include="Button.h">
-      <Filter>Header Files\Xoy5 Files</Filter>
-    </ClInclude>
     <ClInclude Include="Character.h">
       <Filter>Header Files\Xoy5 Files</Filter>
     </ClInclude>
-    <ClInclude Include="Font.h">
-      <Filter>Header Files\Xoy5 Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FrameTimer.h">
-      <Filter>Header Files\Xoy5 Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Rect.h">
-      <Filter>Header Files\Xoy5 Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Surface.h">
-      <Filter>Header Files\Xoy5 Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec2.h">
-      <Filter>Header Files\Xoy5 Files</Filter>
-    </ClInclude>
     <ClInclude Include="ChiliException.h">
-      <Filter>Header Files\Chili Files</Filter>
+      <Filter>Header Files\Framework</Filter>
     </ClInclude>
     <ClInclude Include="ChiliWin.h">
-      <Filter>Header Files\Chili Files</Filter>
+      <Filter>Header Files\Framework</Filter>
     </ClInclude>
     <ClInclude Include="Colors.h">
-      <Filter>Header Files\Chili Files</Filter>
+      <Filter>Header Files\Framework</Filter>
     </ClInclude>
     <ClInclude Include="COMInitializer.h">
-      <Filter>Header Files\Chili Files</Filter>
+      <Filter>Header Files\Framework</Filter>
     </ClInclude>
     <ClInclude Include="DXErr.h">
-      <Filter>Header Files\Chili Files</Filter>
+      <Filter>Header Files\Framework</Filter>
     </ClInclude>
     <ClInclude Include="Keyboard.h">
-      <Filter>Header Files\Chili Files</Filter>
+      <Filter>Header Files\Framework</Filter>
     </ClInclude>
     <ClInclude Include="MainWindow.h">
-      <Filter>Header Files\Chili Files</Filter>
+      <Filter>Header Files\Framework</Filter>
     </ClInclude>
     <ClInclude Include="Mouse.h">
-      <Filter>Header Files\Chili Files</Filter>
+      <Filter>Header Files\Framework</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>Header Files\Chili Files</Filter>
+      <Filter>Header Files\Framework</Filter>
     </ClInclude>
     <ClInclude Include="Sound.h">
-      <Filter>Header Files\Chili Files</Filter>
+      <Filter>Header Files\Framework</Filter>
     </ClInclude>
     <ClInclude Include="SoundEffect.h">
-      <Filter>Header Files\Chili Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Xoy5Math.h">
-      <Filter>Header Files\Xoy5 Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteEffect.h">
-      <Filter>Header Files\Xoy5 Files</Filter>
+      <Filter>Header Files\Framework</Filter>
     </ClInclude>
     <ClInclude Include="Paddle.h">
       <Filter>Header Files\Xoy5 Files</Filter>
@@ -123,6 +96,36 @@
     <ClInclude Include="BallManager.h">
       <Filter>Header Files\Xoy5 Files</Filter>
     </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBox.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec2.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Surface.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Xoy5Math.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteEffect.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Rect.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameTimer.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -131,47 +134,32 @@
     <ClCompile Include="Graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>Source Files\Xoy5 Files</Filter>
-    </ClCompile>
     <ClCompile Include="Brick.cpp">
       <Filter>Source Files\Xoy5 Files</Filter>
     </ClCompile>
     <ClCompile Include="BrickGrid.cpp">
       <Filter>Source Files\Xoy5 Files</Filter>
     </ClCompile>
-    <ClCompile Include="Character.cpp">
-      <Filter>Source Files\Xoy5 Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Font.cpp">
-      <Filter>Source Files\Xoy5 Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FrameTimer.cpp">
-      <Filter>Source Files\Xoy5 Files</Filter>
-    </ClCompile>
     <ClCompile Include="COMInitializer.cpp">
-      <Filter>Source Files\Chili Files</Filter>
+      <Filter>Source Files\Framework</Filter>
     </ClCompile>
     <ClCompile Include="DXErr.cpp">
-      <Filter>Source Files\Chili Files</Filter>
+      <Filter>Source Files\Framework</Filter>
     </ClCompile>
     <ClCompile Include="Keyboard.cpp">
-      <Filter>Source Files\Chili Files</Filter>
+      <Filter>Source Files\Framework</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
-      <Filter>Source Files\Chili Files</Filter>
+      <Filter>Source Files\Framework</Filter>
     </ClCompile>
     <ClCompile Include="MainWindow.cpp">
-      <Filter>Source Files\Chili Files</Filter>
+      <Filter>Source Files\Framework</Filter>
     </ClCompile>
     <ClCompile Include="Mouse.cpp">
-      <Filter>Source Files\Chili Files</Filter>
+      <Filter>Source Files\Framework</Filter>
     </ClCompile>
     <ClCompile Include="Sound.cpp">
-      <Filter>Source Files\Chili Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Surface.cpp">
-      <Filter>Source Files\Xoy5 Files</Filter>
+      <Filter>Source Files\Framework</Filter>
     </ClCompile>
     <ClCompile Include="Ball.cpp">
       <Filter>Source Files\Xoy5 Files</Filter>
@@ -187,6 +175,18 @@
     </ClCompile>
     <ClCompile Include="PowerUp.cpp">
       <Filter>Source Files\Xoy5 Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Surface.cpp">
+      <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>Source Files\Framework</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

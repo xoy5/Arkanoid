@@ -74,6 +74,11 @@ public:
 
 		font->DrawText(text, textPos, fontColor, gfx);
 	}
+	void SetText(const std::string& text)
+	{
+		this->text = text;
+		sizeWidth = (int)text.size() * font->GetWidthChar();
+	}
 	void ProcessMouse(const Mouse::Event& e)
 	{
 		// hovered
@@ -104,7 +109,6 @@ public:
 	{
 		pos += vec;
 	}
-
 	int GetPosEndX() const // USE WITH BRAIN (I PREFER TO USE IT DIRECTRLY IN GAME() )
 	{
 		return GetRect().right + borderSize;

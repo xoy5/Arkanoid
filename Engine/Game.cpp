@@ -36,11 +36,22 @@ void Game::Go()
 {
 	gfx.BeginFrame();	
 	ProcessInput();
-	float elapsedTime = ft.Mark();
-	while (elapsedTime > 0.0f) {
-		const float dt = std::min(precision, elapsedTime);
-		UpdateModel(dt);
-		elapsedTime -= dt;
+	if (buttonEditMode.second)
+	{
+		if (textBox.IsActive())
+		{
+			textBox.Interact(wnd.kbd);
+		}
+	}
+	else
+	{
+		float elapsedTime = ft.Mark();
+		while (elapsedTime > 0.0f) 
+		{
+			const float dt = std::min(precision, elapsedTime);
+			UpdateModel(dt);
+			elapsedTime -= dt;
+		}
 	}
 	ComposeFrame();
 	gfx.EndFrame();
@@ -48,43 +59,46 @@ void Game::Go()
 
 void Game::ProcessInput()
 {
-	if (wnd.kbd.KeyIsPressed('R') && mapReset == false) {
-		brickGrid = new BrickGrid(800);
-		mapReset = true;
-	}
-	else {
-		if (!wnd.kbd.KeyIsPressed('R')) {
-			mapReset = false;
+	if (!buttonEditMode.second)
+	{
+		if (wnd.kbd.KeyIsPressed('R') && mapReset == false) {
+			brickGrid = new BrickGrid(800);
+			mapReset = true;
 		}
-	}
-
-	if (wnd.kbd.KeyIsPressed('M') && powerUpAddBall == false) {
-		gf_ballManager.AddBallOnPaddle();	
-		powerUpAddBall = true;
-	}
-	else {
-		if (!wnd.kbd.KeyIsPressed('M')) {
-			powerUpAddBall = false;
+		else {
+			if (!wnd.kbd.KeyIsPressed('R')) {
+				mapReset = false;
+			}
 		}
-	}
 
-	if (wnd.kbd.KeyIsPressed('K') && powerUpDoubleBall == false) {
-		gf_ballManager.DoubleBallsX();
-		powerUpDoubleBall = true;
-	}
-	else {
-		if (!wnd.kbd.KeyIsPressed('K')) {
-			powerUpDoubleBall = false;
+		if (wnd.kbd.KeyIsPressed('M') && powerUpAddBall == false) {
+			gf_ballManager.AddBallOnPaddle();	
+			powerUpAddBall = true;
 		}
-	}
+		else {
+			if (!wnd.kbd.KeyIsPressed('M')) {
+				powerUpAddBall = false;
+			}
+		}
 
-	if (wnd.kbd.KeyIsPressed('L') && powerUpGrowWidth == false) {
-		paddle.GrowWidth();
-		powerUpGrowWidth = true;
-	}
-	else {
-		if (!wnd.kbd.KeyIsPressed('L')) {
-			powerUpGrowWidth = false;
+		if (wnd.kbd.KeyIsPressed('K') && powerUpDoubleBall == false) {
+			gf_ballManager.DoubleBallsX();
+			powerUpDoubleBall = true;
+		}
+		else {
+			if (!wnd.kbd.KeyIsPressed('K')) {
+				powerUpDoubleBall = false;
+			}
+		}
+
+		if (wnd.kbd.KeyIsPressed('L') && powerUpGrowWidth == false) {
+			paddle.GrowWidth();
+			powerUpGrowWidth = true;
+		}
+		else {
+			if (!wnd.kbd.KeyIsPressed('L')) {
+				powerUpGrowWidth = false;
+			}
 		}
 	}
 
@@ -92,14 +106,31 @@ void Game::ProcessInput()
 	{
 		const auto e = wnd.mouse.Read();
 		// buttons
-		buttonSave.ProcessMouse(e);
-		buttonLoad.ProcessMouse(e);
+		buttonEditMode.first.ProcessMouse(e);
+		if (buttonEditMode.first.IsClicked()) {
+			buttonEditMode.second = !buttonEditMode.second;
 
-		if (buttonSave.IsClicked()) {
-			brickGrid->Save();
+			if (buttonEditMode.second) {
+				buttonEditMode.first.SetText("Play Mode");
+			}
+			else {
+				buttonEditMode.first.SetText("Edit Mode");
+			}
 		}
-		else if (buttonLoad.IsClicked()) {
-			brickGrid->Load();
+
+		if (buttonEditMode.second) {
+			buttonSave.ProcessMouse(e);
+			buttonLoad.ProcessMouse(e);
+
+			
+			if (buttonSave.IsClicked()) {
+				brickGrid->Save(textBox.GetText());
+			}
+			else if (buttonLoad.IsClicked()) {
+				brickGrid->Load(textBox.GetText());
+			}
+
+			textBox.DoFocusMouse(wnd.mouse);
 		}
 	}
 }
@@ -125,6 +156,13 @@ void Game::ComposeFrame()
 	gf_powerUpManager.Draw(gfx);
 	paddle.Draw(gfx);
 	gf_ballManager.Draw(gfx);
-	buttonLoad.Draw(gfx);
-	buttonSave.Draw(gfx);
+
+	// Editor mode
+	if (buttonEditMode.second) 
+	{
+		buttonLoad.Draw(gfx);
+		buttonSave.Draw(gfx);
+		textBox.Draw(gfx);
+	}
+	buttonEditMode.first.Draw(gfx);
 }

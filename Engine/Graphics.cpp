@@ -353,10 +353,14 @@ void Graphics::DrawLine(const Vei2& p, const Vei2& q, int thickness, const Color
 	Vec2 cur = Vec2(p);
 	const Vec2 add = dif / len;
 
-	for (int i = 0; i <= (int)len; i++) {
-		if (thickness == 1 || i % 2 == 0) {
-			for (int x = 0; x < thickness; x++) {
-				for (int y = 0; y < thickness; y++) {
+	for (int i = 0; i <= (int)len; i++) 
+	{
+		if (thickness == 1 || i % 2 == 0) 
+		{
+			for (int x = 0; x < thickness; x++) 
+			{
+				for (int y = 0; y < thickness; y++) 
+				{
 					PutPixel(int(cur.x) + x - thicknessCenter, int(cur.y) + y - thicknessCenter, c);
 				}
 			}
@@ -372,7 +376,8 @@ void Graphics::DrawCircle(const Vei2& pos, float radius, const Color& c, float a
 
 	const float epsilon = 0.0001f;
 
-	if (std::abs(angleEnd - angleStart) < epsilon || (angleEnd - angleStart) == 360.0f) {
+	if (std::abs(angleEnd - angleStart) < epsilon || (angleEnd - angleStart) == 360.0f) 
+	{
 		angleStart = 0.0f;
 		angleEnd = 360.0f;
 	}
@@ -381,14 +386,18 @@ void Graphics::DrawCircle(const Vei2& pos, float radius, const Color& c, float a
 	const int radiusPow2 = int(std::pow(radius, 2));
 
 	// to do: add drawing rect inside circle
-	for (int y = -roundedRadius + 1; y < roundedRadius; y++) {
-		for (int x = -roundedRadius + 1; x < roundedRadius; x++) {
+	for (int y = -roundedRadius + 1; y < roundedRadius; y++) 
+	{
+		for (int x = -roundedRadius + 1; x < roundedRadius; x++) 
+		{
 			Vec2 vec = Vec2(float(x), float(y));
 			float r = vec.x * vec.x + vec.y * vec.y;
-			if (r <= radiusPow2) {
+			if (r <= radiusPow2) 
+			{
 				float alfa = gm::deg360(gm::rtod(std::atan2(vec.y, vec.x)));
 				if ((angleStart <= angleEnd && angleStart <= alfa && alfa <= angleEnd) ||
-					(angleStart > angleEnd && (alfa >= angleStart || alfa <= angleEnd)) ) {
+					(angleStart > angleEnd && (alfa >= angleStart || alfa <= angleEnd)) ) 
+				{
 					PutPixel(pos.x + x, pos.y + y, c);
 				}
 			}

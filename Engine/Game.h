@@ -29,6 +29,7 @@
 #include "FrameTimer.h"
 #include "Font.h"
 #include "Button.h"
+#include "TextBox.h"
 
 #include "BrickGrid.h"
 #include "Paddle.h"
@@ -59,19 +60,27 @@ private:
 	Font fontLg = Font("Files/Fonts/font32x56.bmp");
 	/********************************/
 	/*  User Variables  */
-	bool mapReset = false;
-	bool powerUpDoubleBall = false;
-	bool powerUpAddBall = false;
-	bool powerUpGrowWidth = false; 
 	//friend class BrickGrid;
 	friend class PowerUpManager;
 	friend class BallManager;
 	RectF walls = RectF(Graphics::GetScreenRect());
+
 	Paddle paddle;
 	BrickGrid* brickGrid;
 	BallManager gf_ballManager;
 	PowerUpManager gf_powerUpManager;
-	Button buttonSave = Button(&fontSm, "Save", Vei2{ 100, 10 });
+
+	// Inputs
+	static constexpr bool A = true;
+	std::pair<Button, bool> buttonEditMode = std::pair<Button, bool>(Button(&fontSm, "Edit Mode", Vei2{, 10}), false);
+	Button buttonSave = Button(&fontSm, "Save", Vei2{ ,140 });
 	Button buttonLoad = Button(&fontSm, "Load", Vei2{ 100, 100 });
+	TextBox textBox = TextBox(&fontSm, Vei2{ 300, 200 });
+
+	// Keyboard shit
+	bool mapReset = false;
+	bool powerUpAddBall = false;
+	bool powerUpDoubleBall = false;
+	bool powerUpGrowWidth = false; 
 	/********************************/
 };
