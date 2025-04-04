@@ -41,7 +41,7 @@ class Button
 {
 public:
 	Button() = default;
-	Button(const Font* font, const std::string& text, const Vei2& pos)
+	Button(const Font* font, const std::string& text, const Vei2& pos = Graphics::GetScreenCenter())
 		: 
 		font(font),
 		text(text),
@@ -109,9 +109,14 @@ public:
 	{
 		pos += vec;
 	}
-	int GetPosEndX() const // USE WITH BRAIN (I PREFER TO USE IT DIRECTRLY IN GAME() )
+	RectI GetRect() const
 	{
-		return GetRect().right + borderSize;
+
+		if (isSetPositionCenter == false) {
+			const int borderSize = isSetBorder ? this->borderSize : 0;
+			return RectI(pos + Vei2(borderSize, borderSize), sizePaddingX + sizeWidth + sizePaddingX, sizePaddingY + sizeHeight + sizePaddingY);
+		}
+		return RectI::FromCenter(pos, sizeWidth / 2 + sizePaddingX, sizeHeight / 2 + sizePaddingY);
 	}
 
 	//************* STYLE DEFAULTS *************//
@@ -198,17 +203,6 @@ public:
 		isSetBackgroundHoverDarker = setHoverDarker;
 	}
 	//********************************//
-
-private:
-	RectI GetRect() const
-	{
-
-		if (isSetPositionCenter == false) {
-			const int borderSize = isSetBorder ? this->borderSize : 0;
-			return RectI(pos + Vei2(borderSize, borderSize), sizePaddingX + sizeWidth + sizePaddingX, sizePaddingY + sizeHeight + sizePaddingY);
-		}
-		return RectI::FromCenter(pos, sizeWidth / 2 + sizePaddingX, sizeHeight / 2 + sizePaddingY);
-	}
 
 private:
 	const Font* font = nullptr;

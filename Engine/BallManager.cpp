@@ -53,13 +53,13 @@ void BallManager::Paddle_DoBallCollision()
 void BallManager::BrickGrid_DoBallCollision()
 {
 	for (auto& b : balls) {
-		std::pair<void*, int> pairBrick = game.brickGrid->CheckBallCollision(b);
+		std::pair<void*, int> pairBrick = game.gf_brickGrid.CheckBallCollision(b);
 		if (pairBrick.first && pairBrick.first != b.GetLastObjectReboundPtr())
 		{
 			b.SetLastObjectReboundPtr(pairBrick.first);
 			Vec2 pos;
 			bool destroyed = false; // if destroyed change to true
-			game.brickGrid->ExecuteBallCollision(b, pairBrick.second, &pos, &destroyed);
+			game.gf_brickGrid.ExecuteBallCollision(b, pairBrick.second, &pos, &destroyed);
 			if (destroyed) {
 				game.gf_powerUpManager.AddRng(pos);
 			}

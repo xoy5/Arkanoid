@@ -35,6 +35,7 @@
 #include "Paddle.h"
 #include "BallManager.h"
 #include "PowerUpManager.h"
+#include "MyMessageBox.h"
 
 class Game
 {
@@ -58,24 +59,27 @@ private:
 	float precision = 0.0025f;
 	Font fontSm = Font("Files/Fonts/font16x28.bmp");
 	Font fontLg = Font("Files/Fonts/font32x56.bmp");
+	MyMessageBox myMessageBox = MyMessageBox(&fontSm);
+	RectF walls = RectF(Graphics::GetScreenRect());
 	/********************************/
 	/*  User Variables  */
-	//friend class BrickGrid;
+	// Friens;
 	friend class PowerUpManager;
 	friend class BallManager;
-	RectF walls = RectF(Graphics::GetScreenRect());
+	friend class BrickGrid;
 
+	// Objects
 	Paddle paddle;
-	BrickGrid* brickGrid;
+	BrickGrid gf_brickGrid;
 	BallManager gf_ballManager;
 	PowerUpManager gf_powerUpManager;
 
 	// Inputs
 	static constexpr bool A = true;
-	std::pair<Button, bool> buttonEditMode = std::pair<Button, bool>(Button(&fontSm, "Edit Mode", Vei2{, 10}), false);
-	Button buttonSave = Button(&fontSm, "Save", Vei2{ ,140 });
-	Button buttonLoad = Button(&fontSm, "Load", Vei2{ 100, 100 });
-	TextBox textBox = TextBox(&fontSm, Vei2{ 300, 200 });
+	std::pair<Button, bool> buttonEditMode = std::pair<Button, bool>(Button(&fontSm, "Edit Mode", Vei2{20, 20}), false);
+	Button buttonLoad = Button(&fontSm, "Load", Vei2{ 20, 80 });
+	Button buttonSave = Button(&fontSm, "Save", Vei2{ 20, 140 });
+	TextBox textBox = TextBox(&fontSm, Vei2{ 20, 200 });
 
 	// Keyboard shit
 	bool mapReset = false;

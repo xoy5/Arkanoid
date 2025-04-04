@@ -38,13 +38,19 @@ BrickGrid::~BrickGrid()
 	}
 }
 
-void BrickGrid::Load(const std::string& filename)
+void BrickGrid::Load(std::string filename)
 {
 	bricks.clear();
+	SetFilenameBat(filename);
 	std::ifstream file(filename);
-	assert(file);
 
-	size_t nBricks;
+	if (!file)
+	{
+		message = Message::FileNotExists;
+		return;
+	};
+
+	size_t nBricks = 0;
 	file.read(reinterpret_cast<char*>(&nBricks), sizeof(nBricks));
 
 	for (size_t i = 0; i < nBricks; i++) {
@@ -69,10 +75,16 @@ void BrickGrid::Load(const std::string& filename)
 	file.close();
 }
 
-void BrickGrid::Save(const std::string& filename)
+void BrickGrid::Save(std::string filename)
 {
+	SetFilenameBat(filename);
 	std::ofstream file(filename);
-	assert(file);
+
+	if (!file)
+	{
+		message = Message::FileAlreadyExists;
+		return;
+	}
 
 	size_t nBricks = bricks.size();
 	file.write(reinterpret_cast<char*>(&nBricks), sizeof(nBricks));
@@ -80,23 +92,12 @@ void BrickGrid::Save(const std::string& filename)
 		brick->Save(file);
 	}
 
-	//std::vector<Brick*> bricks;
-	//const int brickGridWidth;
-	//const int brickGridWHeight;
-	//const int topOffset;
-	//const int paddingX;
-	//const int paddingY;
-	//const int widthBrick;
-	//const int heightBrick;
-
-	//const int nRowBricks;
-	//const int nColBricks; // in BrickGrid() calculating
-	//const Vec2 gridPos
-
-
-
-
 	file.close();
+}
+
+BrickGrid::Message BrickGrid::GetMyMessage() const
+{
+	return message;
 }
 
 void BrickGrid::Draw(Graphics& gfx) const
@@ -106,69 +107,10 @@ void BrickGrid::Draw(Graphics& gfx) const
 	}
 }
 
-//bool BrickGrid::DoBallCollision(Ball& ball, Vec2* pHitPos, bool* pDestroyed)
-//{
-//	bool collisionHappened = false;
-//	//if (ball.GetRect().IsOverlappingWith(gridRect)) {
-//	float minBrickDistSq;
-//	int brickIndex = -1;
-//	const Vec2 ballPosCenter = ball.GetPosCenter();
-//
-//	for (int i = 0; i < bricks.size(); i++)
-//	{
-//		if (ball.GetRect().IsOverlappingWith(bricks[i]->GetRectF()))
-//		{
-//			float distance = (ballPosCenter - bricks[i]->GetPosCenter()).GetLengthSq();
-//			if (!collisionHappened || distance < minBrickDistSq) {
-//				minBrickDistSq = distance;
-//				brickIndex = i;
-//				collisionHappened = true;
-//			}
-//		}
-//	}
-//
-//	if (collisionHappened && brickIndex >= 0) {
-//		ball.ResetPaddleCooldown();
-//
-//		const float epsilon = 0.001f;
-//		Vec2 ballVelocity = ball.GetVelocity();
-//		RectF brickRect = bricks[brickIndex]->GetRectF();
-//
-//		bool horizontalOverlap = (ballPosCenter.x >= brickRect.left && ballPosCenter.x <= brickRect.right);
-//
-//		if (fabs(ballVelocity.x) < epsilon) {
-//			ball.ReboundY();
-//		}
-//		else if (std::signbit(ballVelocity.x) == std::signbit(ballPosCenter.x - bricks[brickIndex]->GetPosCenter().x)) {
-//			ball.ReboundY();
-//		}
-//		else if (horizontalOverlap) {
-//			ball.ReboundY();
-//		}
-//		else {
-//			ball.ReboundX();
-// 		}
-//
-//		bricks[brickIndex]->Hitted();
-//		if (BreakableBrick* brick = dynamic_cast<BreakableBrick*>(bricks[brickIndex])) {
-//			if (*pDestroyed = brick->IsDestroyed()) {
-//				if (pHitPos) {
-//					*pHitPos = bricks[brickIndex]->GetPosCenter();
-//				}
-//				delete bricks[brickIndex];
-//				bricks[brickIndex] = std::move(bricks.back());
-//				bricks.pop_back();
-//			}
-//		}
-//	}
-//	return collisionHappened;
-//}
-
 
 std::pair<void*, int> BrickGrid::CheckBallCollision(const Ball& ball) const
 {
 	void* pBrickCollisionHappened = nullptr;
-	//if (ball.GetRect().IsOverlappingWith(gridRect)) {
 	float minBrickDistSq;
 	int brickIndex = -1;
 	const Vec2 ballPosCenter = ball.GetPosCenter();
@@ -246,5 +188,14 @@ Color BrickGrid::GetColorByHp(int i) const
 {
 	assert(i > 0);
 	return colorsBricks[std::min(i, colorsBricksSize) - 1];
+}
+
+void BrickGrid::SetFilenameBat(std::string& filename) const
+{
+	std::string::size_type pos = filename.find_last_of(".");
+	if (pos != std::string::npos) {
+		filename.erase(pos);
+	}
+	filename += ".dat";
 }
 

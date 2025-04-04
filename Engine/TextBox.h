@@ -32,34 +32,41 @@ public:
     {
         if (isFocused)
         {
-            if (kbd.KeyIsPressed(VK_BACK))
-            {
-                if (!text.empty())
-                {
-                    text.pop_back();
-                }
-            }
-            else if (kbd.KeyIsPressed(VK_RETURN))
+            if (kbd.KeyIsPressed(VK_ESCAPE))
             {
                 isFocused = false;
             }
             else
             {
                 bool anyKeyPressed = false;
-
-                for (int c = 32; c < 127; c++)
+                if (kbd.KeyIsPressed(VK_BACK))
                 {
-                    if (kbd.KeyIsPressed(char(c)))
+                    if (!text.empty() && !stillPressed)
                     {
-                        if (!stillPressed)
-                        {
-                            text += char(c);
-                            stillPressed = true;
-                        }
-                        anyKeyPressed = true;
-                        break;
+                        text.pop_back();
                     }
+					if (!stillPressed)
+					{
+						stillPressed = true;
+					}
+					anyKeyPressed = true;
                 }
+				else
+				{
+					for (int c = 32; c < 127; c++)
+					{
+						if (kbd.KeyIsPressed(char(c)))
+						{
+							if (!stillPressed)
+							{
+								text += char(c);
+								stillPressed = true;
+							}
+							anyKeyPressed = true;
+							break;
+						}
+					}
+				}
 
                 if (!anyKeyPressed)
                 {

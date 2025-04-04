@@ -29,7 +29,7 @@ Game::Game(MainWindow& wnd)
 	gfx(wnd),
 	gf_powerUpManager(*this),
 	gf_ballManager(*this, paddle.GetRect().GetCenter() - Vec2{ 0.0f, float(paddle.GetHeight()) / 2.0f + 15.0f }, true),
-	brickGrid(new BrickGrid(Graphics::ScreenWidth))
+	gf_brickGrid({Graphics::ScreenWidth})
 {}
 
 void Game::Go()
@@ -62,7 +62,7 @@ void Game::ProcessInput()
 	if (!buttonEditMode.second)
 	{
 		if (wnd.kbd.KeyIsPressed('R') && mapReset == false) {
-			brickGrid = new BrickGrid(800);
+			gf_brickGrid = BrickGrid{ 800 };
 			mapReset = true;
 		}
 		else {
@@ -124,10 +124,10 @@ void Game::ProcessInput()
 
 			
 			if (buttonSave.IsClicked()) {
-				brickGrid->Save(textBox.GetText());
+				gf_brickGrid.Save(textBox.GetText());
 			}
 			else if (buttonLoad.IsClicked()) {
-				brickGrid->Load(textBox.GetText());
+				gf_brickGrid.Load(textBox.GetText());
 			}
 
 			textBox.DoFocusMouse(wnd.mouse);
@@ -152,7 +152,7 @@ void Game::UpdateModel(float dt)
 
 void Game::ComposeFrame()
 {
-	brickGrid->Draw(gfx);
+	gf_brickGrid.Draw(gfx);
 	gf_powerUpManager.Draw(gfx);
 	paddle.Draw(gfx);
 	gf_ballManager.Draw(gfx);
@@ -163,6 +163,10 @@ void Game::ComposeFrame()
 		buttonLoad.Draw(gfx);
 		buttonSave.Draw(gfx);
 		textBox.Draw(gfx);
+		if ((bool)gf_brickGrid.GetMyMessage())
+		{
+			myMessageBox.Draw(gfx);
+		}
 	}
-	buttonEditMode.first.Draw(gfx);
-}
+	 buttonEditMode.first.Draw(gfx);
+} 
