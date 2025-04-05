@@ -65,28 +65,24 @@ Ball::WallHit Ball::DoWallCollision(const RectF& walls)
 {
 	WallHit hit = WallHit::NoWallHit;
 	const RectF rect = GetRect();
-	if (rect.left < walls.left)
-	{
+	if (rect.left < walls.left){
 		hit = WallHit::WallHit;
 		posCenter.x += walls.left - rect.left;
 		ReboundX();
 	} 
-	else if (rect.right > walls.right)
-	{
+	else if (rect.right > walls.right){
 		hit = WallHit::WallHit;
 		posCenter.x -= rect.right - walls.right;
 		ReboundX();
 	}
 	
-	if (rect.top < walls.top)
-	{
+	if (rect.top < walls.top){
 		hit = WallHit::WallHit;
 		posCenter.y += walls.top - rect.top;
 		ReboundY();
 		ResetPaddleCooldown();
 	}
-	else if (rect.bottom > walls.bottom)
-	{
+	else if (rect.bottom > walls.bottom){
 		hit = WallHit::BottomWallHit;
 		posCenter.y -= rect.bottom - walls.bottom;
 		ReboundY();

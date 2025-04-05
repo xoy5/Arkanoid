@@ -1,7 +1,7 @@
 #pragma once
-#include "Rect.h"
 #include "Graphics.h"
 #include "Vec2.h"
+#include "Rect.h"
 
 class PowerUp 
 {

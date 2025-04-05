@@ -7,11 +7,11 @@
 #include "Graphics.h"
 #include "Colors.h"
 #include "Vec2.h"
+#include "Button.h"
 
 #include "Brick.h"
-#include "Attributes.h"
 #include "Ball.h"
-#include "Button.h"
+#include "Attributes.h"
 
 
 class BrickGrid
@@ -26,13 +26,14 @@ private:
 public:
 	BrickGrid(int brickGridWidth = 600, int topOffset = 15, int paddingX = 4, int paddingY = 4, int widthBrick = 80, int heightBrick = 30, int nRowBricks = 8);
 	~BrickGrid();
-	
+	BrickGrid(const BrickGrid&) = delete;
+	BrickGrid& operator=(const BrickGrid&) = delete;
+	void Draw(Graphics& gfx) const;
 	void Load(std::string filename = "default.dat");
 	void Save(std::string filename = "default.dat");
+	
+public:
 	Message GetMyMessage() const;
-
-	void Draw(Graphics& gfx) const;
-
 	std::pair<void*, int> CheckBallCollision(const Ball& ball) const;
 	void ExecuteBallCollision(Ball& ball, int BrickIndex, Vec2* pHitPos = nullptr, bool* pDestroyed = nullptr);
 
@@ -46,4 +47,5 @@ private:
 	Message message = Message::NoMessage;
 	constexpr static Color colorsBricks[] = { Colors::Red, Colors::Grapefruit, Colors::Pink, Colors::Purple, Colors::Green, Colors::Yellow, Colors::Blue, Colors::Cyan };
 	constexpr static int colorsBricksSize = 8;
+	static constexpr std::string_view directory = "Files/BrickGrid/";
 };

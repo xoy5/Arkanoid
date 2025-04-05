@@ -85,12 +85,10 @@ void Paddle::DoWallCollision(const RectF& walls)
 {
 	const RectF rect = GetRect();
 
-	if (rect.left < walls.left)
-	{
+	if (rect.left < walls.left){
 		posCenter.x += walls.left - rect.left;
 	}
-	else if (rect.right > walls.right)
-	{
+	else if (rect.right > walls.right){
 		posCenter.x -= rect.right - walls.right;
 	}
 }

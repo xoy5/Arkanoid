@@ -88,13 +88,13 @@ public:
 			hoverSound.Play();
 			hoveredAlready = true;
 		}
-		else if(!hovered){
+		else if (!hovered) {
 			hoveredAlready = false;
 		}
 
 		// clicked
 		if (hovered) {
-			clicked = e.LeftIsPressed();
+			clicked = e.leftIsPressedAndIsntClickedAlready();
 		}
 	}
 	bool IsClicked() const

@@ -1,5 +1,5 @@
-/****************************************************************************************** 
- *	Chili DirectX Framework Version 16.07.20											  *	
+/******************************************************************************************
+ *	Chili DirectX Framework Version 16.07.20											  *
  *	Game.cpp																			  *
  *	Copyright 2016 PlanetChili.net <http://www.planetchili.net>							  *
  *																						  *
@@ -29,25 +29,20 @@ Game::Game(MainWindow& wnd)
 	gfx(wnd),
 	gf_powerUpManager(*this),
 	gf_ballManager(*this, paddle.GetRect().GetCenter() - Vec2{ 0.0f, float(paddle.GetHeight()) / 2.0f + 15.0f }, true),
-	gf_brickGrid({Graphics::ScreenWidth})
-{}
+	gf_brickGrid({ Graphics::ScreenWidth }),
+	gf_editor(*this, &fontSm)
+{
+	wnd.kbd.DisableAutorepeat();
+}
 
 void Game::Go()
 {
-	gfx.BeginFrame();	
+	gfx.BeginFrame();
+	float elapsedTime = ft.Mark();
 	ProcessInput();
-	if (buttonEditMode.second)
+	if (!gf_editor.IsEditing())
 	{
-		if (textBox.IsActive())
-		{
-			textBox.Interact(wnd.kbd);
-		}
-	}
-	else
-	{
-		float elapsedTime = ft.Mark();
-		while (elapsedTime > 0.0f) 
-		{
+		while (elapsedTime > 0.0f) {
 			const float dt = std::min(precision, elapsedTime);
 			UpdateModel(dt);
 			elapsedTime -= dt;
@@ -59,79 +54,32 @@ void Game::Go()
 
 void Game::ProcessInput()
 {
-	if (!buttonEditMode.second)
+	// KEYBOARD
+	while (!wnd.kbd.KeyIsEmpty())
 	{
-		if (wnd.kbd.KeyIsPressed('R') && mapReset == false) {
-			gf_brickGrid = BrickGrid{ 800 };
-			mapReset = true;
-		}
-		else {
-			if (!wnd.kbd.KeyIsPressed('R')) {
-				mapReset = false;
+		const Keyboard::Event keyPressed = wnd.kbd.ReadKey();
+		if (keyPressed.IsValid() && keyPressed.IsPress())
+		{
+			if (keyPressed.GetCode() == VK_ESCAPE)
+				wnd.Kill();
+			else if (keyPressed.GetCode() == VK_OEM_3)
+				gf_editor.ChangeEditing();
+			else if (gf_editor.IsEditing())
+			{
+				if (keyPressed.GetCode() == 'R') gf_brickGrid.Load();
+				if (keyPressed.GetCode() == 'M') gf_ballManager.AddBallOnPaddle();
+				if (keyPressed.GetCode() == 'K') gf_ballManager.DoubleBallsX();
+				if (keyPressed.GetCode() == 'L') paddle.GrowWidth();
 			}
-		}
-
-		if (wnd.kbd.KeyIsPressed('M') && powerUpAddBall == false) {
-			gf_ballManager.AddBallOnPaddle();	
-			powerUpAddBall = true;
-		}
-		else {
-			if (!wnd.kbd.KeyIsPressed('M')) {
-				powerUpAddBall = false;
-			}
-		}
-
-		if (wnd.kbd.KeyIsPressed('K') && powerUpDoubleBall == false) {
-			gf_ballManager.DoubleBallsX();
-			powerUpDoubleBall = true;
-		}
-		else {
-			if (!wnd.kbd.KeyIsPressed('K')) {
-				powerUpDoubleBall = false;
-			}
-		}
-
-		if (wnd.kbd.KeyIsPressed('L') && powerUpGrowWidth == false) {
-			paddle.GrowWidth();
-			powerUpGrowWidth = true;
-		}
-		else {
-			if (!wnd.kbd.KeyIsPressed('L')) {
-				powerUpGrowWidth = false;
-			}
+			gf_editor.ProcessInputKeyboard(wnd.kbd);
 		}
 	}
-
+	// MOUSE
 	while (!wnd.mouse.IsEmpty())
 	{
 		const auto e = wnd.mouse.Read();
 		// buttons
-		buttonEditMode.first.ProcessMouse(e);
-		if (buttonEditMode.first.IsClicked()) {
-			buttonEditMode.second = !buttonEditMode.second;
-
-			if (buttonEditMode.second) {
-				buttonEditMode.first.SetText("Play Mode");
-			}
-			else {
-				buttonEditMode.first.SetText("Edit Mode");
-			}
-		}
-
-		if (buttonEditMode.second) {
-			buttonSave.ProcessMouse(e);
-			buttonLoad.ProcessMouse(e);
-
-			
-			if (buttonSave.IsClicked()) {
-				gf_brickGrid.Save(textBox.GetText());
-			}
-			else if (buttonLoad.IsClicked()) {
-				gf_brickGrid.Load(textBox.GetText());
-			}
-
-			textBox.DoFocusMouse(wnd.mouse);
-		}
+		gf_editor.ProcessMouse(e);
 	}
 }
 
@@ -156,17 +104,5 @@ void Game::ComposeFrame()
 	gf_powerUpManager.Draw(gfx);
 	paddle.Draw(gfx);
 	gf_ballManager.Draw(gfx);
-
-	// Editor mode
-	if (buttonEditMode.second) 
-	{
-		buttonLoad.Draw(gfx);
-		buttonSave.Draw(gfx);
-		textBox.Draw(gfx);
-		if ((bool)gf_brickGrid.GetMyMessage())
-		{
-			myMessageBox.Draw(gfx);
-		}
-	}
-	 buttonEditMode.first.Draw(gfx);
-} 
+	gf_editor.Draw(gfx);
+}

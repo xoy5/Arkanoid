@@ -13,7 +13,8 @@ BrickGrid::BrickGrid(int brickGridWidth, int topOffset, int paddingX, int paddin
 	for (int y = 0; y < nRowBricks; y++, brickPos = Vec2{ gridPos.x, brickPos.y + heightBrick + paddingY }) {
 		if (y == 4)
 		{
-			for (int x = 0; x < nColBricks; x++, brickPos += Vec2{ (float)widthBrick + (float)paddingX, 0 }) {
+			for (int x = 0; x < nColBricks; x++, brickPos += Vec2{ (float)widthBrick + (float)paddingX, 0 }) 
+			{
 				if (x % 2 == 0) {
 					bricks.emplace_back(new UnbreakableBrick(RectF(brickPos, brickPos + Vec2{ (float)widthBrick, (float)heightBrick })));
 				}
@@ -40,12 +41,15 @@ BrickGrid::~BrickGrid()
 
 void BrickGrid::Load(std::string filename)
 {
+	if (filename.empty()) {
+		filename = "default";
+	}
 	bricks.clear();
+	filename = directory.data() + filename;
 	SetFilenameBat(filename);
 	std::ifstream file(filename);
 
-	if (!file)
-	{
+	if (!file){
 		message = Message::FileNotExists;
 		return;
 	};
@@ -53,21 +57,23 @@ void BrickGrid::Load(std::string filename)
 	size_t nBricks = 0;
 	file.read(reinterpret_cast<char*>(&nBricks), sizeof(nBricks));
 
-	for (size_t i = 0; i < nBricks; i++) {
+	for (size_t i = 0; i < nBricks; i++) 
+	{
 		Brick* brick = nullptr;
 		Brick::Type type;
 		file.read(reinterpret_cast<char*>(&type), sizeof(type));
-		switch (type) {
-		case Brick::Type::Unbreakable:
-			brick = new UnbreakableBrick;
-			brick->Load(file);
-			break;
-		case Brick::Type::Breakable:
-			brick = new BreakableBrick;
-			brick->Load(file);
-			break;
-		default:
-			assert(false);
+		switch (type)
+		{
+			case Brick::Type::Unbreakable:
+				brick = new UnbreakableBrick;
+				brick->Load(file);
+				break;
+			case Brick::Type::Breakable:
+				brick = new BreakableBrick;
+				brick->Load(file);
+				break;
+			default:
+				assert(false);
 		}
 		bricks.emplace_back(brick);
 	}
@@ -77,11 +83,14 @@ void BrickGrid::Load(std::string filename)
 
 void BrickGrid::Save(std::string filename)
 {
+	if (filename.empty()) {
+		filename = "default";
+	}
+	filename = directory.data() + filename;
 	SetFilenameBat(filename);
 	std::ofstream file(filename);
 
-	if (!file)
-	{
+	if (!file){
 		message = Message::FileAlreadyExists;
 		return;
 	}
@@ -162,8 +171,10 @@ void BrickGrid::ExecuteBallCollision(Ball& ball, int brickIndex, Vec2* pHitPos, 
 	}
 
 	bricks[brickIndex]->Hitted();
-	if (BreakableBrick* brick = dynamic_cast<BreakableBrick*>(bricks[brickIndex])) {
-		if (*pDestroyed = brick->IsDestroyed()) {
+	if (BreakableBrick* brick = dynamic_cast<BreakableBrick*>(bricks[brickIndex])) 
+	{
+		if (*pDestroyed = brick->IsDestroyed()) 
+		{
 			if (pHitPos) {
 				*pHitPos = bricks[brickIndex]->GetPosCenter();
 			}

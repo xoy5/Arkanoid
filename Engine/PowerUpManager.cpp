@@ -30,7 +30,8 @@ void PowerUpManager::AddRng(const Vec2& posBrickCenter)
 void PowerUpManager::DoCollectAndUsePowerUp()
 {
 	for (int i = 0; i < powerUps.size();) {
-		if (powerUps[i].GetRect().IsOverlappingWith(game.paddle.GetRect())) {
+		if (powerUps[i].GetRect().IsOverlappingWith(game.paddle.GetRect())) 
+		{
 			switch (powerUps[i].GetType())
 			{
 				case PowerUp::Type::AddBall:

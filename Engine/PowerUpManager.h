@@ -1,9 +1,11 @@
 #pragma once
 #include <vector>
-#include "PowerUp.h"
-#include "Graphics.h"
-#include "Brick.h"
 #include <random>
+
+#include "Graphics.h"
+
+#include "PowerUp.h"
+#include "Brick.h"
 
 class Game;
 class PowerUpManager

@@ -1,9 +1,10 @@
 #pragma once
-#include "Ball.h"
-#include "Graphics.h"
 #include <vector>
-#include "Paddle.h"
+
+#include "Graphics.h"
 #include "Keyboard.h"
+
+#include "Ball.h"
 
 class Game;
 class BallManager

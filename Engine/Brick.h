@@ -1,9 +1,9 @@
 #pragma once
+#include <fstream>
 
 #include "Graphics.h"
 #include "Colors.h"
 #include "Rect.h"
-#include <fstream>
 
 class Brick
 {
