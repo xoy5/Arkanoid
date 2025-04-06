@@ -14,12 +14,15 @@ public:
 	BallManager(Game& game, float speed = 300.0f, int radius = 10, const Color& color = Colors::White);
 	void Draw(Graphics& gfx) const;
 	void Update(float dt, Keyboard& kbd);
+
 public:
+	void ClearBalls();
 	void Paddle_DoBallCollision();
 	void BrickGrid_DoBallCollision();
 	void DoWallCollision();
 	void AddBallOnPaddle();
 	void DoubleBallsX();
+
 private:
 	Game& game;
 	std::vector<Ball> balls;

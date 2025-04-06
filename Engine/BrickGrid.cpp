@@ -1,8 +1,11 @@
 #include "BrickGrid.h"
+#include "Game.h"
 #include <algorithm>
 #include <filesystem>
 
-BrickGrid::BrickGrid(int brickGridWidth, int topOffset, int paddingX, int paddingY, int widthBrick, int heightBrick, int nRowBricks)
+BrickGrid::BrickGrid(Game& game, int brickGridWidth, int topOffset, int paddingX, int paddingY, int widthBrick, int heightBrick, int nRowBricks)
+	:
+	game(game)
 {
 	int brickGridWHeight = nRowBricks * (heightBrick + paddingY) - paddingY;
 	int nColBricks = (brickGridWidth + paddingX) / (widthBrick + paddingX);
@@ -42,7 +45,8 @@ BrickGrid::~BrickGrid()
 
 BrickGrid::MessageFile BrickGrid::Load(std::string filename)
 {
-	messageFile = MessageFile::Loaded;
+	MessageFile messageFile = MessageFile::Loaded;
+
 	PrepareFilename(filename);
 
 	std::ifstream file(filename);
@@ -53,6 +57,8 @@ BrickGrid::MessageFile BrickGrid::Load(std::string filename)
 	};
 
 	bricks.clear();
+	game.gf_ballManager.ClearBalls();
+	game.gf_ballManager.AddBallOnPaddle();
 
 	size_t nBricks = 0;
 	file.read(reinterpret_cast<char*>(&nBricks), sizeof(nBricks));
@@ -84,7 +90,7 @@ BrickGrid::MessageFile BrickGrid::Load(std::string filename)
 
 BrickGrid::MessageFile BrickGrid::Save(std::string filename)
 {
-	messageFile = MessageFile::Saved;
+	MessageFile  messageFile = MessageFile::Saved;
 	PrepareFilename(filename);
 
 	if (std::filesystem::exists(filename)) {
@@ -113,16 +119,6 @@ BrickGrid::MessageFile BrickGrid::DeleteBrickGrid(std::string filename)
 {
 	BrickGrid::PrepareFilename(filename);
 	return std::filesystem::remove(filename) ? MessageFile::Deleted : MessageFile::Error;
-}
-
-BrickGrid::MessageFile BrickGrid::GetMessageFile() const
-{
-	return messageFile;
-}
-
-void BrickGrid::SetMessageFileNoMessage()
-{
-	messageFile = MessageFile::NoMessage;
 }
 
 void BrickGrid::Draw(Graphics& gfx) const

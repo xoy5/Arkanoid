@@ -46,7 +46,6 @@ public:
 		bool rightIsPressed;
 		int x;
 		int y;
-		bool leftIsClickedAlready;
 	public:
 		Event()
 			:

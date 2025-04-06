@@ -29,7 +29,7 @@ Game::Game(MainWindow& wnd)
 	gfx(wnd),
 	gf_powerUpManager(*this),
 	gf_ballManager(*this, paddle.GetRect().GetCenter() - Vec2{ 0.0f, float(paddle.GetHeight()) / 2.0f + 15.0f }, true),
-	gf_brickGrid({ Graphics::ScreenWidth }),
+	gf_brickGrid(*this, { Graphics::ScreenWidth }),
 	gf_editor(*this)
 {
 	wnd.kbd.DisableAutorepeat();
@@ -67,7 +67,6 @@ void Game::ProcessInput()
 				gf_editor.ChangeEditing();
 			else if (!gf_editor.IsEditing())
 			{
-				if (keyPressed.GetCode() == 'R') gf_brickGrid.Load();
 				if (keyPressed.GetCode() == 'M') gf_ballManager.AddBallOnPaddle();
 				if (keyPressed.GetCode() == 'K') gf_ballManager.DoubleBallsX();
 				if (keyPressed.GetCode() == 'L') paddle.GrowWidth();
@@ -88,6 +87,10 @@ void Game::ProcessInput()
 		const auto e = wnd.mouse.Read();
 		// buttons
 		gf_editor.ProcessMouse(e);
+		fag.ProcessMouse(e);
+		if (fag.IsClicked()) {
+			paddle.GrowWidth();
+		}
 	}
 	////////////////////////////////////
 }
@@ -118,4 +121,5 @@ void Game::ComposeFrame()
 		gf_ballManager.Draw(gfx);
 	}
 	gf_editor.Draw(gfx);
+	fag.Draw(gfx);
 }

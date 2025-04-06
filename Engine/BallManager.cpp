@@ -43,6 +43,11 @@ void BallManager::Update(float dt, Keyboard& kbd)
 	}
 }
 
+void BallManager::ClearBalls()
+{
+	balls.clear();
+}
+
 void BallManager::Paddle_DoBallCollision()
 {
 	for (auto& b : balls) {
@@ -92,8 +97,10 @@ void BallManager::DoWallCollision()
 
 void BallManager::AddBallOnPaddle()
 {
-	if (balls.size() < nMaxBalls){
-		balls.emplace_back(Ball(game.paddle.GetRect().GetCenter() - Vec2{ 0.0f, game.paddle.GetHeight() / 2.0f + 15.0f }, true, 300.0f, 10.0f, Colors::White));
+	if (int(balls.size()) < nMaxBalls){
+		float offset = float (game.paddle.GetHeight()) / 2.0f + 15.0f;
+		balls.emplace_back(Ball(game.paddle.GetRect().GetCenter() - Vec2{ 0.0f, offset }, true));
+		
 	}
 }
 

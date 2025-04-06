@@ -4,6 +4,7 @@
 #include "TextBox.h"
 #include "Button.h"
 #include "MyMessageBox.h"
+#include "BrickGrid.h"
 
 class Game;
 class Editor
@@ -18,6 +19,7 @@ public:
 	bool IsHandlingMessage() const;
 
 private:
+	BrickGrid::MessageFile messageFile = BrickGrid::MessageFile::NoMessage;
 	Game& game;
 	const Font* font;
 	bool editing = false;

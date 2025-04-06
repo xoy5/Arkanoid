@@ -77,6 +77,8 @@ private:
 	PowerUpManager gf_powerUpManager;
 	Editor gf_editor;
 
+	Button fag = Button(&fontSm, "fag");
+
 	// TO DO
 	// Edit controll state instead BrickGrid
 	// key for Hacks

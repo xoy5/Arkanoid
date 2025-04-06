@@ -13,7 +13,7 @@
 #include "Ball.h"
 #include "Attributes.h"
 
-
+class Game;
 class BrickGrid
 {
 public:
@@ -28,7 +28,7 @@ public:
 		Error
 	};
 public:
-	BrickGrid(int brickGridWidth = 600, int topOffset = 15, int paddingX = 4, int paddingY = 4, int widthBrick = 80, int heightBrick = 30, int nRowBricks = 8);
+	BrickGrid(Game& game, int brickGridWidth = 600, int topOffset = 15, int paddingX = 4, int paddingY = 4, int widthBrick = 80, int heightBrick = 30, int nRowBricks = 8);
 	~BrickGrid();
 	BrickGrid(const BrickGrid&) = delete;
 	BrickGrid& operator=(const BrickGrid&) = delete;
@@ -38,8 +38,6 @@ public:
 	BrickGrid::MessageFile DeleteBrickGrid(std::string filename);
 	
 public:
-	MessageFile GetMessageFile() const;
-	void SetMessageFileNoMessage();
 	std::pair<void*, int> CheckBallCollision(const Ball& ball) const;
 	void ExecuteBallCollision(Ball& ball, int BrickIndex, Vec2* pHitPos = nullptr, bool* pDestroyed = nullptr);
 
@@ -50,8 +48,8 @@ private:
 	static constexpr void PrepareFilename(std::string& filename);
 
 private:
+	Game& game;
 	std::vector<Brick*> bricks;
-	MessageFile messageFile = MessageFile::NoMessage;
 	constexpr static Color colorsBricks[] = { Colors::Red, Colors::Grapefruit, Colors::Pink, Colors::Purple, Colors::Green, Colors::Yellow, Colors::Blue, Colors::Cyan };
 	constexpr static int colorsBricksSize = 8;
 	static constexpr std::string_view directory = "Files/BrickGrid/";

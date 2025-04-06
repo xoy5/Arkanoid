@@ -24,7 +24,7 @@ public:
 	virtual void Save(std::ofstream& file) const;
 	virtual void Load(std::ifstream& file);
 protected:
-	RectF rect;
+	RectF rect = RectF{ 0,0,0,0 };
 };
 
 class BreakableBrick : public Brick
@@ -41,8 +41,8 @@ public:
 	void Save(std::ofstream& file) const override;
 	void Load(std::ifstream& file) override;
 private:
-	int hp;
-	Color color;
+	int hp = 0;
+	Color color = Colors::Black;
 };
 
 class UnbreakableBrick : public Brick
