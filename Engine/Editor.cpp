@@ -1,7 +1,12 @@
 #include "Editor.h"
 #include "Game.h"
-#include "Mouse.h"
 #include "MainWindow.h"
+
+Editor::Editor(Game& game, Font* font)
+	:
+	game(game),
+	font(font)
+{}
 
 void Editor::Draw(Graphics& gfx) const
 {
@@ -11,6 +16,7 @@ void Editor::Draw(Graphics& gfx) const
 		buttonLoad.Draw(gfx);
 		buttonSave.Draw(gfx);
 		textBox.Draw(gfx);
+		messageBox.Draw(gfx);
 	}
 }
 
@@ -32,10 +38,10 @@ bool Editor::IsEditing() const
 	return editing;
 }
 
-void Editor::ProcessInputKeyboard(Keyboard& kbd)
+void Editor::ProcessInputChar(char character)
 {
 	if (editing) {
-		textBox.Interact(kbd);
+		textBox.Interact(character);
 	}
 }
 

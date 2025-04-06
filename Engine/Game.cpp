@@ -38,8 +38,8 @@ Game::Game(MainWindow& wnd)
 void Game::Go()
 {
 	gfx.BeginFrame();
-	float elapsedTime = ft.Mark();
 	ProcessInput();
+	float elapsedTime = ft.Mark();
 	if (!gf_editor.IsEditing())
 	{
 		while (elapsedTime > 0.0f) {
@@ -54,7 +54,8 @@ void Game::Go()
 
 void Game::ProcessInput()
 {
-	// KEYBOARD
+	//////////// KEYBOARD //////////////
+	// Keys
 	while (!wnd.kbd.KeyIsEmpty())
 	{
 		const Keyboard::Event keyPressed = wnd.kbd.ReadKey();
@@ -64,23 +65,31 @@ void Game::ProcessInput()
 				wnd.Kill();
 			else if (keyPressed.GetCode() == VK_OEM_3)
 				gf_editor.ChangeEditing();
-			else if (gf_editor.IsEditing())
+			else if (!gf_editor.IsEditing())
 			{
 				if (keyPressed.GetCode() == 'R') gf_brickGrid.Load();
 				if (keyPressed.GetCode() == 'M') gf_ballManager.AddBallOnPaddle();
 				if (keyPressed.GetCode() == 'K') gf_ballManager.DoubleBallsX();
 				if (keyPressed.GetCode() == 'L') paddle.GrowWidth();
 			}
-			gf_editor.ProcessInputKeyboard(wnd.kbd);
 		}
 	}
-	// MOUSE
+	// Characters
+	while (!wnd.kbd.CharIsEmpty())
+	{
+		const char character = wnd.kbd.ReadChar();
+		gf_editor.ProcessInputChar(character);
+	}
+	////////////////////////////////////
+	
+	////////////// MOUSE ///////////////
 	while (!wnd.mouse.IsEmpty())
 	{
 		const auto e = wnd.mouse.Read();
 		// buttons
 		gf_editor.ProcessMouse(e);
 	}
+	////////////////////////////////////
 }
 
 void Game::UpdateModel(float dt)

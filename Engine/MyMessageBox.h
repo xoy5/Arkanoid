@@ -1,9 +1,10 @@
 #pragma once
-#include "Button.h"
-#include "Font.h"
-#include "Graphics.h"
 #include <string>
+
+#include "Graphics.h"
 #include "Colors.h"
+#include "Font.h"
+#include "Button.h"
 
 class MyMessageBox
 {
@@ -14,12 +15,14 @@ public:
 		Ok
 	};
 public:
-	MyMessageBox(Font* font)
+	MyMessageBox(const Font* font)
 		:
 		font(font)
-	{}
+	{
+	}
 	void Draw(Graphics& gfx) const
 	{
+		gfx.DrawRect(Graphics::GetScreenRect().GetExpanded(-200), Colors::Gray);
 		switch (buttons)
 		{
 			case Buttons::YesNo:
@@ -38,8 +41,9 @@ public:
 private:
 
 	Buttons buttons = Buttons::YesNo;
-	Font* font;
+	const Font* font;
 	Button buttonYes = Button(font, "Yes");
 	Button buttonNo = Button(font, "No");
 	Button buttonOk = Button(font, "Ok");
+
 };

@@ -2,7 +2,6 @@
 #include <string>
 #include <vector>
 
-#include "Keyboard.h"
 #include "Mouse.h"
 #include "Vec2.h"
 #include "Font.h"
@@ -35,22 +34,15 @@ public:
 			focused = GetRect().Contains(mousePos);
 		}
 	}
-	void Interact(Keyboard& kbd)
+	void Interact(char character)
 	{
 		if (focused)
 		{
-			if (kbd.KeyIsPressed(VK_ESCAPE)){
-				focused = false;
+			if (character == 8 && !text.empty()) {
+				text.pop_back();
 			}
-			else if (!kbd.CharIsEmpty())
-			{
-				const unsigned char c = kbd.ReadChar();
-				if (c == 8 && !text.empty()){
-					text.pop_back();
-				}
-				else if (c != 8){
-					text += c;
-				}
+			else if (character != 8) {
+				text += character;
 			}
 		}
 	}
