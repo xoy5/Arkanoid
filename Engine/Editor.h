@@ -9,12 +9,13 @@ class Game;
 class Editor
 {
 public:
-	Editor(Game& game, Font* font);
+	Editor(Game& game);
 	void Draw(Graphics& gfx) const;
 	void ChangeEditing();
 	bool IsEditing() const;
 	void ProcessInputChar(char character);
 	void ProcessMouse(const Mouse::Event& event);
+	bool IsHandlingMessage() const;
 
 private:
 	Game& game;

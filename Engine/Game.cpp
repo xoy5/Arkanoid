@@ -30,7 +30,7 @@ Game::Game(MainWindow& wnd)
 	gf_powerUpManager(*this),
 	gf_ballManager(*this, paddle.GetRect().GetCenter() - Vec2{ 0.0f, float(paddle.GetHeight()) / 2.0f + 15.0f }, true),
 	gf_brickGrid({ Graphics::ScreenWidth }),
-	gf_editor(*this, &fontSm)
+	gf_editor(*this)
 {
 	wnd.kbd.DisableAutorepeat();
 }
@@ -94,24 +94,28 @@ void Game::ProcessInput()
 
 void Game::UpdateModel(float dt)
 {
-	paddle.Update(dt, wnd.kbd);
-	gf_ballManager.Update(dt, wnd.kbd);
-	gf_powerUpManager.Update(dt);
+	if(gf_editor.IsHandlingMessage() == false){
+		paddle.Update(dt, wnd.kbd);
+		gf_ballManager.Update(dt, wnd.kbd);
+		gf_powerUpManager.Update(dt);
 
-	paddle.DoWallCollision(walls);
-	gf_ballManager.DoWallCollision();
-	gf_powerUpManager.DoWallCollision();
+		paddle.DoWallCollision(walls);
+		gf_ballManager.DoWallCollision();
+		gf_powerUpManager.DoWallCollision();
 
-	gf_ballManager.BrickGrid_DoBallCollision();
-	gf_ballManager.Paddle_DoBallCollision();
-	gf_powerUpManager.DoCollectAndUsePowerUp();
+		gf_ballManager.BrickGrid_DoBallCollision();
+		gf_ballManager.Paddle_DoBallCollision();
+		gf_powerUpManager.DoCollectAndUsePowerUp();
+	}
 }
 
 void Game::ComposeFrame()
 {
-	gf_brickGrid.Draw(gfx);
-	gf_powerUpManager.Draw(gfx);
-	paddle.Draw(gfx);
-	gf_ballManager.Draw(gfx);
+	if (gf_editor.IsHandlingMessage() == false) {
+		gf_brickGrid.Draw(gfx);
+		gf_powerUpManager.Draw(gfx);
+		paddle.Draw(gfx);
+		gf_ballManager.Draw(gfx);
+	}
 	gf_editor.Draw(gfx);
 }

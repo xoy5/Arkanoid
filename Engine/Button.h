@@ -94,7 +94,7 @@ public:
 
 		// clicked
 		if (hovered) {
-			clicked = e.leftIsPressedAndIsntClickedAlready();
+			clicked = (e.GetType() == Mouse::Event::Type::LPress);
 		}
 	}
 	bool IsClicked() const

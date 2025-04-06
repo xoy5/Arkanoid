@@ -16,12 +16,16 @@
 
 class BrickGrid
 {
-private:
-	enum class Message
+public:
+	enum class MessageFile
 	{
 		NoMessage,
-		FileAlreadyExists,
-		FileNotExists,
+		Saved,
+		Loaded,
+		AlreadyExists,
+		NotExists,
+		Deleted,
+		Error
 	};
 public:
 	BrickGrid(int brickGridWidth = 600, int topOffset = 15, int paddingX = 4, int paddingY = 4, int widthBrick = 80, int heightBrick = 30, int nRowBricks = 8);
@@ -29,22 +33,25 @@ public:
 	BrickGrid(const BrickGrid&) = delete;
 	BrickGrid& operator=(const BrickGrid&) = delete;
 	void Draw(Graphics& gfx) const;
-	void Load(std::string filename = "default.dat");
-	void Save(std::string filename = "default.dat");
+	BrickGrid::MessageFile Load(std::string filename = "default.dat");
+	BrickGrid::MessageFile Save(std::string filename = "default.dat");
+	BrickGrid::MessageFile DeleteBrickGrid(std::string filename);
 	
 public:
-	Message GetMyMessage() const;
+	MessageFile GetMessageFile() const;
+	void SetMessageFileNoMessage();
 	std::pair<void*, int> CheckBallCollision(const Ball& ball) const;
 	void ExecuteBallCollision(Ball& ball, int BrickIndex, Vec2* pHitPos = nullptr, bool* pDestroyed = nullptr);
 
 private:
 	void UpdateBrickColor(BreakableBrick* pBrick);
 	Color GetColorByHp(int i) const;
-	void SetFilenameBat(std::string& filename) const;
+	static constexpr void SetFilenameBat(std::string& filename);
+	static constexpr void PrepareFilename(std::string& filename);
 
 private:
 	std::vector<Brick*> bricks;
-	Message message = Message::NoMessage;
+	MessageFile messageFile = MessageFile::NoMessage;
 	constexpr static Color colorsBricks[] = { Colors::Red, Colors::Grapefruit, Colors::Pink, Colors::Purple, Colors::Green, Colors::Yellow, Colors::Blue, Colors::Cyan };
 	constexpr static int colorsBricksSize = 8;
 	static constexpr std::string_view directory = "Files/BrickGrid/";

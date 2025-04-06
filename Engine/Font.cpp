@@ -55,6 +55,36 @@ int Font::GetHeightChar() const
 	return surface.GetHeight() / nRows;
 }
 
+const int Font::GetLongestLineSize(const std::string& text)
+{
+	int maxLength = 0;
+	int currentLength = 0;
+
+	for (char c : text)
+	{
+		if (c == '\n')
+		{
+			if (currentLength > maxLength) maxLength = currentLength;
+			currentLength = 0;
+		}
+		else ++currentLength;
+	}
+
+	if (currentLength > maxLength) maxLength = currentLength;
+
+	return maxLength;
+}
+
+const int Font::NumberOfLines(const std::string& text)
+{
+	int n = 0;
+	for (char c : text)
+	{
+		if (c == '\n') n++;
+	}
+	return n + 1;
+}
+
 RectI Font::MapGlyphRect( char c ) const
 {
 	assert( c >= firstChar && c <= lastChar );

@@ -11,6 +11,8 @@ public:
 	void DrawText( const std::string& text,const Vei2& pos,Color color,Graphics& gfx ) const;
 	int GetWidthChar() const;
 	int GetHeightChar() const;
+	static const int GetLongestLineSize(const std::string& text);
+	static const int NumberOfLines(const std::string& text);
 private:
 	RectI MapGlyphRect( char c ) const;
 private:

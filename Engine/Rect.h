@@ -8,7 +8,7 @@ class Rect_
 {
 public:
 	Rect_() = default;
-	Rect_( T left_in,T right_in,T top_in,T bottom_in )
+	constexpr Rect_( T left_in,T right_in,T top_in,T bottom_in )
 		:
 		left( left_in ),
 		right( right_in ),

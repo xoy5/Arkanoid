@@ -1,5 +1,6 @@
 #include "BrickGrid.h"
-#include "algorithm"
+#include <algorithm>
+#include <filesystem>
 
 BrickGrid::BrickGrid(int brickGridWidth, int topOffset, int paddingX, int paddingY, int widthBrick, int heightBrick, int nRowBricks)
 {
@@ -39,20 +40,19 @@ BrickGrid::~BrickGrid()
 	}
 }
 
-void BrickGrid::Load(std::string filename)
+BrickGrid::MessageFile BrickGrid::Load(std::string filename)
 {
-	if (filename.empty()) {
-		filename = "default";
-	}
-	bricks.clear();
-	filename = directory.data() + filename;
-	SetFilenameBat(filename);
+	messageFile = MessageFile::Loaded;
+	PrepareFilename(filename);
+
 	std::ifstream file(filename);
 
 	if (!file){
-		message = Message::FileNotExists;
-		return;
+		messageFile = MessageFile::NotExists;
+		return messageFile;
 	};
+
+	bricks.clear();
 
 	size_t nBricks = 0;
 	file.read(reinterpret_cast<char*>(&nBricks), sizeof(nBricks));
@@ -79,20 +79,24 @@ void BrickGrid::Load(std::string filename)
 	}
 
 	file.close();
+	return messageFile;
 }
 
-void BrickGrid::Save(std::string filename)
+BrickGrid::MessageFile BrickGrid::Save(std::string filename)
 {
-	if (filename.empty()) {
-		filename = "default";
+	messageFile = MessageFile::Saved;
+	PrepareFilename(filename);
+
+	if (std::filesystem::exists(filename)) {
+		messageFile = MessageFile::AlreadyExists;
+		return messageFile;
 	}
-	filename = directory.data() + filename;
-	SetFilenameBat(filename);
+
 	std::ofstream file(filename);
 
-	if (!file){
-		message = Message::FileAlreadyExists;
-		return;
+	if (!file.good()){
+		messageFile = MessageFile::Error;
+		return messageFile;
 	}
 
 	size_t nBricks = bricks.size();
@@ -102,11 +106,23 @@ void BrickGrid::Save(std::string filename)
 	}
 
 	file.close();
+	return messageFile;
 }
 
-BrickGrid::Message BrickGrid::GetMyMessage() const
+BrickGrid::MessageFile BrickGrid::DeleteBrickGrid(std::string filename)
 {
-	return message;
+	BrickGrid::PrepareFilename(filename);
+	return std::filesystem::remove(filename) ? MessageFile::Deleted : MessageFile::Error;
+}
+
+BrickGrid::MessageFile BrickGrid::GetMessageFile() const
+{
+	return messageFile;
+}
+
+void BrickGrid::SetMessageFileNoMessage()
+{
+	messageFile = MessageFile::NoMessage;
 }
 
 void BrickGrid::Draw(Graphics& gfx) const
@@ -115,7 +131,6 @@ void BrickGrid::Draw(Graphics& gfx) const
 		b->Draw(gfx);
 	}
 }
-
 
 std::pair<void*, int> BrickGrid::CheckBallCollision(const Ball& ball) const
 {
@@ -201,12 +216,21 @@ Color BrickGrid::GetColorByHp(int i) const
 	return colorsBricks[std::min(i, colorsBricksSize) - 1];
 }
 
-void BrickGrid::SetFilenameBat(std::string& filename) const
+constexpr void BrickGrid::SetFilenameBat(std::string& filename)
 {
 	std::string::size_type pos = filename.find_last_of(".");
 	if (pos != std::string::npos) {
 		filename.erase(pos);
 	}
 	filename += ".dat";
+}
+
+constexpr void BrickGrid::PrepareFilename(std::string& filename)
+{
+	if (filename.empty()) {
+		filename = "default";
+	}
+	filename = directory.data() + filename;
+	SetFilenameBat(filename);
 }
 

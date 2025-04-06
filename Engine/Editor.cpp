@@ -1,22 +1,29 @@
+
 #include "Editor.h"
 #include "Game.h"
 #include "MainWindow.h"
+#include <filesystem>
 
-Editor::Editor(Game& game, Font* font)
+Editor::Editor(Game& game)
 	:
 	game(game),
-	font(font)
-{}
+	font(&game.fontSm)
+{
+}
 
 void Editor::Draw(Graphics& gfx) const
 {
 	if (editing)
 	{
-		buttonEditMode.Draw(gfx);
-		buttonLoad.Draw(gfx);
-		buttonSave.Draw(gfx);
-		textBox.Draw(gfx);
-		messageBox.Draw(gfx);
+		if (IsHandlingMessage()) {
+			messageBox.Draw(gfx);
+		}
+		else {
+			buttonEditMode.Draw(gfx);
+			buttonLoad.Draw(gfx);
+			buttonSave.Draw(gfx);
+			textBox.Draw(gfx);
+		}
 	}
 }
 
@@ -48,18 +55,83 @@ void Editor::ProcessInputChar(char character)
 void Editor::ProcessMouse(const Mouse::Event& event)
 {
 	if (!editing) return;
-	buttonSave.ProcessMouse(event);
-	buttonLoad.ProcessMouse(event);
-	buttonEditMode.ProcessMouse(event);
-	textBox.DoFocusMouse(game.wnd.mouse);
 
-	if (buttonSave.IsClicked()) {
-		game.gf_brickGrid.Save(textBox.GetText());
+	if (IsHandlingMessage() == false) {
+		buttonEditMode.ProcessMouse(event);
+		buttonLoad.ProcessMouse(event);
+		buttonSave.ProcessMouse(event);
+		textBox.DoFocusMouse(game.wnd.mouse);
+
+		if (buttonSave.IsClicked()) {
+			const BrickGrid::MessageFile msg = game.gf_brickGrid.Save(textBox.GetText());
+			switch (msg)
+			{
+			case BrickGrid::MessageFile::Saved:
+				messageBox.SetButtons(MyMessageBox::Buttons::Ok);
+				messageBox.SetText("Saved successfully!");
+				break;
+			case BrickGrid::MessageFile::AlreadyExists:
+				messageBox.SetButtons(MyMessageBox::Buttons::YesNo);
+				messageBox.SetText("Already exists!\nWanna overwrite?");
+				break;
+			}
+		}
+		else if (buttonLoad.IsClicked()) {
+			const BrickGrid::MessageFile msg = game.gf_brickGrid.Load(textBox.GetText());
+			switch (msg)
+			{
+			case BrickGrid::MessageFile::Loaded:
+				messageBox.SetButtons(MyMessageBox::Buttons::Ok);
+				messageBox.SetText("Loaded successfully!");
+				break;
+			case BrickGrid::MessageFile::NotExists:
+				messageBox.SetButtons(MyMessageBox::Buttons::Ok);
+				messageBox.SetText("File doesn't exist!");
+				break;
+			}
+		}
+		else if (buttonEditMode.IsClicked()) {
+			ChangeEditing();
+		}
 	}
-	else if (buttonLoad.IsClicked()) {
-		game.gf_brickGrid.Load(textBox.GetText());
+
+	if (game.gf_brickGrid.GetMessageFile() != BrickGrid::MessageFile::NoMessage)
+	{
+		MyMessageBox::ValueButton buttonValue;
+		if (messageBox.ProcessMouse(event, &buttonValue))
+		{
+			switch (game.gf_brickGrid.GetMessageFile())
+			{
+			case BrickGrid::MessageFile::Saved:
+				if (buttonValue == MyMessageBox::ValueButton::Ok) game.gf_brickGrid.SetMessageFileNoMessage();
+				break;
+
+			case BrickGrid::MessageFile::NotExists:
+				if (buttonValue == MyMessageBox::ValueButton::Ok) game.gf_brickGrid.SetMessageFileNoMessage();
+				break;
+
+
+			case BrickGrid::MessageFile::Loaded:
+				if (buttonValue == MyMessageBox::ValueButton::Ok) game.gf_brickGrid.SetMessageFileNoMessage();
+				break;
+
+			case BrickGrid::MessageFile::AlreadyExists:
+				if (buttonValue == MyMessageBox::ValueButton::Yes)
+				{
+					messageBox.SetButtons(MyMessageBox::Buttons::Ok);
+					messageBox.SetText("Saved successfully!");
+					game.gf_brickGrid.DeleteBrickGrid(textBox.GetText());
+					game.gf_brickGrid.Save(textBox.GetText());
+
+				}
+				else game.gf_brickGrid.SetMessageFileNoMessage();
+				break;
+			}
+		}
 	}
-	else if (buttonEditMode.IsClicked()) {
-		ChangeEditing();
-	}
+}
+
+bool Editor::IsHandlingMessage() const
+{
+	return game.gf_brickGrid.GetMessageFile() != BrickGrid::MessageFile::NoMessage;
 }

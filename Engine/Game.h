@@ -57,11 +57,11 @@ private:
 	Graphics gfx;
 	std::mt19937 rng = std::mt19937(std::random_device{}());
 	FrameTimer ft;
-	float precision = 0.0025f;
-	Font fontSm = Font("Files/Fonts/font16x28.bmp");
-	Font fontLg = Font("Files/Fonts/font32x56.bmp");
+	const float precision = 0.0025f;
+	const Font fontSm = Font("Files/Fonts/font16x28.bmp");
+	const Font fontLg = Font("Files/Fonts/font32x56.bmp");
+	const RectF walls = RectF(Graphics::GetScreenRect());
 	MyMessageBox myMessageBox = MyMessageBox(&fontSm);
-	RectF walls = RectF(Graphics::GetScreenRect());
 	/********************************/
 	/*  User Variables  */
 	// Friends;
@@ -77,7 +77,23 @@ private:
 	PowerUpManager gf_powerUpManager;
 	Editor gf_editor;
 
-	// Inputs
-	// static constexpr bool Admin = true;
+	// TO DO
+	// Edit controll state instead BrickGrid
+	// key for Hacks
+	// FPS
+	// Images for power ups
+	// Better collision based on circle
+	// Animation
+	// Sounds
+	// Editor Adding Bricks etc
+	// Levels
+	// Menu
+	// 2 Players
+
+	// Web For Game
+	// Database with custom levels
+	// Dowload Levels and insert 
+	// Edit Menu
+
 	/********************************/
 };

@@ -54,8 +54,7 @@ public:
 			leftIsPressed( false ),
 			rightIsPressed( false ),
 			x( 0 ),
-			y( 0 ),
-			leftIsClickedAlready(false)
+			y( 0 )
 		{}
 		Event(Type type, const Mouse& parent)
 			:
@@ -63,8 +62,7 @@ public:
 			leftIsPressed(parent.leftIsPressed),
 			rightIsPressed(parent.rightIsPressed),
 			x(parent.x),
-			y(parent.y),
-			leftIsClickedAlready(parent.leftIsClickedAlready)
+			y(parent.y)
 		{}
 		bool IsValid() const
 		{
@@ -89,10 +87,6 @@ public:
 		bool LeftIsPressed() const
 		{
 			return leftIsPressed;
-		}
-		bool leftIsPressedAndIsntClickedAlready() const
-		{
-			return leftIsPressed && !leftIsClickedAlready;
 		}
 		bool RightIsPressed() const
 		{
@@ -131,7 +125,6 @@ private:
 	int x = 0;
 	int y = 0;
 	bool leftIsPressed = false;
-	bool leftIsClickedAlready = false;
 	bool rightIsPressed = false;
 	bool isInWindow = false;
 	std::queue<Event> buffer;

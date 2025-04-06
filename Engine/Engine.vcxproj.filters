@@ -204,7 +204,7 @@
       <Filter>Source Files\Framework\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Editor.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Project</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
