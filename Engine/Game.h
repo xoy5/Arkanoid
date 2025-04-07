@@ -56,12 +56,18 @@ private:
 	MainWindow& wnd;
 	Graphics gfx;
 	std::mt19937 rng = std::mt19937(std::random_device{}());
-	FrameTimer ft;
-	const float precision = 0.0025f;
 	const Font fontSm = Font("Files/Fonts/font16x28.bmp");
 	const Font fontLg = Font("Files/Fonts/font32x56.bmp");
 	const RectF walls = RectF(Graphics::GetScreenRect());
 	MyMessageBox myMessageBox = MyMessageBox(&fontSm);
+	FrameTimer ft;
+	const float precision = 0.025f;
+	/////////// FPS //////////
+	int FPS = 0;
+	float timeFrame = 0.0f;
+	float timeSecond = 0.0f;
+	int numberOfFrames = 0;
+	//////////////////////////
 	/********************************/
 	/*  User Variables  */
 	// Friends;
@@ -77,14 +83,12 @@ private:
 	PowerUpManager gf_powerUpManager;
 	Editor gf_editor;
 
-	Button fag = Button(&fontSm, "fag");
+	bool hacksMode = true;
 
 	// TO DO
-	// Edit controll state instead BrickGrid
-	// key for Hacks
-	// FPS
 	// Images for power ups
 	// Better collision based on circle
+	// Wielowatkowac
 	// Animation
 	// Sounds
 	// Editor Adding Bricks etc

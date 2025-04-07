@@ -1,4 +1,5 @@
 #include "PowerUp.h"
+#include "SpriteEffect.h"
 
 PowerUp::PowerUp(Type type, Vec2 pos, int size, float speed)
 	:
@@ -10,7 +11,7 @@ PowerUp::PowerUp(Type type, Vec2 pos, int size, float speed)
 
 void PowerUp::Draw(Graphics& gfx) const
 {
-	gfx.DrawRect(GetRect(), Colors::Red);
+	gfx.DrawSprite(pos.x, pos.y, spriteBox, SpriteEffect::Copy{});
 }
 
 void PowerUp::Update(float dt)

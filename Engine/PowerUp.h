@@ -2,6 +2,7 @@
 #include "Graphics.h"
 #include "Vec2.h"
 #include "Rect.h"
+#include "Surface.h"
 
 class PowerUp 
 {
@@ -24,4 +25,5 @@ private:
 	Vec2 pos;
 	int size;
 	float speed;
+	Surface spriteBox = Surface("Files/Sprites/PowerUpBox.bmp");
 };

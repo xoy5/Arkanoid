@@ -22,7 +22,7 @@ void PowerUpManager::Update(float dt)
 
 void PowerUpManager::AddRng(const Vec2& posBrickCenter)
 {
-	if (from1to100(game.rng) <= 0) {
+	if (from1to100(game.rng) <= chanceOfDropPowerUp) {
 		powerUps.emplace_back(PowerUp::Type(choosePowerUpType(game.rng)), posBrickCenter - Vec2{ powerUpSizeDimension / 2 - 0.5f, powerUpSizeDimension / 2 - 0.5f }, powerUpSizeDimension, powerUpSpeed);
 	}
 }
@@ -44,8 +44,7 @@ void PowerUpManager::DoCollectAndUsePowerUp()
 					game.gf_ballManager.DoubleBallsX();
 					break;
 			}
-			powerUps[i] = std::move(powerUps.back());
-			powerUps.pop_back();
+			powerUps.erase(powerUps.begin() + i);
 		}
 		else {
 			i++;
@@ -57,8 +56,7 @@ void PowerUpManager::DoWallCollision()
 {
 	for (int i = 0; i < powerUps.size();) {
 		if (!powerUps[i].GetRect().IsContainedBy(game.walls)) {
-			powerUps[i] = std::move(powerUps.back());
-			powerUps.pop_back();
+			powerUps.erase(powerUps.begin() + i);
 		}
 		else {
 			i++;

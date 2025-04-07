@@ -39,15 +39,24 @@ void Game::Go()
 {
 	gfx.BeginFrame();
 	ProcessInput();
-	float elapsedTime = ft.Mark();
+	const float elapsedTime = ft.Mark();
 	if (!gf_editor.IsEditing())
 	{
-		while (elapsedTime > 0.0f) {
-			const float dt = std::min(precision, elapsedTime);
+		float time = elapsedTime;
+		while (time > 0.0f) {
+			const float dt = std::min(precision, time);
 			UpdateModel(dt);
-			elapsedTime -= dt;
+			time -= dt;
+		}
+		numberOfFrames++;
+		timeSecond += elapsedTime;
+		if (timeSecond >= 1.0f) {
+			timeSecond -= 1.0f;
+			FPS = numberOfFrames;
+			numberOfFrames = 0;
 		}
 	}
+	
 	ComposeFrame();
 	gfx.EndFrame();
 }
@@ -61,15 +70,17 @@ void Game::ProcessInput()
 		const Keyboard::Event keyPressed = wnd.kbd.ReadKey();
 		if (keyPressed.IsValid() && keyPressed.IsPress())
 		{
-			if (keyPressed.GetCode() == VK_ESCAPE)
-				wnd.Kill();
-			else if (keyPressed.GetCode() == VK_OEM_3)
-				gf_editor.ChangeEditing();
-			else if (!gf_editor.IsEditing())
+			if (keyPressed.GetCode() == VK_ESCAPE) wnd.Kill();
+			else if (keyPressed.GetCode() == VK_OEM_3) gf_editor.ChangeEditing();
+			else if (keyPressed.GetCode() == VK_OEM_5) hacksMode = !hacksMode;
+			else if (hacksMode && !gf_editor.IsEditing())
 			{
-				if (keyPressed.GetCode() == 'M') gf_ballManager.AddBallOnPaddle();
-				if (keyPressed.GetCode() == 'K') gf_ballManager.DoubleBallsX();
-				if (keyPressed.GetCode() == 'L') paddle.GrowWidth();
+				switch (keyPressed.GetCode())
+				{
+				case 'M': gf_ballManager.AddBallOnPaddle(); break;
+				case 'K': gf_ballManager.DoubleBallsX(); break;
+				case 'L': paddle.GrowWidth(); break;
+				}
 			}
 		}
 	}
@@ -80,24 +91,21 @@ void Game::ProcessInput()
 		gf_editor.ProcessInputChar(character);
 	}
 	////////////////////////////////////
-	
+
 	////////////// MOUSE ///////////////
 	while (!wnd.mouse.IsEmpty())
 	{
 		const auto e = wnd.mouse.Read();
 		// buttons
+		// editor
 		gf_editor.ProcessMouse(e);
-		fag.ProcessMouse(e);
-		if (fag.IsClicked()) {
-			paddle.GrowWidth();
-		}
 	}
 	////////////////////////////////////
 }
 
 void Game::UpdateModel(float dt)
 {
-	if(gf_editor.IsHandlingMessage() == false){
+	if (gf_editor.IsHandlingMessage() == false) {
 		paddle.Update(dt, wnd.kbd);
 		gf_ballManager.Update(dt, wnd.kbd);
 		gf_powerUpManager.Update(dt);
@@ -119,7 +127,12 @@ void Game::ComposeFrame()
 		gf_powerUpManager.Draw(gfx);
 		paddle.Draw(gfx);
 		gf_ballManager.Draw(gfx);
+		if (gf_editor.IsEditing() == false) {
+			fontSm.DrawText(std::to_string(FPS), { 0,0 }, Colors::White, gfx);
+			if (hacksMode) {
+				fontSm.DrawText("HACKS", Vei2{ Graphics::GetScreenRect().right, 0 } - Vei2{ 5 * fontSm.GetWidthChar(), 0 }, Colors::Red, gfx);
+			}
+		}
 	}
 	gf_editor.Draw(gfx);
-	fag.Draw(gfx);
 }
