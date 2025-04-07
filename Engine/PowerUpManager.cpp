@@ -3,8 +3,10 @@
 
 PowerUpManager::PowerUpManager(Game& game)
 	:
-	game(game)
-{}
+	game(game),
+	spriteBox(std::make_shared<Surface>("Files/Sprites/PowerUpBox.bmp"))
+{
+}
 
 void PowerUpManager::Draw(Graphics& gfx) const
 {
@@ -23,26 +25,30 @@ void PowerUpManager::Update(float dt)
 void PowerUpManager::AddRng(const Vec2& posBrickCenter)
 {
 	if (from1to100(game.rng) <= chanceOfDropPowerUp) {
-		powerUps.emplace_back(PowerUp::Type(choosePowerUpType(game.rng)), posBrickCenter - Vec2{ powerUpSizeDimension / 2 - 0.5f, powerUpSizeDimension / 2 - 0.5f }, powerUpSizeDimension, powerUpSpeed);
+		powerUps.emplace_back(
+			spriteBox,
+			PowerUp::Type(choosePowerUpType(game.rng)),
+			posBrickCenter - Vec2{ powerUpSizeDimension / 2 - 0.5f, powerUpSizeDimension / 2 - 0.5f },
+			powerUpSizeDimension,
+			powerUpSpeed
+		);
 	}
 }
 
 void PowerUpManager::DoCollectAndUsePowerUp()
 {
 	for (int i = 0; i < powerUps.size();) {
-		if (powerUps[i].GetRect().IsOverlappingWith(game.paddle.GetRect())) 
-		{
-			switch (powerUps[i].GetType())
-			{
-				case PowerUp::Type::AddBall:
-					game.gf_ballManager.AddBallOnPaddle();
-					break;
-				case PowerUp::Type::GrowWidthPaddle:
-					game.paddle.GrowWidth();
-					break;
-				case PowerUp::Type::DoubleBalls:
-					game.gf_ballManager.DoubleBallsX();
-					break;
+		if (powerUps[i].GetRect().IsOverlappingWith(game.paddle.GetRect())) {
+			switch (powerUps[i].GetType()) {
+			case PowerUp::Type::AddBall:
+				game.gf_ballManager.AddBallOnPaddle();
+				break;
+			case PowerUp::Type::GrowWidthPaddle:
+				game.paddle.GrowWidth();
+				break;
+			case PowerUp::Type::DoubleBalls:
+				game.gf_ballManager.DoubleBallsX();
+				break;
 			}
 			powerUps.erase(powerUps.begin() + i);
 		}

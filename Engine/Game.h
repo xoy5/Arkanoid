@@ -86,9 +86,9 @@ private:
 	bool hacksMode = true;
 
 	// TO DO
-	// Images for power ups
 	// Better collision based on circle
 	// Wielowatkowac
+	// Scaling
 	// Animation
 	// Sounds
 	// Editor Adding Bricks etc

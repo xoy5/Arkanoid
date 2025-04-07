@@ -1,10 +1,11 @@
 #pragma once
+#include <memory>
 #include "Graphics.h"
 #include "Vec2.h"
 #include "Rect.h"
 #include "Surface.h"
 
-class PowerUp 
+class PowerUp
 {
 public:
 	enum class Type
@@ -15,7 +16,7 @@ public:
 		Count
 	};
 public:
-	PowerUp(Type type, Vec2 pos, int size, float speed);
+	PowerUp(std::shared_ptr<Surface> spriteBox, Type type, Vec2 pos, int size, float speed);
 	void Draw(Graphics& gfx) const;
 	void Update(float dt);
 	RectF GetRect() const;
@@ -25,5 +26,5 @@ private:
 	Vec2 pos;
 	int size;
 	float speed;
-	Surface spriteBox = Surface("Files/Sprites/PowerUpBox.bmp");
+	std::shared_ptr<Surface> spriteBox;
 };
