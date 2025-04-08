@@ -18,20 +18,52 @@ void Editor::Draw(Graphics& gfx) const
 		if (IsHandlingMessage()) {
 			messageBox.Draw(gfx);
 		}
-		else {
+		else 
+		{
 			buttonEditMode.Draw(gfx);
 			buttonLoad.Draw(gfx);
 			buttonSave.Draw(gfx);
-			textBox.Draw(gfx);
-		}
+			buttonEditBrickGrid.Draw(gfx);
+
+			font->DrawText("filename:", { 20, textBoxFilename.GetRect().top + textBoxFilename.GetPadding().y}, Colors::White, gfx);
+			textBoxFilename.Draw(gfx);
+
+			font->DrawText("offset:", { 20, textBoxOffset.GetRect().top + textBoxOffset.GetPadding().y }, Colors::White, gfx);
+			textBoxOffset.Draw(gfx);
+
+			font->DrawText("gap x:", { 20, textBoxGapX.GetRect().top + textBoxGapX.GetPadding().y }, Colors::White, gfx);
+			textBoxGapX.Draw(gfx);
+
+			font->DrawText("gap y:", { 20, textBoxGapY.GetRect().top + textBoxGapY.GetPadding().y }, Colors::White, gfx);
+			textBoxGapY.Draw(gfx);
+
+			if (editingBrickGrid) {
+				Vec2 brickPos = Vec2(game.wnd.mouse.GetPos());
+				const int gapX = std::stoi(textBoxGapX.GetText() == "" ? "0" : textBoxGapX.GetText());
+				const int gapY = std::stoi(textBoxGapY.GetText() == "" ? "0" : textBoxGapY.GetText());
+				const float restX = (gapX != 0 ? int(brickPos.x) % gapX : 0);
+				const float restY = (gapY != 0 ? int(brickPos.y) % gapY : 0);
+				
+				if (std::round(float(restX) / float(gapX))) {
+					brickPos += Vec2{ gapX - restX, gapY - restY };
+				}
+				else {
+					brickPos -= Vec2{ restX, restY };
+				}
+
+				BreakableBrick* brick = static_cast<BreakableBrick*>(game.gf_brickGrid.CreateBrick(Brick::Type::Breakable, brickPos));
+				brick->Draw(gfx);
+
+			}
+		} 
 	}
 }
 
 void Editor::ChangeEditing()
 {
-	textBox.SetText("");
+	textBoxFilename.SetText("");
 	if (editing == true) {
-		textBox.SetFocusOff();
+		textBoxFilename.SetFocusOff();
 	}
 	else {
 		game.wnd.kbd.Flush();
@@ -48,7 +80,10 @@ bool Editor::IsEditing() const
 void Editor::ProcessInputChar(char character)
 {
 	if (editing) {
-		textBox.Interact(character);
+		textBoxFilename.Interact(character);
+		textBoxOffset.Interact(character);
+		textBoxGapX.Interact(character);
+		textBoxGapY.Interact(character);
 	}
 }
 
@@ -61,12 +96,24 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 		buttonEditMode.ProcessMouse(event);
 		buttonLoad.ProcessMouse(event);
 		buttonSave.ProcessMouse(event);
-		textBox.DoFocusMouse(game.wnd.mouse);
+		buttonEditBrickGrid.ProcessMouse(event);
+
+		textBoxOffset.DoFocusMouse(game.wnd.mouse); 
+		textBoxGapX.DoFocusMouse(game.wnd.mouse);
+		textBoxGapY.DoFocusMouse(game.wnd.mouse);
+		textBoxFilename.DoFocusMouse(game.wnd.mouse);
+
+		if (buttonEditMode.IsClicked()) {
+			ChangeEditing();
+		}
+		else if (buttonEditBrickGrid.IsClicked()) {
+			editingBrickGrid = !editingBrickGrid;
+		}
 
 		///////////////// SETTING UP A MESSAGEBOX ////////////////////
-		if (buttonSave.IsClicked()) 
+		else if (buttonSave.IsClicked()) 
 		{
-			messageFile = game.gf_brickGrid.Save(textBox.GetText());
+			messageFile = game.gf_brickGrid.Save(textBoxFilename.GetText());
 			switch (messageFile)
 			{
 			case BrickGrid::MessageFile::Saved:
@@ -81,7 +128,7 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 		}
 		else if (buttonLoad.IsClicked()) 
 		{
-			messageFile = game.gf_brickGrid.Load(textBox.GetText());
+			messageFile = game.gf_brickGrid.Load(textBoxFilename.GetText());
 			switch (messageFile)
 			{
 			case BrickGrid::MessageFile::Loaded:
@@ -94,10 +141,6 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 				break;
 			}
 		}
-		else if (buttonEditMode.IsClicked()) {
-			ChangeEditing();
-		}
-
 		if (buttonLoad.IsClicked() || buttonSave.IsClicked()) 
 		{
 			if (messageFile == BrickGrid::MessageFile::Error) {
@@ -105,9 +148,8 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 				messageBox.SetText("Error!");
 			}
 		}
+		//////////////////////////////////////////////////////////////
 	}
-	//////////////////////////////////////////////////////////////
-	
 	////////////////////  PROCESS MESSAGEBOX /////////////////////
 	if (messageFile != BrickGrid::MessageFile::NoMessage)
 	{
@@ -133,8 +175,8 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 				if (buttonValue == MyMessageBox::ValueButton::Yes){
 					messageBox.SetButtons(MyMessageBox::Buttons::Ok);
 					messageBox.SetText("Saved successfully!");
-					game.gf_brickGrid.DeleteBrickGrid(textBox.GetText());
-					messageFile = game.gf_brickGrid.Save(textBox.GetText());
+					game.gf_brickGrid.DeleteBrickGrid(textBoxFilename.GetText());
+					messageFile = game.gf_brickGrid.Save(textBoxFilename.GetText());
 				}
 				break;
 

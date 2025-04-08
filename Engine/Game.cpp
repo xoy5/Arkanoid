@@ -53,7 +53,7 @@ void Game::Go()
 		if (timeSecond >= 1.0f) {
 			timeSecond -= 1.0f;
 			FPS = numberOfFrames;
-			numberOfFrames = 0;
+			numberOfFrames = 0; 
 		}
 	}
 	

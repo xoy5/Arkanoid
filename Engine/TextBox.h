@@ -62,11 +62,13 @@ public:
 	{
 		focused = false;
 	}
-
-private:
 	RectI GetRect() const
 	{
 		return RectI{ pos.x, pos.x + (paddingX * 2) + std::max(int(text.size()) * font->GetWidthChar(), font->GetWidthChar()), pos.y, pos.y + height };
+	}
+	static constexpr Vei2 GetPadding()
+	{
+		return Vei2{ paddingX, paddingY };
 	}
 
 private:
