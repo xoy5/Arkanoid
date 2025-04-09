@@ -29,7 +29,6 @@ void Ball::UpdateByPaddleX(float x)
 	posCenter.x = x;
 }
 
-
 void Ball::ReboundX()
 {
 	vel.x = -vel.x;
@@ -42,22 +41,52 @@ void Ball::ReboundY()
 void Ball::DoBrickPrecisionMoveX(const RectF& rect)
 {
 	RectF ballRect = GetRect();
-	if (ballRect.left < rect.left) {
-		posCenter.x -= ballRect.left - rect.left;
+	// left
+	if (vel.x < 0) {
+		posCenter.x = rect.right + attr.radius;
 	}
-	else if (ballRect.right > rect.right) {
-		posCenter.x -= ballRect.right - rect.right;
+	// right
+	else if (vel.x > 0) {
+		posCenter.x = rect.left - attr.radius;
 	}
 }
 
 void Ball::DoBrickPrecisionMoveY(const RectF& rect)
 {
 	RectF ballRect = GetRect();
-	if (ballRect.top < rect.top) {
-		posCenter.y -= ballRect.top - rect.top;
+	// top
+	if (vel.y > 0) {
+		posCenter.y = rect.top - attr.radius;
 	}
-	else if (ballRect.bottom > rect.bottom) {
-		posCenter.y -= ballRect.bottom - rect.bottom;
+	// bottom
+	else if (vel.y < 0) {
+		posCenter.y = rect.bottom + attr.radius;
+	}
+}
+
+void Ball::DoPaddlePrecisionMoveX(const RectF& rect, const Vec2& vel)
+{
+	RectF ballRect = GetRect();
+	// left
+	if (vel.x < 0) {
+		posCenter.x = rect.right + attr.radius;
+	}
+	// right
+	else if (vel.x > 0) {
+		posCenter.x = rect.left - attr.radius;
+	}
+}
+
+void Ball::DoPaddlePrecisionMoveY(const RectF& rect, const Vec2& vel)
+{
+	RectF ballRect = GetRect();
+	// top
+	if (vel.y > 0) {
+		posCenter.y = rect.top - attr.radius;
+	}
+	// bottom
+	else if (vel.y < 0) {
+		posCenter.y = rect.bottom + attr.radius;
 	}
 }
 

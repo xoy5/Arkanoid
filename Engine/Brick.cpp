@@ -12,6 +12,10 @@ void Brick::SetPos(const Vec2& pos)
 {
 	rect = RectF{pos, GetRect().GetWidth(), GetRect().GetHeight()};
 }
+void Brick::SetRect(const RectF& rect)
+{
+	this->rect = rect;
+}
 Vec2 Brick::GetPosCenter() const
 {
 	return rect.GetCenter();

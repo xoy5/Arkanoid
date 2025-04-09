@@ -51,34 +51,39 @@ void Paddle::SetColor(const Color& color)
 
 bool Paddle::DoBallCollision(Ball& ball) const
 {
-	if (!ball.GetPaddleCooldown())
+	if (ball.GetPaddleCooldown()) return false;
+	const RectF paddleRect = GetRect();
+	const RectF ballRect = ball.GetRect();
+	if (paddleRect.IsOverlappingWith(ballRect) == false) return false;
+
+	const Vec2 ballCenter = ball.GetPosCenter();
+	const Vec2 ballVel = ball.GetVelocity();
+
+	const bool oppositeX = std::signbit(vel.x) != std::signbit(ballVel.x);
+	const bool ballOverlappingSides =
+		ballRect.right > paddleRect.left && ballRect.left < paddleRect.right;
+
+	if (oppositeX || ballOverlappingSides)
 	{
-		const RectF rect = GetRect();
-		if (rect.IsOverlappingWith(ball.GetRect()))
-		{
-			const Vec2 ballPos = ball.GetPosCenter();
-			const RectF ballRect = ball.GetRect();
-			if (std::signbit(vel.x) != std::signbit(ball.GetVelocity().x)
-				||
-				( rect.right > ballRect.left || rect.left < ballRect.right ))
-			{
-				if (ballPos.x < rect.left || rect.right < ballPos.x) {
-					ball.ReboundX();
-				}
-				else{
-					float halfSizePaddle = (rect.right - rect.left) / 2.0f;
-					float a = (ballPos.x - (rect.left + halfSizePaddle)) / halfSizePaddle;
-					ball.SetDirection( Vec2{ a * 2.0f, -1.0f } );
-				}
-			}
-			
-			ball.SetLastObjectReboundPtr(this);
-			ball.SetPaddleCooldown();
-			return true;
+		// x collision
+		if (ballCenter.x < paddleRect.left || ballCenter.x > paddleRect.right) {
+			ball.DoBrickPrecisionMoveX(paddleRect);
+			ball.ReboundX();
+		}
+		else {
+			// y collision
+			const float halfWidth = (paddleRect.right - paddleRect.left) / 2.0f;
+			const float distanceFromCenter = ballCenter.x - (paddleRect.left + halfWidth);
+			const float normalized = distanceFromCenter / halfWidth;
+
+			ball.DoBrickPrecisionMoveY(paddleRect);
+			ball.SetDirection(Vec2{ normalized * 2.0f, -1.0f });
 		}
 	}
 
-	return false;
+	ball.SetLastObjectReboundPtr(this);
+	ball.SetPaddleCooldown();
+	return true;
 }
 
 void Paddle::DoWallCollision(const RectF& walls)

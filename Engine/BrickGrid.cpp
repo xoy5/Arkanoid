@@ -121,17 +121,17 @@ BrickGrid::MessageFile BrickGrid::DeleteBrickGrid(std::string filename)
 	return std::filesystem::remove(filename) ? MessageFile::Deleted : MessageFile::Error;
 }
 
-Brick* BrickGrid::CreateBrick(Brick::Type type, const Vec2& brickPos)
+Brick* BrickGrid::CreateBrick(Brick::Type type, const RectF& rect)
 {
 	Brick* brick = nullptr;
 
 	switch (type) 
 	{
 	case Brick::Type::Unbreakable:
-		brick = new UnbreakableBrick(RectF(brickPos, brickPos + Vec2{ (float)brickWidth, (float)brickHeight }));
+		brick = new UnbreakableBrick(rect);
 		break;
 	case Brick::Type::Breakable:
-		brick = new BreakableBrick(RectF(brickPos, brickPos + Vec2{ (float)brickWidth, (float)brickHeight}), 1, GetColorByHp(1));
+		brick = new BreakableBrick(rect, 1, GetColorByHp(1));
 	}
 
 	return brick;
@@ -166,6 +166,7 @@ void BrickGrid::AddBrickToGrid(Brick* newBrick)
 
 std::pair<void*, int> BrickGrid::CheckBallCollision(const Ball& ball) const
 {
+	if (ball.GetIsStillAddedOnPaddle()) return {nullptr, -1};
 	void* pBrickCollisionHappened = nullptr;
 	float minBrickDistSq;
 	int brickIndex = -1;
@@ -201,20 +202,20 @@ void BrickGrid::ExecuteBallCollision(Ball& ball, int brickIndex, Vec2* pHitPos, 
 	bool horizontalOverlap = (ballPosCenter.x >= brickRect.left && ballPosCenter.x <= brickRect.right);
 
 	if (fabs(ballVelocity.x) < epsilon) {
+		ball.DoBrickPrecisionMoveY(brickRect);
 		ball.ReboundY();
-		// ball.DoBrickPrecisionMoveY(brickRect);
 	}
 	else if (std::signbit(ballVelocity.x) == std::signbit(ballPosCenter.x - bricks[brickIndex]->GetPosCenter().x)) {
+		ball.DoBrickPrecisionMoveY(brickRect);
 		ball.ReboundY();
-		// ball.DoBrickPrecisionMoveY(brickRect);
 	}
 	else if (horizontalOverlap) {
+		ball.DoBrickPrecisionMoveY(brickRect);
 		ball.ReboundY();
-		// ball.DoBrickPrecisionMoveY(brickRect);
 	}
 	else {
+		ball.DoBrickPrecisionMoveX(brickRect);
 		ball.ReboundX();
-		// ball.DoBrickPrecisionMoveX(brickRect);
 	}
 
 	bricks[brickIndex]->Hitted();
@@ -266,3 +267,41 @@ constexpr void BrickGrid::PrepareFilename(std::string& filename)
 	SetFilenameBat(filename);
 }
 
+RectF BrickGrid::GetRectBrickForRoundPos(Vei2 posMouse, int leftOffset, int topOffset, int gapX, int gapY)
+{
+	Vei2 posInGrid = posMouse - Vei2{ leftOffset, topOffset };
+	if (posInGrid.x < 0 || posInGrid.y < 0) return RectF{0, brickWidth, 0, brickHeight};
+
+	Vei2 addToNext = Vei2{brickWidth+gapX, brickHeight+gapY};
+	int fullBricksX = posInGrid.x / addToNext.x;
+	int fullBricksY = posInGrid.y / addToNext.y;
+
+
+	enum Pos {
+		TopLeft = 0,
+		TopRight,
+		BottomLeft,
+		BottomRight,
+		Count
+	};
+
+	Vei2 posFrom = Vei2{ leftOffset, topOffset } + Vei2{ addToNext.x * fullBricksX + brickWidth / 2, addToNext.y * fullBricksY + brickHeight / 2 };
+	Vei2 positionsCenter[Pos::Count] = {
+		posFrom,
+		posFrom + Vei2{addToNext.x, 0},
+		posFrom + Vei2{0, addToNext.y},
+		posFrom + addToNext
+	};
+
+	Pos pos = Pos::TopLeft;
+	int minLength = (posMouse - positionsCenter[Pos::TopLeft]).GetLengthSq();
+
+	for (int i = 1; i < Pos::Count; i++) {
+		if (minLength > (posMouse - positionsCenter[i]).GetLengthSq()) {
+			minLength = (posMouse - positionsCenter[i]).GetLengthSq();
+			pos = Pos(i);
+		}
+	}
+
+	return RectF::FromCenter(Vec2(positionsCenter[pos]), brickWidth / 2.0f, brickHeight / 2.0f);
+}

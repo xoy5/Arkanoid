@@ -48,7 +48,7 @@ public:
 	{
 		return point.x >= left && point.x < right && point.y >= top && point.y < bottom;
 	}
-	static Rect_ FromCenter( const Vec2_<T>& center,T halfWidth,T halfHeight )
+	static constexpr Rect_ FromCenter( const Vec2_<T>& center,T halfWidth,T halfHeight )
 	{
 		const Vec2_<T> half( halfWidth,halfHeight );
 		return Rect_( center - half,center + half );

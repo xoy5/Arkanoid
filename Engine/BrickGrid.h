@@ -41,10 +41,11 @@ public:
 	void AddBrickToGrid(Brick* newBrick);
 	std::pair<void*, int> CheckBallCollision(const Ball& ball) const;
 	void ExecuteBallCollision(Ball& ball, int BrickIndex, Vec2* pHitPos = nullptr, bool* pDestroyed = nullptr);
-	Brick* CreateBrick(Brick::Type type, const Vec2& brickPos = Vec2{0.0f,0.0f});
+	Brick* CreateBrick(Brick::Type type, const RectF& rect = {0, brickWidth, 0, brickHeight});
 	static int GetBrickWidth();
 	static int GetBrickHeight();
 	void ClearBrickGrid();
+	static RectF GetRectBrickForRoundPos(Vei2 posMouse, int topOffset, int leftOffset, int gapX, int gapY);
 
 private:
 	void UpdateBrickColor(BreakableBrick* pBrick);
@@ -55,8 +56,8 @@ private:
 private:
 	Game& game;
 	std::vector<Brick*> bricks;
-	static constexpr  int brickWidth = 80;
-	static constexpr int brickHeight = 30;
+	static constexpr  int brickWidth = 60;
+	static constexpr int brickHeight = 20;
 	static constexpr Color colorsBricks[] = { Colors::Red, Colors::Grapefruit, Colors::Pink, Colors::Purple, Colors::Green, Colors::Yellow, Colors::Blue, Colors::Cyan };
 	static constexpr int colorsBricksSize = 8;
 	static constexpr std::string_view directory = "Files/BrickGrid/";

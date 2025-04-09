@@ -23,21 +23,25 @@ public:
 	bool IsEditingBrickGrid() const;
 
 private:
+	RectF GetRectForMousePosAndTextBoxes() const;
+
+private:
 	BrickGrid::MessageFile messageFile = BrickGrid::MessageFile::NoMessage;
 	Game& game;
 	const Font* font;
 	bool editing = false; 
 	bool editingBrickGrid = false;
-	BreakableBrick* newBrick = nullptr;
+	UnbreakableBrick* newBrick = nullptr;
 
 	Button buttonEditBrickGrid = Button(font, "Edit BrickGrid", Vei2{ 20, 20 });
 	Button buttonLoad = Button(font, "Load", Vei2{ 20, 80 }); Button buttonClearBrickGrid = Button(font, "Clear", Vei2{ 100, 80 });
 	Button buttonSave = Button(font, "Save", Vei2{ 20, 140 });
 
 	TextBox textBoxFilename = TextBox(font, Vei2{ 200, 200 });
-	TextBox textBoxOffset = TextBox(font, Vei2{ 200, 260});
-	TextBox textBoxGapX = TextBox(font, Vei2{ 200, 320 });
-	TextBox textBoxGapY = TextBox(font, Vei2{ 200, 400 });
+	TextBox textBoxOffsetX = TextBox(font, Vei2{ 200, 260});
+	TextBox textBoxOffsetY = TextBox(font, Vei2{ 200, 320 });
+	TextBox textBoxGapX = TextBox(font, Vei2{ 200, 380 });
+	TextBox textBoxGapY = TextBox(font, Vei2{ 200, 440 });
 
 	MyMessageBox messageBox = MyMessageBox(font);
 };

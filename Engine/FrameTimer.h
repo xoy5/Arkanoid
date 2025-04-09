@@ -17,6 +17,13 @@ public:
 		const duration<float> frameTime = last - old;
 		return frameTime.count();
 	}
+
+	float Peek() const
+	{
+		const auto now = steady_clock::now();
+		const duration<float> frameTime = now - last;
+		return frameTime.count();
+	}
 private:
 	std::chrono::steady_clock::time_point last;
 };

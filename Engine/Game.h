@@ -87,19 +87,18 @@ private:
 
 	// TO DO
 	// Better collision based on circle
-	// Wielowatkowac
 	// Scaling
 	// Animation
 	// Sounds
 	// Editor Adding Bricks etc
 	// Levels
 	// Menu
+	// Wielowatkowac
 	// 2 Players
 
 	// Web For Game
 	// Database with custom levels
 	// Dowload Levels and insert 
 	// Edit Menu
-
 	/********************************/
 };

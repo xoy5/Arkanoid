@@ -23,6 +23,7 @@ public:
 
 public:
 	void SetPos(const Vec2& pos);
+	void SetRect(const RectF& rect);
 	virtual void Hitted() = 0;
 	Vec2 GetPosCenter() const;
 	RectF GetRect() const;
