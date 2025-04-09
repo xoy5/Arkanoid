@@ -4,9 +4,13 @@ Brick::Brick(const RectF& rect)
 	:
 	rect(rect)
 {}
-RectF Brick::GetRectF() const
+RectF Brick::GetRect() const
 {
 	return rect;
+}
+void Brick::SetPos(const Vec2& pos)
+{
+	rect = RectF{pos, GetRect().GetWidth(), GetRect().GetHeight()};
 }
 Vec2 Brick::GetPosCenter() const
 {

@@ -173,7 +173,7 @@ public:
 		isSetFontHoverDarker = set;
 	}
 	// text
-	void SetTextAlignCenter(bool set = false)
+	void SetTextAlignCenter(bool set = true)
 	{
 		isSetTextAlignCenter = set;
 	}

@@ -36,10 +36,15 @@ public:
 	BrickGrid::MessageFile Load(std::string filename = "default.dat");
 	BrickGrid::MessageFile Save(std::string filename = "default.dat");
 	BrickGrid::MessageFile DeleteBrickGrid(std::string filename);
-	Brick* CreateBrick(Brick::Type type, const Vec2& brickPos);
+
 public:
+	void AddBrickToGrid(Brick* newBrick);
 	std::pair<void*, int> CheckBallCollision(const Ball& ball) const;
 	void ExecuteBallCollision(Ball& ball, int BrickIndex, Vec2* pHitPos = nullptr, bool* pDestroyed = nullptr);
+	Brick* CreateBrick(Brick::Type type, const Vec2& brickPos = Vec2{0.0f,0.0f});
+	static int GetBrickWidth();
+	static int GetBrickHeight();
+	void ClearBrickGrid();
 
 private:
 	void UpdateBrickColor(BreakableBrick* pBrick);
@@ -50,9 +55,9 @@ private:
 private:
 	Game& game;
 	std::vector<Brick*> bricks;
-	constexpr static int widthBrick = 80;
-	constexpr static int heightBrick = 30;
-	constexpr static Color colorsBricks[] = { Colors::Red, Colors::Grapefruit, Colors::Pink, Colors::Purple, Colors::Green, Colors::Yellow, Colors::Blue, Colors::Cyan };
-	constexpr static int colorsBricksSize = 8;
+	static constexpr  int brickWidth = 80;
+	static constexpr int brickHeight = 30;
+	static constexpr Color colorsBricks[] = { Colors::Red, Colors::Grapefruit, Colors::Pink, Colors::Purple, Colors::Green, Colors::Yellow, Colors::Blue, Colors::Cyan };
+	static constexpr int colorsBricksSize = 8;
 	static constexpr std::string_view directory = "Files/BrickGrid/";
 };

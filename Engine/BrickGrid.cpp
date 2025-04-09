@@ -7,32 +7,32 @@ BrickGrid::BrickGrid(Game& game, int brickGridWidth, int topOffset, int gapX, in
 	:
 	game(game)
 {
-	int brickGridWHeight = nRowBricks * (heightBrick + gapY) - gapY;
-	int nColBricks = (brickGridWidth + gapX) / (widthBrick + gapX);
-	Vec2 gridPos{ ((Graphics::ScreenWidth - brickGridWidth) / 2.0f) + (((brickGridWidth + gapX) % (widthBrick + gapX)) / 2.0f), (float)topOffset };
+	int brickGridWHeight = nRowBricks * (brickHeight + gapY) - gapY;
+	int nColBricks = (brickGridWidth + gapX) / (brickWidth + gapX);
+	Vec2 gridPos{ ((Graphics::ScreenWidth - brickGridWidth) / 2.0f) + (((brickGridWidth + gapX) % (brickWidth + gapX)) / 2.0f), (float)topOffset };
 
 	assert(Graphics::ScreenWidth >= brickGridWidth);
 	Vec2 brickPos = gridPos;
 
-	for (int y = 0; y < nRowBricks; y++, brickPos = Vec2{ gridPos.x, brickPos.y + heightBrick + gapY }) {
+	for (int y = 0; y < nRowBricks; y++, brickPos = Vec2{ gridPos.x, brickPos.y + brickHeight + gapY }) {
 		if (y == 4)
 		{
-			for (int x = 0; x < nColBricks; x++, brickPos += Vec2{ (float)widthBrick + (float)gapX, 0 }) 
+			for (int x = 0; x < nColBricks; x++, brickPos += Vec2{ (float)brickWidth + (float)gapX, 0 }) 
 			{
 				if (x % 2 == 0) {
-					bricks.emplace_back(new UnbreakableBrick(RectF(brickPos, brickPos + Vec2{ (float)widthBrick, (float)heightBrick })));
+					bricks.emplace_back(new UnbreakableBrick(RectF(brickPos, brickPos + Vec2{ (float)brickWidth, (float)brickHeight })));
 				}
 			}
 		}
 		else
 		{
-			for (int x = 0; x < nColBricks; x++, brickPos += Vec2{ (float)widthBrick + (float)gapX, 0 }) {
-				bricks.emplace_back(new BreakableBrick(RectF(brickPos, brickPos + Vec2{ (float)widthBrick, (float)heightBrick }), x + 1, GetColorByHp(x + 1)));
+			for (int x = 0; x < nColBricks; x++, brickPos += Vec2{ (float)brickWidth + (float)gapX, 0 }) {
+				bricks.emplace_back(new BreakableBrick(RectF(brickPos, brickPos + Vec2{ (float)brickWidth, (float)brickHeight }), x + 1, GetColorByHp(x + 1)));
 			}
 		}
 	}
 
-	brickPos = Vec2{ gridPos.x, brickPos.y + gapX + heightBrick };
+	brickPos = Vec2{ gridPos.x, brickPos.y + gapX + brickHeight };
 
 }
 
@@ -128,13 +128,28 @@ Brick* BrickGrid::CreateBrick(Brick::Type type, const Vec2& brickPos)
 	switch (type) 
 	{
 	case Brick::Type::Unbreakable:
-		brick = new UnbreakableBrick(RectF(brickPos, brickPos + Vec2{ (float)widthBrick, (float)heightBrick }));
+		brick = new UnbreakableBrick(RectF(brickPos, brickPos + Vec2{ (float)brickWidth, (float)brickHeight }));
 		break;
 	case Brick::Type::Breakable:
-		brick = new BreakableBrick(RectF(brickPos, brickPos + Vec2{ (float)widthBrick, (float)heightBrick}), 1, GetColorByHp(1));
+		brick = new BreakableBrick(RectF(brickPos, brickPos + Vec2{ (float)brickWidth, (float)brickHeight}), 1, GetColorByHp(1));
 	}
 
 	return brick;
+}
+
+int BrickGrid::GetBrickWidth()
+{
+	return brickWidth;
+}
+
+int BrickGrid::GetBrickHeight()
+{
+	return brickHeight;
+}
+
+void BrickGrid::ClearBrickGrid()
+{
+	bricks.clear();
 }
 
 void BrickGrid::Draw(Graphics& gfx) const
@@ -142,6 +157,11 @@ void BrickGrid::Draw(Graphics& gfx) const
 	for (Brick* b : bricks) {
 		b->Draw(gfx);
 	}
+}
+
+void BrickGrid::AddBrickToGrid(Brick* newBrick)
+{
+	bricks.emplace_back(newBrick);
 }
 
 std::pair<void*, int> BrickGrid::CheckBallCollision(const Ball& ball) const
@@ -153,7 +173,7 @@ std::pair<void*, int> BrickGrid::CheckBallCollision(const Ball& ball) const
 
 	for (int i = 0; i < bricks.size(); i++)
 	{
-		if (ball.GetRect().IsOverlappingWith(bricks[i]->GetRectF()))
+		if (ball.GetRect().IsOverlappingWith(bricks[i]->GetRect()))
 		{
 			float distance = std::fabs((ballPosCenter - bricks[i]->GetPosCenter()).GetLengthSq());
 			if (!pBrickCollisionHappened || distance < minBrickDistSq) {
@@ -175,7 +195,7 @@ void BrickGrid::ExecuteBallCollision(Ball& ball, int brickIndex, Vec2* pHitPos, 
 
 	const float epsilon = 0.001f;
 	Vec2 ballVelocity = ball.GetVelocity();
-	RectF brickRect = bricks[brickIndex]->GetRectF();
+	RectF brickRect = bricks[brickIndex]->GetRect();
 	Vec2 ballPosCenter = ball.GetPosCenter();
 
 	bool horizontalOverlap = (ballPosCenter.x >= brickRect.left && ballPosCenter.x <= brickRect.right);

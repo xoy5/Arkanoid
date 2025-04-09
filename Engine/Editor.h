@@ -5,6 +5,9 @@
 #include "Button.h"
 #include "MyMessageBox.h"
 #include "BrickGrid.h"
+#include "Brick.h"
+#include "Vec2.h"
+#include "Mouse.h"
 
 class Game;
 class Editor
@@ -17,6 +20,7 @@ public:
 	void ProcessInputChar(char character);
 	void ProcessMouse(const Mouse::Event& event);
 	bool IsHandlingMessage() const;
+	bool IsEditingBrickGrid() const;
 
 private:
 	BrickGrid::MessageFile messageFile = BrickGrid::MessageFile::NoMessage;
@@ -24,11 +28,11 @@ private:
 	const Font* font;
 	bool editing = false; 
 	bool editingBrickGrid = false;
+	BreakableBrick* newBrick = nullptr;
 
-	Button buttonEditMode = Button(font, "Edit Mode", Vei2{ 20, 20 });
-	Button buttonLoad = Button(font, "Load", Vei2{ 20, 80 });
+	Button buttonEditBrickGrid = Button(font, "Edit BrickGrid", Vei2{ 20, 20 });
+	Button buttonLoad = Button(font, "Load", Vei2{ 20, 80 }); Button buttonClearBrickGrid = Button(font, "Clear", Vei2{ 100, 80 });
 	Button buttonSave = Button(font, "Save", Vei2{ 20, 140 });
-	Button buttonEditBrickGrid = Button(font, "Edit BrickGrid", Vei2{ 170, 20 });
 
 	TextBox textBoxFilename = TextBox(font, Vei2{ 200, 200 });
 	TextBox textBoxOffset = TextBox(font, Vei2{ 200, 260});

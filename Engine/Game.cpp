@@ -106,17 +106,18 @@ void Game::ProcessInput()
 void Game::UpdateModel(float dt)
 {
 	if (gf_editor.IsHandlingMessage() == false) {
+		gf_powerUpManager.Update(dt);
 		paddle.Update(dt, wnd.kbd);
 		gf_ballManager.Update(dt, wnd.kbd);
-		gf_powerUpManager.Update(dt);
 
+		gf_powerUpManager.DoCollectAndUsePowerUp();
+
+		gf_powerUpManager.DoWallCollision();
 		paddle.DoWallCollision(walls);
 		gf_ballManager.DoWallCollision();
-		gf_powerUpManager.DoWallCollision();
 
 		gf_ballManager.BrickGrid_DoBallCollision();
 		gf_ballManager.Paddle_DoBallCollision();
-		gf_powerUpManager.DoCollectAndUsePowerUp();
 	}
 }
 
@@ -124,8 +125,8 @@ void Game::ComposeFrame()
 {
 	if (gf_editor.IsHandlingMessage() == false) {
 		gf_brickGrid.Draw(gfx);
-		gf_powerUpManager.Draw(gfx);
 		paddle.Draw(gfx);
+		gf_powerUpManager.Draw(gfx);
 		gf_ballManager.Draw(gfx);
 		if (gf_editor.IsEditing() == false) {
 			fontSm.DrawText(std::to_string(FPS), { 0,0 }, Colors::White, gfx);

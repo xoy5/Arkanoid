@@ -26,12 +26,10 @@ public:
 		}
 		font->DrawText(text, Vei2{ pos.x + paddingX, pos.y + height / 2 - font->GetHeightChar() / 2 }, fontColor, gfx);
 	}
-	void DoFocusMouse(const Mouse& mouse)
+	void DoFocusMouse(const Mouse::Event& event)
 	{
-		Vei2 mousePos = mouse.GetPos();
-		if (mouse.LeftIsPressed())
-		{
-			focused = GetRect().Contains(mousePos);
+		if (event.GetType() == Mouse::Event::Type::LPress){
+			focused = GetRect().Contains(event.GetPos());
 		}
 	}
 	void Interact(char character)
