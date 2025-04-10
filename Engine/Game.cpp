@@ -30,7 +30,7 @@ Game::Game(MainWindow& wnd)
 	gfx(wnd),
 	gf_powerUpManager(*this),
 	gf_ballManager(*this, paddle.GetRect().GetCenter() - Vec2{ 0.0f, float(paddle.GetHeight()) / 2.0f + 15.0f }, true),
-	gf_brickGrid(*this, 800, 10, 10, 10),
+	gf_brickGrid(*this, 800, 5, 5, 5),
 	gf_editor(*this)
 {
 	wnd.kbd.DisableAutorepeat();

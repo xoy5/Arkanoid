@@ -21,6 +21,7 @@ void Editor::Draw(Graphics& gfx) const
 		else
 		{
 			buttonEditBrickGrid.Draw(gfx);
+			stateButtonBrickType.Draw(gfx);
 			if (editingBrickGrid == false) {
 				buttonLoad.Draw(gfx);
 				buttonSave.Draw(gfx);
@@ -83,16 +84,23 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 
 	if (IsHandlingMessage() == false)
 	{
+		// Processing Mouse in GUI editor brick mode
 		buttonEditBrickGrid.ProcessMouse(event);
+		stateButtonBrickType.ProcessMouse(event);
+
 		// Editing BrickGrid
 		if (buttonEditBrickGrid.IsClicked()) {
 			editingBrickGrid = !editingBrickGrid;
-			if (editingBrickGrid) newBrick = static_cast<UnbreakableBrick*>(game.gf_brickGrid.CreateBrick(Brick::Type::Unbreakable, GetRectForMousePosAndTextBoxes()));
-			else delete newBrick;
+			if (editingBrickGrid) {
+				newBrick = CreateBrickWithDataFromButton();
+			}
+			else {
+				delete newBrick;
+			}
 		}
 		else if(editingBrickGrid && game.wnd.mouse.LeftIsPressed()){
 			game.gf_brickGrid.AddBrickToGrid(newBrick);
-			newBrick = static_cast<UnbreakableBrick*>(game.gf_brickGrid.CreateBrick(Brick::Type::Unbreakable, GetRectForMousePosAndTextBoxes()));
+			newBrick = CreateBrickWithDataFromButton();
 		}
 
 		// Processing Mouse in GUI
@@ -110,7 +118,6 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 		if (buttonClearBrickGrid.IsClicked()) {
 			game.gf_brickGrid.ClearBrickGrid();
 		}
-
 		///////////////// SETTING UP A MESSAGEBOX ////////////////////
 		if (editingBrickGrid == false)
 		{
@@ -206,6 +213,12 @@ bool Editor::IsHandlingMessage() const
 bool Editor::IsEditingBrickGrid() const
 {
 	return editingBrickGrid;
+}
+
+Brick* Editor::CreateBrickWithDataFromButton() const
+{
+	RectF rect = GetRectForMousePosAndTextBoxes();
+	return BrickGrid::CreateBrick(stateButtonBrickType.GetActiveState(), rect); // o tutaj cos wywala
 }
 
 RectF Editor::GetRectForMousePosAndTextBoxes() const

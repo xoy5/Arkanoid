@@ -15,7 +15,7 @@ public:
 		BottomWallHit
 	};
 public:
-	explicit Ball(const Vec2& posCenter, bool onPaddle = false, float speed = 100.0f, int radius = 10, const Color& color = Colors::White);
+	explicit Ball(const Vec2& posCenter, bool onPaddle = false, float speed = 230.0f, int radius = 10, const Color& color = Colors::White);
 	explicit Ball(float speed = 300.0f, int radius = 10, const Color& color = Colors::White);
 	void Draw(Graphics& gfx) const;
 	void Update(float dt);

@@ -41,7 +41,7 @@ public:
 	void AddBrickToGrid(Brick* newBrick);
 	std::pair<void*, int> CheckBallCollision(const Ball& ball) const;
 	void ExecuteBallCollision(Ball& ball, int BrickIndex, Vec2* pHitPos = nullptr, bool* pDestroyed = nullptr);
-	Brick* CreateBrick(Brick::Type type, const RectF& rect = {0, brickWidth, 0, brickHeight});
+	static Brick* CreateBrick(Brick::Type type, const RectF& rect = {0, brickWidth, 0, brickHeight});
 	static int GetBrickWidth();
 	static int GetBrickHeight();
 	void ClearBrickGrid();
@@ -49,15 +49,15 @@ public:
 
 private:
 	void UpdateBrickColor(BreakableBrick* pBrick);
-	Color GetColorByHp(int i) const;
+	static constexpr Color GetColorByHp(int i);
 	static constexpr void SetFilenameBat(std::string& filename);
 	static constexpr void PrepareFilename(std::string& filename);
 
 private:
 	Game& game;
 	std::vector<Brick*> bricks;
-	static constexpr  int brickWidth = 60;
-	static constexpr int brickHeight = 20;
+	static constexpr  int brickWidth = 70;
+	static constexpr int brickHeight = 25;
 	static constexpr Color colorsBricks[] = { Colors::Red, Colors::Grapefruit, Colors::Pink, Colors::Purple, Colors::Green, Colors::Yellow, Colors::Blue, Colors::Cyan };
 	static constexpr int colorsBricksSize = 8;
 	static constexpr std::string_view directory = "Files/BrickGrid/";

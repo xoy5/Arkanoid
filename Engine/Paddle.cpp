@@ -25,7 +25,7 @@ void Paddle::Update(float dt, const Keyboard& kbd)
 	if (kbd.KeyIsPressed('A')) xDir += -1.0f;
 	if (kbd.KeyIsPressed('D')) xDir += 1.0f;
 
-	vel = Vec2{ xDir * attr.speed, 0 };
+	vel = Vec2{ xDir * attr.speed, 0.0f };
 	posCenter += vel * dt;
 }
 

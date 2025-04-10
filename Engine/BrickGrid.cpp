@@ -243,7 +243,7 @@ void BrickGrid::UpdateBrickColor(BreakableBrick* pBrick)
 	pBrick->SetColor(GetColorByHp(pBrick->GetHp()));
 }
 
-Color BrickGrid::GetColorByHp(int i) const
+constexpr Color BrickGrid::GetColorByHp(int i)
 {
 	assert(i > 0);
 	return colorsBricks[std::min(i, colorsBricksSize) - 1];
