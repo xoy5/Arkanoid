@@ -4,7 +4,6 @@ Ball::Ball(const Vec2& posCenter, bool onPaddle, float speed, int radius, const 
 	:
 	attr({ speed, radius, color }),
 	posCenter(posCenter),
-	isStillAddedOnPaddle(onPaddle),
 	vel(Vec2{ 0.0f, (onPaddle ? -1.0f : 1.0f) * attr.speed })
 {}
 Ball::Ball(float speed, int radius, const Color& color)
@@ -156,16 +155,6 @@ Vec2 Ball::GetPosCenter() const
 Vec2 Ball::GetVelocity() const
 {
 	return vel;
-}
-
-bool Ball::GetIsStillAddedOnPaddle() const
-{
-	return isStillAddedOnPaddle;
-}
-
-void Ball::SetIsStillAddedOnPaddleToFalse()
-{
-	isStillAddedOnPaddle = false;
 }
 
 void Ball::SetLastObjectReboundPtr(const void* pObjectRebound)

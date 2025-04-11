@@ -109,16 +109,17 @@ void Game::UpdateModel(float dt)
 	if (gf_editor.IsHandlingMessage() == false) {
 		gf_powerUpManager.Update(dt);
 		paddle.Update(dt, wnd.kbd);
-		gf_ballManager.Update(dt, wnd.kbd);
+		gf_ballManager.Update(dt, wnd.kbd   );
+
 
 		gf_powerUpManager.DoCollectAndUsePowerUp();
 
+		gf_ballManager.BrickGrid_DoBallCollision();
+		gf_ballManager.Paddle_DoBallCollision()
+			;
 		gf_powerUpManager.DoWallCollision();
 		paddle.DoWallCollision(walls);
 		gf_ballManager.DoWallCollision();
-
-		gf_ballManager.BrickGrid_DoBallCollision();
-		gf_ballManager.Paddle_DoBallCollision();
 	}
 }
 

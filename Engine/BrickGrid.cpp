@@ -166,7 +166,6 @@ void BrickGrid::AddBrickToGrid(Brick* newBrick)
 
 std::pair<void*, int> BrickGrid::CheckBallCollision(const Ball& ball) const
 {
-	if (ball.GetIsStillAddedOnPaddle()) return {nullptr, -1};
 	void* pBrickCollisionHappened = nullptr;
 	float minBrickDistSq;
 	int brickIndex = -1;

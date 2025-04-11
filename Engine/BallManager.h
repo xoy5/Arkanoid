@@ -12,6 +12,7 @@ class BallManager
 public:
 	BallManager(Game& game, const Vec2& posCenter, bool onPaddle = false, float speed = 230.0f, int radius = 10, const Color& color = Colors::White);
 	BallManager(Game& game, float speed = 300.0f, int radius = 10, const Color& color = Colors::White);
+	~BallManager();
 	void Draw(Graphics& gfx) const;
 	void Update(float dt, Keyboard& kbd);
 
@@ -26,6 +27,7 @@ public:
 private:
 	Game& game;
 	std::vector<Ball> balls;
+	Ball* pBallOnPaddle = nullptr;
 	bool curBallOnPaddle = false;
-	static constexpr int nMaxBalls = 100 ;
+	static constexpr int nMaxBalls = 100;
 };
