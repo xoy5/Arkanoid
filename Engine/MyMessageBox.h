@@ -100,9 +100,10 @@ public:
 	}
 private:
 	static constexpr RectI rect = RectI{ 200, 600, 200, 400 };
+	const Font* font;
 	std::string messageText = "Default";
 	Buttons buttons = MyMessageBox::Buttons::YesNo;
-	const Font* font;
+
 	Button buttonYes = Button(font, "Yes");
 	Button buttonNo = Button(font, "No");
 	Button buttonOk = Button(font, "Ok");

@@ -25,7 +25,6 @@ public:
 
 private:
 	Brick* CreateBrickWithDataFromButton() const;
-	RectF GetRectForMousePosAndTextBoxes() const;
 
 private:
 	BrickGrid::MessageFile messageFile = BrickGrid::MessageFile::NoMessage;
@@ -35,17 +34,12 @@ private:
 	bool editingBrickGrid = false;
 	Brick* newBrick = nullptr;
 
-	Button buttonEditBrickGrid = Button(font, "Edit BrickGrid", Vei2{ 20, 20 });
-	Button buttonLoad = Button(font, "Load", Vei2{ 20, 80 }); 
-	Button buttonClearBrickGrid = Button(font, "Clear", Vei2{ 100, 80 });
-	StateButton<Brick::Type> stateButtonBrickType = StateButton<Brick::Type>(font, Vei2{ 500, 200 }, Brick::Type::Breakable, Brick::Type::Unbreakable, "Unbreakable", "Breakable", Colors::Blue, Colors::Green);
-	Button buttonSave = Button(font, "Save", Vei2{ 20, 140 });
-
-	TextBox textBoxFilename = TextBox(font, Vei2{ 200, 200 });
-	TextBox textBoxOffsetX = TextBox(font, Vei2{ 200, 260});
-	TextBox textBoxOffsetY = TextBox(font, Vei2{ 200, 320 });
-	TextBox textBoxGapX = TextBox(font, Vei2{ 200, 380 });
-	TextBox textBoxGapY = TextBox(font, Vei2{ 200, 440 });
+	Button buttonEditBrickGrid;
+	Button buttonClearBrickGrid;
+	Button buttonLoad;
+	Button buttonSave;
+	StateButton<Brick::Type> stateButtonBrickType;
+	TextBox textBoxFilename;
 
 	MyMessageBox messageBox = MyMessageBox(font);
 };

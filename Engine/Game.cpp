@@ -30,7 +30,7 @@ Game::Game(MainWindow& wnd)
 	gfx(wnd),
 	gf_powerUpManager(*this),
 	gf_ballManager(*this, paddle.GetRect().GetCenter() - Vec2{ 0.0f, float(paddle.GetHeight()) / 2.0f + 15.0f }, true),
-	gf_brickGrid(*this, 800, 5, 5, 5),
+	gf_brickGrid(*this, 325),
 	gf_editor(*this)
 {
 	wnd.kbd.DisableAutorepeat();
@@ -131,9 +131,9 @@ void Game::ComposeFrame()
 		gf_powerUpManager.Draw(gfx);
 		gf_ballManager.Draw(gfx);
 		if (gf_editor.IsEditing() == false) {
-			fontSm.DrawText(std::to_string(FPS), { 0,0 }, Colors::White, gfx);
+			fontTiny.DrawText(std::to_string(FPS), { 0,0 }, Colors::White, gfx);
 			if (hacksMode) {
-				fontSm.DrawText("HACKS", Vei2{ Graphics::GetScreenRect().right, 0 } - Vei2{ 5 * fontSm.GetWidthChar(), 0 }, Colors::Red, gfx);
+				fontTiny.DrawText("HACKS", Vei2{ Graphics::GetScreenRect().right, 0 } - Vei2{ 5 * fontTiny.GetWidthChar(), 0 }, Colors::Red, gfx);
 			}
 		}
 	}

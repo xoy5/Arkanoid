@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <filesystem>
 
-BrickGrid::BrickGrid(Game& game, int brickGridWidth, int topOffset, int gapX, int gapY, int nRowBricks)
+BrickGrid::BrickGrid(Game& game, int brickGridWidth, int nRowBricks)
 	:
 	game(game)
 {
@@ -266,9 +266,9 @@ constexpr void BrickGrid::PrepareFilename(std::string& filename)
 	SetFilenameBat(filename);
 }
 
-RectF BrickGrid::GetRectBrickForRoundPos(Vei2 posMouse, int leftOffset, int topOffset, int gapX, int gapY)
+RectF BrickGrid::GetRectBrickForRoundPos(Vei2 posMouse)
 {
-	Vei2 posInGrid = posMouse - Vei2{ leftOffset, topOffset };
+	Vei2 posInGrid = posMouse - Vei2{ 0, topOffset };
 	if (posInGrid.x < 0 || posInGrid.y < 0) return RectF{0, brickWidth, 0, brickHeight};
 
 	Vei2 addToNext = Vei2{brickWidth+gapX, brickHeight+gapY};
@@ -284,7 +284,7 @@ RectF BrickGrid::GetRectBrickForRoundPos(Vei2 posMouse, int leftOffset, int topO
 		Count
 	};
 
-	Vei2 posFrom = Vei2{ leftOffset, topOffset } + Vei2{ addToNext.x * fullBricksX + brickWidth / 2, addToNext.y * fullBricksY + brickHeight / 2 };
+	Vei2 posFrom = Vei2{ 0, topOffset } + Vei2{ addToNext.x * fullBricksX + brickWidth / 2, addToNext.y * fullBricksY + brickHeight / 2 };
 	Vei2 positionsCenter[Pos::Count] = {
 		posFrom,
 		posFrom + Vei2{addToNext.x, 0},

@@ -28,7 +28,7 @@ public:
 		Error
 	};
 public:
-	BrickGrid(Game& game, int brickGridWidth = 600, int topOffset = 15, int gapX = 4, int gapY = 4, int nRowBricks = 8);
+	BrickGrid(Game& game, int brickGridWidth = 600, int nRowBricks = 8);
 	~BrickGrid();
 	BrickGrid(const BrickGrid&) = delete;
 	BrickGrid& operator=(const BrickGrid&) = delete;
@@ -45,7 +45,7 @@ public:
 	static int GetBrickWidth();
 	static int GetBrickHeight();
 	void ClearBrickGrid();
-	static RectF GetRectBrickForRoundPos(Vei2 posMouse, int topOffset, int leftOffset, int gapX, int gapY);
+	static RectF GetRectBrickForRoundPos(Vei2 posMouse);
 
 private:
 	void UpdateBrickColor(BreakableBrick* pBrick);
@@ -56,8 +56,11 @@ private:
 private:
 	Game& game;
 	std::vector<Brick*> bricks;
-	static constexpr  int brickWidth = 70;
-	static constexpr int brickHeight = 25;
+	static constexpr  int brickWidth = 35;
+	static constexpr int brickHeight = 15;
+	static constexpr int gapX = 1;
+	static constexpr int gapY = 1;
+	static constexpr int topOffset = 15;
 	static constexpr Color colorsBricks[] = { Colors::Red, Colors::Grapefruit, Colors::Pink, Colors::Purple, Colors::Green, Colors::Yellow, Colors::Blue, Colors::Cyan };
 	static constexpr int colorsBricksSize = 8;
 	static constexpr std::string_view directory = "Files/BrickGrid/";

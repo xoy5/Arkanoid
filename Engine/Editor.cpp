@@ -7,7 +7,14 @@
 Editor::Editor(Game& game)
 	:
 	game(game),
-	font(&game.fontSm)
+	font(&game.fontTiny),
+	buttonEditBrickGrid(font, "Edit BrickGrid", Vei2{ 20, 0 }),
+	buttonClearBrickGrid(font, "Clear", Vei2{ 20, buttonEditBrickGrid.GetRect().GetHeight() + buttonEditBrickGrid.GetPos().y}),
+	buttonLoad(font, "Load", Vei2{ 20, buttonClearBrickGrid.GetRect().GetHeight() + buttonClearBrickGrid.GetPos().y }),
+	buttonSave(font, "Save", Vei2{ 20, buttonLoad.GetRect().GetHeight() + buttonLoad.GetPos().y }),
+	stateButtonBrickType(font, Vei2{ 20, buttonSave.GetRect().GetHeight() + buttonSave.GetPos().y }, Brick::Type::Breakable, Brick::Type::Unbreakable, "Unbreakable", "Breakable", Colors::Blue, Colors::Green),
+	textBoxFilename(font, Vei2{ 20, stateButtonBrickType.GetRect().GetHeight() + stateButtonBrickType.GetPos().y }),
+	messageBox(font)
 {
 }
 
@@ -29,21 +36,9 @@ void Editor::Draw(Graphics& gfx) const
 
 				font->DrawText("filename:", { 20, textBoxFilename.GetRect().top + textBoxFilename.GetPadding().y }, Colors::White, gfx);
 				textBoxFilename.Draw(gfx);
-
-				font->DrawText("offset x:", { 20, textBoxOffsetX.GetRect().top + textBoxOffsetX.GetPadding().y }, Colors::White, gfx);
-				textBoxOffsetX.Draw(gfx);
-
-				font->DrawText("offset y:", { 20, textBoxOffsetY.GetRect().top + textBoxOffsetY.GetPadding().y }, Colors::White, gfx);
-				textBoxOffsetY.Draw(gfx);
-				
-				font->DrawText("gap x:", { 20, textBoxGapX.GetRect().top + textBoxGapX.GetPadding().y }, Colors::White, gfx);
-				textBoxGapX.Draw(gfx);
-
-				font->DrawText("gap y:", { 20, textBoxGapY.GetRect().top + textBoxGapY.GetPadding().y }, Colors::White, gfx);
-				textBoxGapY.Draw(gfx);
 			}
 			else {
-				newBrick->SetRect(GetRectForMousePosAndTextBoxes());
+				newBrick->SetRect(BrickGrid::GetRectBrickForRoundPos(game.wnd.mouse.GetPos()));
 				newBrick->Draw(gfx);
 			}
 		}
@@ -71,10 +66,6 @@ void Editor::ProcessInputChar(char character)
 {
 	if (editing) {
 		textBoxFilename.Interact(character);
-		textBoxOffsetX.Interact(character);
-		textBoxOffsetY.Interact(character);
-		textBoxGapX.Interact(character);
-		textBoxGapY.Interact(character);
 	}
 }
 
@@ -109,10 +100,6 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 			buttonSave.ProcessMouse(event);
 			buttonClearBrickGrid.ProcessMouse(event);
 			textBoxFilename.DoFocusMouse(event);
-			textBoxOffsetX.DoFocusMouse(event);
-			textBoxOffsetY.DoFocusMouse(event);
-			textBoxGapX.DoFocusMouse(event);
-			textBoxGapY.DoFocusMouse(event);
 		}
 
 		if (buttonClearBrickGrid.IsClicked()) {
@@ -217,15 +204,6 @@ bool Editor::IsEditingBrickGrid() const
 
 Brick* Editor::CreateBrickWithDataFromButton() const
 {
-	RectF rect = GetRectForMousePosAndTextBoxes();
-	return BrickGrid::CreateBrick(stateButtonBrickType.GetActiveState(), rect); // o tutaj cos wywala
-}
-
-RectF Editor::GetRectForMousePosAndTextBoxes() const
-{
-	const int gapX = std::stoi(textBoxGapX.GetText() == "" ? "0" : textBoxGapX.GetText());
-	const int gapY = std::stoi(textBoxGapY.GetText() == "" ? "0" : textBoxGapY.GetText());
-	const int offsetX = std::stoi(textBoxOffsetX.GetText() == "" ? "0" : textBoxOffsetX.GetText());
-	const int offsetY = std::stoi(textBoxOffsetY.GetText() == "" ? "0" : textBoxOffsetY.GetText());
-	return BrickGrid::GetRectBrickForRoundPos(game.wnd.mouse.GetPos(), offsetX, offsetY, gapX, gapY);
+	RectF rect = BrickGrid::GetRectBrickForRoundPos(game.wnd.mouse.GetPos());
+	return BrickGrid::CreateBrick(stateButtonBrickType.GetActiveState(), rect);
 }

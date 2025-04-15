@@ -56,6 +56,7 @@ private:
 	MainWindow& wnd;
 	Graphics gfx;
 	std::mt19937 rng = std::mt19937(std::random_device{}());
+	const Font fontTiny = Font("Files/Fonts/font8x14.bmp");
 	const Font fontSm = Font("Files/Fonts/font16x28.bmp");
 	const Font fontLg = Font("Files/Fonts/font32x56.bmp");
 	const RectF walls = RectF(Graphics::GetScreenRect());

@@ -141,6 +141,9 @@
     <ClInclude Include="Character.h">
       <Filter>Header Files\Framework\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="InterfaceObject.h">
+      <Filter>Header Files\Framework\Interface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graphics.cpp">
