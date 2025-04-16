@@ -12,7 +12,7 @@ Editor::Editor(Game& game)
 	buttonClearBrickGrid(font, "Clear", Vei2{ 20, buttonEditBrickGrid.GetRect().GetHeight() + buttonEditBrickGrid.GetPos().y}),
 	buttonLoad(font, "Load", Vei2{ 20, buttonClearBrickGrid.GetRect().GetHeight() + buttonClearBrickGrid.GetPos().y }),
 	buttonSave(font, "Save", Vei2{ 20, buttonLoad.GetRect().GetHeight() + buttonLoad.GetPos().y }),
-	stateButtonBrickType(font, Vei2{ 20, buttonSave.GetRect().GetHeight() + buttonSave.GetPos().y }, Brick::Type::Breakable, Brick::Type::Unbreakable, "Unbreakable", "Breakable", Colors::Blue, Colors::Green),
+	stateButtonBrickType(font, Vei2{ 20, buttonSave.GetRect().GetHeight() + buttonSave.GetPos().y }, Brick::Type::Breakable, Brick::Type::Unbreakable, "Unbreakable", "Breakable"),
 	textBoxFilename(font, Vei2{ 20, stateButtonBrickType.GetRect().GetHeight() + stateButtonBrickType.GetPos().y }),
 	messageBox(font)
 {
@@ -34,7 +34,8 @@ void Editor::Draw(Graphics& gfx) const
 				buttonSave.Draw(gfx);
 				buttonClearBrickGrid.Draw(gfx);
 
-				font->DrawText("filename:", { 20, textBoxFilename.GetRect().top + textBoxFilename.GetPadding().y }, Colors::White, gfx);
+				font->DrawText("filename:", { 20, textBoxFilename.GetRect().top }, Colors::White, gfx);
+				/*font->DrawText("filename:", { 20, textBoxFilename.GetRect().top + textBoxFilename.GetPadding().y }, Colors::White, gfx);*/
 				textBoxFilename.Draw(gfx);
 			}
 			else {
@@ -177,6 +178,9 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 					game.gf_brickGrid.DeleteBrickGrid(textBoxFilename.GetText());
 					messageFile = game.gf_brickGrid.Save(textBoxFilename.GetText());
 				}
+				else if (buttonValue == MyMessageBox::ValueButton::No) {
+					messageFile = BrickGrid::MessageFile::NoMessage;
+				}
 				break;
 
 			case BrickGrid::MessageFile::Deleted:
@@ -205,5 +209,5 @@ bool Editor::IsEditingBrickGrid() const
 Brick* Editor::CreateBrickWithDataFromButton() const
 {
 	RectF rect = BrickGrid::GetRectBrickForRoundPos(game.wnd.mouse.GetPos());
-	return BrickGrid::CreateBrick(stateButtonBrickType.GetActiveState(), rect);
+	return BrickGrid::CreateBrick(stateButtonBrickType.GetActiveStateValue(), rect);
 }

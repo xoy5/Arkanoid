@@ -6,24 +6,27 @@
 #include "Mouse.h"
 #include "Vec2.h"
 #include "Font.h"
+     
 
-class TextBox : InterfaceObject
+class TextBox : public InterfaceObject
 {
 public:
 	TextBox(const Font* font, const Vei2& pos, std::string text = "")
 		:
 		InterfaceObject(font, text, pos)
-	{}
+	{
+		InterfaceObject::SetTextAlignCenter();
+	}
 	void DoFocusMouse(const Mouse::Event& event)
 	{
 		if (event.GetType() == Mouse::Event::Type::LPress)
 		{
 			focused = GetRect().Contains(event.GetPos());
 			if (focused) {
-				InterfaceObject::SetBorder(true, 5, Colors::Blue);
+				InterfaceObject::SetActive(true);
 			}
 			else {
-				InterfaceObject::SetBorder(false);
+				InterfaceObject::SetActive(false);
 			}
 		}
 	}
@@ -47,9 +50,9 @@ public:
 	{
 		focused = false;
 	}
-	RectI GetRect() const
+	RectI GetRect() const override
 	{
-		return RectI{ pos.x, pos.x + (paddingX * 2) + std::max(int(text.size()) * font->GetWidthChar(), font->GetWidthChar()), pos.y, pos.y + height };
+		return RectI{ pos.x, pos.x + (paddingX * 2) + std::max(int(text.size()) * font->GetWidthChar(), font->GetWidthChar()), pos.y, pos.y + GetHeight() };
 	}
 private:
 	bool focused = false;

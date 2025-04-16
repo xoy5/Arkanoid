@@ -26,14 +26,19 @@ public:
 public:
 	MyMessageBox(const Font* font)
 		:
-		font(font)
+		font(font),
+		buttonYes(font, "yes", Graphics::GetScreenCenter() + Vei2{ 0, Graphics::ScreenHeight / 8 }),
+		buttonNo(font, "no", Graphics::GetScreenCenter() + Vei2{ 0, Graphics::ScreenHeight / 8 }),
+		buttonOk(font, "ok", Graphics::GetScreenCenter() + Vei2{ 0, Graphics::ScreenHeight / 8 })
 	{
 		buttonYes.SetPositionCenter(true);
-		buttonYes.PositionMoveBy(Vei2{-40, 40});
 		buttonNo.SetPositionCenter(true);
-		buttonNo.PositionMoveBy(Vei2{40, 40});
 		buttonOk.SetPositionCenter(true);
-		buttonOk.PositionMoveBy(Vei2{0, 40});
+		buttonNo.SetSizeWidth(font->GetWidthChar() * 3);
+		int paddingBetween = 20;
+		buttonNo.SetPos(buttonNo.GetPos() - Vei2{ buttonNo.GetRect().GetWidth() / 2 + paddingBetween / 2, 0 });
+		buttonYes.SetPos(buttonYes.GetPos() + Vei2{ buttonYes.GetRect().GetWidth() / 2 + paddingBetween / 2,0 });
+
 	}
 	void Draw(Graphics& gfx) const
 	{
@@ -99,12 +104,12 @@ public:
 		messageText = text;
 	}
 private:
-	static constexpr RectI rect = RectI{ 200, 600, 200, 400 };
+	static constexpr RectI rect = RectI{ Graphics::ScreenWidth / 5, Graphics::ScreenWidth / 5 * 4 , Graphics::ScreenHeight / 5, Graphics::ScreenHeight / 5 * 4 };
 	const Font* font;
 	std::string messageText = "Default";
 	Buttons buttons = MyMessageBox::Buttons::YesNo;
 
-	Button buttonYes = Button(font, "Yes");
-	Button buttonNo = Button(font, "No");
-	Button buttonOk = Button(font, "Ok");
+	Button buttonYes;
+	Button buttonNo;
+	Button buttonOk;
 };

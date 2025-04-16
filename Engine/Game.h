@@ -71,6 +71,8 @@ private:
 	//////////////////////////
 	/********************************/
 	/*  User Variables  */
+	bool hacksMode = true;
+
 	// Friends;
 	friend class PowerUpManager;
 	friend class BallManager;
@@ -83,8 +85,6 @@ private:
 	BallManager gf_ballManager;
 	PowerUpManager gf_powerUpManager;
 	Editor gf_editor;
-
-	bool hacksMode = true;
 
 	// TO DO
 	// Better collision based on circle

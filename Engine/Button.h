@@ -7,6 +7,7 @@
 #include "Rect.h"
 #include "Sound.h"
 #include "Vec2.h"
+#include "InterfaceObject.h"
 
 typedef InterfaceObject Button;
 
@@ -14,13 +15,13 @@ template<typename O>
 class MenuButton : public Button
 {
 public:
-	MenuButton() = default;
 	MenuButton(const Font* font, const Vei2& pos, const O& option, const std::string& text)
 		:
 		Button(font, text, pos),
 		option(option)
 	{}
-	O GetOption() const {
+	O GetOption() const 
+	{
 		return option;
 	}
 private:
@@ -30,42 +31,53 @@ private:
 template<typename T>
 class StateButton : public Button
 {
+private:
+	enum class State 
+	{
+		First,
+		Second
+	};
 public:
-	StateButton(const Font* font, const Vei2& pos, T activeState, T inactiveState,
-		const std::string& activeString, const std::string& inactiveString,
-		const Color& activeColor, const Color& inactiveColor)
-		:
-		Button(font, activeString, pos),
-		activeState(activeState),
-		inactiveState(inactiveState),
-		activeString(activeString),
-		inactiveString(inactiveString),
-		activeColor(activeColor),
-		inactiveColor(inactiveColor)
+	StateButton(const Font* font, const Vei2& pos, T firstStateValue, T secondStateValue,
+		const std::string& firstString, const std::string& secondString,
+		const Color& firstColor = Colors::LightGreen, const Color& secondColor = Colors::LightRed)
+			:
+		Button(font, firstString, pos),
+		firstStateValue(firstStateValue),
+		secondStateValue(secondStateValue),
+		firstString(firstString),
+		secondString(secondString),
+		firstBackgroundColor(firstColor),
+		secondBackgroundColor(secondColor)
 	{
-		SetBackground(true, activeColor);
+		SetBackground(true, firstColor);
+		int longestSize = std::max(firstString.size(), secondString.size());
+		int sizeWidth = longestSize * font->GetWidthChar();
+		SetDynamicSize(false);
+		SetSizeWidth(sizeWidth);
 	}
-	T GetActiveState() const
+
+	T GetActiveStateValue() const
 	{
-		return activeState;
+		return (bool(state) ? secondStateValue : firstStateValue);
 	}
+
+
 	void ProcessMouse(const Mouse::Event& e) override
 	{
 		Button::ProcessMouse(e);
 		if (IsClicked()) {
-			std::swap(activeState, inactiveState);
-			std::swap(activeString, inactiveString);
-			std::swap(activeColor, inactiveColor);
-
-			SetText(activeString);
-			SetBackground(true, activeColor);
+			state = State(!bool(state));
+			SetText(bool(state) ? secondString : firstString);
+			SetBackground(true, bool(state) ?  secondBackgroundColor : firstBackgroundColor);
 		}
 	}
 private:
-	T activeState;
-	T inactiveState;
-	std::string activeString;
-	std::string inactiveString;
-	Color activeColor;
-	Color inactiveColor;
+	State state = State::First;
+	T firstStateValue;
+	T secondStateValue;
+	std::string firstString;
+	std::string secondString;
+	Color firstBackgroundColor;
+	Color secondBackgroundColor;
 };

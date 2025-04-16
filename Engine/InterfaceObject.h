@@ -29,7 +29,7 @@
  // 
  // 
  // > SetText(...) updates size
- // > box-sizing: border-box;
+ // > box-sizing: content-box;
  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  
 
 #pragma once
@@ -76,7 +76,7 @@ public:
 		}
 
 		//////// text drawing ////////
-		Vei2 textPos = pos + Vei2{ paddingX + borderSize, paddingY + borderSize };
+		Vei2 textPos = pos + Vei2{ borderSize + paddingX, borderSize + paddingY };
 		// positionCenter
 		if (isSetPositionCenter){
 			textPos -= Vei2{ sizeWidth / 2 + borderSize + paddingX, sizeHeight / 2 + borderSize + paddingY };
@@ -97,7 +97,6 @@ public:
 	virtual RectI GetRect() const
 	{
 		const int borderSize = isSetBorder ? this->borderSize : 0;
-
 		if (isSetPositionCenter == false) return RectI(pos, sizeWidth + paddingX * 2 + borderSize * 2, sizeHeight + paddingY * 2 + borderSize * 2);
 		else return RectI::FromCenter(pos, sizeWidth / 2 + paddingX + borderSize, sizeHeight / 2 + paddingY + borderSize);
 	}
@@ -108,6 +107,10 @@ public:
 	Vei2 GetPos() const
 	{
 		return pos;
+	}
+	int GetHeight() const
+	{
+		return paddingY * 2 + borderSize * 2 + font->GetHeightChar();
 	}
 	virtual void ProcessMouse(const Mouse::Event& e)
 	{
@@ -124,7 +127,20 @@ public:
 
 		// clicked
 		if (hovered) {
-			clicked = (e.GetType() == Mouse::Event::Type::LPress);
+			if (e.GetType() == Mouse::Event::Type::LPress) {
+				clickedIn = true;
+			}
+			clicked =  clickedIn && e.GetType() == Mouse::Event::Type::LRelease;
+			if (clickedIn && e.LeftIsPressed()) {
+				active = true;
+			}
+			else {
+				active = false;
+			}
+		}
+		else {
+			active = false;
+			clickedIn = false;
 		}
 	}
 	bool IsClicked() const
@@ -145,6 +161,14 @@ public:
 	std::string GetText() const
 	{
 		return text;
+	}
+	void SetSizeWidth(int width)
+	{
+		this->sizeWidth = width;
+	}
+	void SetSizeHeight(int height)
+	{
+		this->sizeHeight = height;
 	}
 
 public:
@@ -226,7 +250,7 @@ public:
 		this->paddingY = paddingY;
 	}
 	// border
-	void SetBorder(bool set = true, int size = 5, Color color = Colors::Gray, Color colorHovered = Colors::Blue, Color colorActive)
+	void SetBorder(bool set = true, int size = 5, Color color = Colors::Gray, Color colorHovered = Colors::Blue, Color colorActive = Colors::Green)
 	{
 		this->isSetBorder = set;
 		this->borderSize = size;
@@ -249,6 +273,7 @@ protected:
 	std::string text;
 	bool hovered = false;
 	bool clicked = false;
+	bool clickedIn = false;
 	bool active = false;
 	Sound hoverSound = { L"Files/Sounds/menu_boop.wav" };
 	bool hoveredAlready = false;
@@ -265,7 +290,6 @@ protected:
 	bool isSetFontHoverDarker = true;
 	// text
 	bool isSetTextAlignCenter = true;
-	static constexpr Color fontColor = Colors::Black;
 	// size (width and height are set according to the font size)
 	int sizeWidth;
 	int sizeHeight;

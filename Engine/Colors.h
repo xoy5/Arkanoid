@@ -125,4 +125,6 @@ namespace Colors
 	static constexpr Color Purple = MakeRGB(128u, 0u, 128u);
 	static constexpr Color Pink = MakeRGB(255u, 119u, 130u);
 	static constexpr Color Grapefruit = MakeRGB(255u, 20u, 60u);
+	static constexpr Color LightGreen = MakeRGB(144u, 238u, 144u);
+	static constexpr Color LightRed = MakeRGB(255u, 127u, 127u);
 }
