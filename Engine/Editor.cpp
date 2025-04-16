@@ -100,7 +100,7 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 			buttonLoad.ProcessMouse(event);
 			buttonSave.ProcessMouse(event);
 			buttonClearBrickGrid.ProcessMouse(event);
-			textBoxFilename.DoFocusMouse(event);
+			textBoxFilename.ProcessMouse(event);
 		}
 
 		if (buttonClearBrickGrid.IsClicked()) {

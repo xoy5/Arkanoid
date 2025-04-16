@@ -112,10 +112,10 @@ public:
 	{
 		return paddingY * 2 + borderSize * 2 + font->GetHeightChar();
 	}
-	virtual void ProcessMouse(const Mouse::Event& e)
+	virtual void ProcessMouse(const Mouse::Event& event)
 	{
 		// hovered
-		hovered = GetRect().Contains(e.GetPos());
+		hovered = GetRect().Contains(event.GetPos());
 
 		if (hovered && !hoveredAlready) {
 			hoverSound.Play();
@@ -127,11 +127,11 @@ public:
 
 		// clicked
 		if (hovered) {
-			if (e.GetType() == Mouse::Event::Type::LPress) {
+			if (event.GetType() == Mouse::Event::Type::LPress) {
 				clickedIn = true;
 			}
-			clicked =  clickedIn && e.GetType() == Mouse::Event::Type::LRelease;
-			if (clickedIn && e.LeftIsPressed()) {
+			clicked =  clickedIn && event.GetType() == Mouse::Event::Type::LRelease;
+			if (clickedIn && event.LeftIsPressed()) {
 				active = true;
 			}
 			else {

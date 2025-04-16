@@ -86,6 +86,8 @@ private:
 	PowerUpManager gf_powerUpManager;
 	Editor gf_editor;
 
+	TextBox fag = TextBox(&fontTiny, Graphics::GetScreenCenter());
+
 	// TO DO
 	// Better collision based on circle
 	// Scaling

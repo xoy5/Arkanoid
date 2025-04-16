@@ -34,6 +34,9 @@ Game::Game(MainWindow& wnd)
 	gf_editor(*this)
 {
 	wnd.kbd.DisableAutorepeat();
+	fag.SetSizeWidth(200);
+	fag.SetTextAlignCenter(true);
+	fag.SetPositionCenter(true);
 }
 
 void Game::Go()
@@ -90,6 +93,7 @@ void Game::ProcessInput()
 	{
 		const char character = wnd.kbd.ReadChar();
 		gf_editor.ProcessInputChar(character);
+		fag.Interact(character);
 	}
 	////////////////////////////////////
 
@@ -100,6 +104,7 @@ void Game::ProcessInput()
 		// buttons
 		// editor
 		gf_editor.ProcessMouse(e);
+		fag.ProcessMouse(e);
 	}
 	////////////////////////////////////
 }
@@ -138,4 +143,5 @@ void Game::ComposeFrame()
 		}
 	}
 	gf_editor.Draw(gfx);
+	fag.Draw(gfx);
 }

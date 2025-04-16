@@ -17,18 +17,39 @@ public:
 	{
 		InterfaceObject::SetTextAlignCenter();
 	}
-	void DoFocusMouse(const Mouse::Event& event)
+	void ProcessMouse(const Mouse::Event& event) override
 	{
-		if (event.GetType() == Mouse::Event::Type::LPress)
+		// hovered
+		hovered = GetRect().Contains(event.GetPos());
+
+		if (hovered && !hoveredAlready) {
+			hoverSound.Play();
+			hoveredAlready = true;
+		}
+		else if (!hovered) {
+			hoveredAlready = false;
+		}
+
+		// clicked
+		if (hovered) {
+			if (event.GetType() == Mouse::Event::Type::LPress) {
+				clickedIn = true;
+			}
+
+			clicked = clickedIn && event.GetType() == Mouse::Event::Type::LRelease;
+		}
+
+		// active
+		if (clicked)
 		{
-			focused = GetRect().Contains(event.GetPos());
-			if (focused) {
+			if (hovered) {
 				InterfaceObject::SetActive(true);
 			}
 			else {
 				InterfaceObject::SetActive(false);
 			}
 		}
+		   
 	}
 	void Interact(char character)
 	{
