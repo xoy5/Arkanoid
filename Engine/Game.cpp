@@ -29,15 +29,10 @@ Game::Game(MainWindow& wnd)
 	wnd(wnd),
 	gfx(wnd),
 	gf_powerUpManager(*this),
-	gf_ballManager(*this, paddle.GetRect().GetCenter() - Vec2{ 0.0f, float(paddle.GetHeight()) / 2.0f + 15.0f }, true),
+	gf_ballManager(*this),
 	gf_brickGrid(*this, 325),
 	gf_editor(*this)
-{
-	wnd.kbd.DisableAutorepeat();
-	fag.SetSizeWidth(200);
-	fag.SetTextAlignCenter(true);
-	fag.SetPositionCenter(true);
-}
+{}
 
 void Game::Go()
 {
@@ -93,7 +88,6 @@ void Game::ProcessInput()
 	{
 		const char character = wnd.kbd.ReadChar();
 		gf_editor.ProcessInputChar(character);
-		fag.Interact(character);
 	}
 	////////////////////////////////////
 
@@ -104,7 +98,6 @@ void Game::ProcessInput()
 		// buttons
 		// editor
 		gf_editor.ProcessMouse(e);
-		fag.ProcessMouse(e);
 	}
 	////////////////////////////////////
 }
@@ -114,14 +107,10 @@ void Game::UpdateModel(float dt)
 	if (gf_editor.IsHandlingMessage() == false) {
 		gf_powerUpManager.Update(dt);
 		paddle.Update(dt, wnd.kbd);
-		gf_ballManager.Update(dt, wnd.kbd   );
-
-
+		gf_ballManager.Update(dt, wnd.kbd);
 		gf_powerUpManager.DoCollectAndUsePowerUp();
-
 		gf_ballManager.BrickGrid_DoBallCollision();
-		gf_ballManager.Paddle_DoBallCollision()
-			;
+		gf_ballManager.Paddle_DoBallCollision();
 		gf_powerUpManager.DoWallCollision();
 		paddle.DoWallCollision(walls);
 		gf_ballManager.DoWallCollision();
@@ -143,5 +132,4 @@ void Game::ComposeFrame()
 		}
 	}
 	gf_editor.Draw(gfx);
-	fag.Draw(gfx);
 }

@@ -15,7 +15,7 @@ public:
 		:
 		InterfaceObject(font, text, pos)
 	{
-		InterfaceObject::SetTextAlignCenter();
+		SetTextAlignCenter(false);
 	}
 	void ProcessMouse(const Mouse::Event& event) override
 	{
@@ -32,24 +32,16 @@ public:
 
 		// clicked
 		if (hovered) {
-			if (event.GetType() == Mouse::Event::Type::LPress) {
-				clickedIn = true;
-			}
-
-			clicked = clickedIn && event.GetType() == Mouse::Event::Type::LRelease;
-		}
-
-		// active
-		if (clicked)
-		{
-			if (hovered) {
-				InterfaceObject::SetActive(true);
-			}
-			else {
-				InterfaceObject::SetActive(false);
+			clicked = (event.GetType() == Mouse::Event::Type::LPress);
+			if (clicked) {
+				active = true;
+				focused = true;
 			}
 		}
-		   
+		else if (event.GetType() == Mouse::Event::Type::LPress) {
+			active = false;
+			focused = false;
+		}
 	}
 	void Interact(char character)
 	{
@@ -57,9 +49,11 @@ public:
 		{
 			if (character == 8 && !text.empty()) {
 				text.pop_back();
+				SetSizeWidth(sizeWidth - font->GetWidthChar());
 			}
 			else if (character != 8) {
 				text += character;
+				SetSizeWidth(sizeWidth + font->GetWidthChar());
 			}
 		}
 	}
@@ -71,10 +65,7 @@ public:
 	{
 		focused = false;
 	}
-	RectI GetRect() const override
-	{
-		return RectI{ pos.x, pos.x + (paddingX * 2) + std::max(int(text.size()) * font->GetWidthChar(), font->GetWidthChar()), pos.y, pos.y + GetHeight() };
-	}
+
 private:
 	bool focused = false;
 	static constexpr Color borderColorFocused = Colors::Green;

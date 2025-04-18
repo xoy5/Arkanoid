@@ -11,8 +11,8 @@
 class Paddle
 {
 public:
-	explicit Paddle(const Vec2& pos, float speed = 360.0f, int width = 110, int height = 30.0f, const Color& color = Colors::White);
-	explicit Paddle(float speed = 360.0f, int width = 110, int height = 30, const Color& color = Colors::White);
+	explicit Paddle(const Vec2& pos, float speed = 360.0f, int width = 50, int height = 15, const Color& color = Colors::White);
+	explicit Paddle(float speed = 360.0f, int width = 50, int height = 15, const Color& color = Colors::White);
 	void Draw(Graphics& gfx) const;
 	void Update(float dt, const Keyboard& kbd);
 	void SetAttributesToDefault();
@@ -32,4 +32,5 @@ private:
 	Vec2 vel = Vec2{0.0f, 0.0f};
 	const PaddleAttributes defaultAttr;
 	PaddleAttributes attr;
+	const int maxWidth;
 };

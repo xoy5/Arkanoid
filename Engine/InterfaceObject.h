@@ -28,7 +28,7 @@
  //   within a class that contains an `enum class`.  
  // 
  // 
- // > SetText(...) updates size
+ // > SetText(...) updates size u can change it by SetDynamicSize(false);
  // > box-sizing: content-box;
  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  
 
@@ -94,7 +94,7 @@ public:
 	{
 		this->active = set;
 	}
-	virtual RectI GetRect() const
+	RectI GetRect() const
 	{
 		const int borderSize = isSetBorder ? this->borderSize : 0;
 		if (isSetPositionCenter == false) return RectI(pos, sizeWidth + paddingX * 2 + borderSize * 2, sizeHeight + paddingY * 2 + borderSize * 2);
@@ -130,7 +130,9 @@ public:
 			if (event.GetType() == Mouse::Event::Type::LPress) {
 				clickedIn = true;
 			}
-			clicked =  clickedIn && event.GetType() == Mouse::Event::Type::LRelease;
+
+			clicked = (clickedIn && event.GetType() == Mouse::Event::Type::LRelease);
+
 			if (clickedIn && event.LeftIsPressed()) {
 				active = true;
 			}

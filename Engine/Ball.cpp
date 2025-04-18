@@ -2,20 +2,23 @@
 
 Ball::Ball(const Vec2& posCenter, bool onPaddle, float speed, int radius, const Color& color)
 	:
-	attr({ speed, radius, color }),
+	speed(speed),
+	radius(radius),
+	color(color),
 	posCenter(posCenter),
-	vel(Vec2{ 0.0f, (onPaddle ? -1.0f : 1.0f) * attr.speed })
+	vel(Vec2{ 0.0f, (onPaddle ? -1.0f : 1.0f) * speed })
 {}
 Ball::Ball(float speed, int radius, const Color& color)
 	:
-	attr({ speed, radius, color }),
+	speed(speed), 
+	radius(radius), 
+	color(color),
 	posCenter(Vec2{ float((Graphics::ScreenWidth / 2) - (radius / 2)), float(Graphics::ScreenHeight / 5 * 3) }),
-	//posCenter(Vec2{190, 500}),
-	vel(Vec2{ 0.0f, 1.0f * attr.speed}) 
+	vel(Vec2{ 0.0f, 1.0f * speed}) 
 {}
 void Ball::Draw(Graphics & gfx) const
 {
-	gfx.DrawCircle(posCenter, attr.radius, attr.color);
+	gfx.DrawCircle(posCenter, radius, color);
 }
 
 void Ball::Update(float dt)
@@ -42,11 +45,11 @@ void Ball::DoBrickPrecisionMoveX(const RectF& rect)
 	RectF ballRect = GetRect();
 	// left
 	if (vel.x < 0) {
-		posCenter.x = rect.right + attr.radius;
+		posCenter.x = rect.right + radius;
 	}
 	// right
 	else if (vel.x > 0) {
-		posCenter.x = rect.left - attr.radius;
+		posCenter.x = rect.left - radius;
 	}
 }
 
@@ -55,11 +58,11 @@ void Ball::DoBrickPrecisionMoveY(const RectF& rect)
 	RectF ballRect = GetRect();
 	// top
 	if (vel.y > 0) {
-		posCenter.y = rect.top - attr.radius;
+		posCenter.y = rect.top - radius;
 	}
 	// bottom
 	else if (vel.y < 0) {
-		posCenter.y = rect.bottom + attr.radius;
+		posCenter.y = rect.bottom + radius;
 	}
 }
 
@@ -68,11 +71,11 @@ void Ball::DoPaddlePrecisionMoveX(const RectF& rect, const Vec2& vel)
 	RectF ballRect = GetRect();
 	// left
 	if (vel.x < 0) {
-		posCenter.x = rect.right + attr.radius;
+		posCenter.x = rect.right + radius;
 	}
 	// right
 	else if (vel.x > 0) {
-		posCenter.x = rect.left - attr.radius;
+		posCenter.x = rect.left - radius;
 	}
 }
 
@@ -81,11 +84,11 @@ void Ball::DoPaddlePrecisionMoveY(const RectF& rect, const Vec2& vel)
 	RectF ballRect = GetRect();
 	// top
 	if (vel.y > 0) {
-		posCenter.y = rect.top - attr.radius;
+		posCenter.y = rect.top - radius;
 	}
 	// bottom
 	else if (vel.y < 0) {
-		posCenter.y = rect.bottom + attr.radius;
+		posCenter.y = rect.bottom + radius;
 	}
 }
 
@@ -121,7 +124,7 @@ Ball::WallHit Ball::DoWallCollision(const RectF& walls)
 
 void Ball::SetDirection(const Vec2& dir)
 {
-	vel = dir.GetNormalized() * attr.speed;
+	vel = dir.GetNormalized() * speed;
 }
 
 void Ball::ResetPaddleCooldown()
@@ -141,7 +144,7 @@ bool Ball::GetPaddleCooldown() const
 
 RectF Ball::GetRect() const
 {
-	RectF rect = RectF::FromCenter(posCenter, attr.radius, attr.radius);
+	RectF rect = RectF::FromCenter(posCenter, radius, radius);
 	rect.left += 1;
 	rect.top += 1; 
 	return rect;

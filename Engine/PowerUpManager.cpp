@@ -4,7 +4,7 @@
 PowerUpManager::PowerUpManager(Game& game)
 	:
 	game(game),
-	spriteBox(std::make_shared<Surface>("Files/Sprites/PowerUpBox.bmp"))
+	spriteBox(std::make_shared<Surface>("Files/Sprites/PowerUpBox15x15.bmp"))
 {
 }
 

@@ -4,14 +4,16 @@ Paddle::Paddle(const Vec2& posCenter, float speed, int width, int height, const 
 	:
 	posCenter(posCenter),
 	defaultAttr(PaddleAttributes{ speed, width, height, color }),
-	attr(defaultAttr)
+	attr(defaultAttr),
+	maxWidth(int(width * 1.6f))
 {}
 
 Paddle::Paddle(float speed, int width, int height, const Color& color)
 	:
 	posCenter(Vec2{float(Graphics::ScreenWidth / 2), float(Graphics::ScreenHeight - Graphics::ScreenHeight / 8)}),
 	defaultAttr(PaddleAttributes{ speed, width, height, color }),
-	attr(defaultAttr)
+	attr(defaultAttr),
+	maxWidth(int(width * 1.6f))
 {}
 
 void Paddle::Draw(Graphics& gfx) const
@@ -110,7 +112,7 @@ int Paddle::GetWidth() const
 
 void Paddle::GrowWidth()
 {
-	attr.width = std::min(int(attr.width * 1.1f), 300);
+	attr.width = std::min(int(attr.width * 1.1f), maxWidth);
 }
 
 RectF Paddle::GetRect() const

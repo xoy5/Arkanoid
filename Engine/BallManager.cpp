@@ -1,18 +1,18 @@
 #include "BallManager.h"
 #include "Game.h"
 
-BallManager::BallManager(Game& game, const Vec2& posCenter, bool onPaddle, float speed, int radius, const Color& color)
-	:
-	game(game),
-	pBallOnPaddle{ new Ball(posCenter, onPaddle , speed, radius, color) }
-{
-}
-
-BallManager::BallManager(Game& game, float speed, int radius, const Color& color)
+BallManager::BallManager(Game& game)
 	:
 	game(game)
 {
-	balls.emplace_back(Ball{ speed, radius, color });
+	AddBallOnPaddle();
+}
+
+BallManager::BallManager(Game& game, Vec2 ballPos)
+	:
+	game(game)
+{
+	balls.emplace_back(Ball{ballPos, false});
 }
 
 BallManager::~BallManager()
@@ -104,7 +104,7 @@ void BallManager::DoWallCollision()
 void BallManager::AddBallOnPaddle()
 {
 	if (pBallOnPaddle == nullptr && int(balls.size()) < nMaxBalls) {
-		float offset = float(game.paddle.GetHeight()) / 2.0f + 15.0f;
+		float offset = float(game.paddle.GetHeight()) / 2.0f + 10.0f;
 		pBallOnPaddle = new Ball(game.paddle.GetRect().GetCenter() - Vec2{ 0.0f, offset }, true);
 	}
 }

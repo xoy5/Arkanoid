@@ -9,10 +9,3 @@ struct PaddleAttributes
 	int height;
 	Color color;
 };
-
-struct BallAttributes
-{
-	float speed;
-	int radius;
-	Color color;
-};
