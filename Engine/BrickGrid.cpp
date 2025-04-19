@@ -3,9 +3,10 @@
 #include <algorithm>
 #include <filesystem>
 
-BrickGrid::BrickGrid(Game& game, int brickGridWidth, int nRowBricks)
+BrickGrid::BrickGrid(Game& game, const std::string& dir, int brickGridWidth, int nRowBricks)
 	:
-	game(game)
+	game(game),
+	directory(dir)
 {
 	int brickGridWHeight = nRowBricks * (brickHeight + gapY) - gapY;
 	int nColBricks = (brickGridWidth + gapX) / (brickWidth + gapX);
@@ -257,12 +258,12 @@ constexpr void BrickGrid::SetFilenameBat(std::string& filename)
 	filename += ".dat";
 }
 
-constexpr void BrickGrid::PrepareFilename(std::string& filename)
+void BrickGrid::PrepareFilename(std::string& filename)
 {
 	if (filename.empty()) {
 		filename = "default";
 	}
-	filename = directory.data() + filename;
+	filename = directory + filename;
 	SetFilenameBat(filename);
 }
 

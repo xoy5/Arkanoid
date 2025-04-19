@@ -17,11 +17,13 @@ public:
 	Editor(Game& game);
 	void Draw(Graphics& gfx) const;
 	void ChangeEditing();
-	bool IsEditing() const;
 	void ProcessInputChar(char character);
 	void ProcessMouse(const Mouse::Event& event);
-	bool IsHandlingMessage() const;
+
+public:
+	bool IsEditing() const;
 	bool IsEditingBrickGrid() const;
+	bool IsHandlingMessage() const;
 
 private:
 	Brick* CreateBrickWithDataFromButton() const;
@@ -34,7 +36,7 @@ private:
 	bool editingBrickGrid = false;
 	Brick* newBrick = nullptr;
 
-	Button buttonEditBrickGrid;
+	StateButton<bool> stateButtonEditBrickGrid;
 	Button buttonClearBrickGrid;
 	Button buttonLoad;
 	Button buttonSave;

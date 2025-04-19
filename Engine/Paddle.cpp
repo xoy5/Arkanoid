@@ -6,15 +6,17 @@ Paddle::Paddle(const Vec2& posCenter, float speed, int width, int height, const 
 	defaultAttr(PaddleAttributes{ speed, width, height, color }),
 	attr(defaultAttr),
 	maxWidth(int(width * 1.6f))
-{}
+{
+}
 
 Paddle::Paddle(float speed, int width, int height, const Color& color)
 	:
-	posCenter(Vec2{float(Graphics::ScreenWidth / 2), float(Graphics::ScreenHeight - Graphics::ScreenHeight / 8)}),
+	posCenter(Vec2{ float(Graphics::ScreenWidth / 2), float(Graphics::ScreenHeight - Graphics::ScreenHeight / 8) }),
 	defaultAttr(PaddleAttributes{ speed, width, height, color }),
 	attr(defaultAttr),
 	maxWidth(int(width * 1.6f))
-{}
+{
+}
 
 void Paddle::Draw(Graphics& gfx) const
 {
@@ -57,30 +59,29 @@ bool Paddle::DoBallCollision(Ball& ball) const
 	const RectF paddleRect = GetRect();
 	const RectF ballRect = ball.GetRect();
 	if (paddleRect.IsOverlappingWith(ballRect) == false) return false;
-
-	const Vec2 ballCenter = ball.GetPosCenter();
+	const Vec2 ballPosCenter = ball.GetPosCenter();
 	const Vec2 ballVel = ball.GetVelocity();
 
-	const bool oppositeX = std::signbit(vel.x) != std::signbit(ballVel.x);
-	const bool ballOverlappingSides =
-		ballRect.right > paddleRect.left && ballRect.left < paddleRect.right;
-
-	if (oppositeX || ballOverlappingSides)
-	{
-		// x collision
-		if (ballCenter.x < paddleRect.left || ballCenter.x > paddleRect.right) {
-			ball.DoBrickPrecisionMoveX(paddleRect);
-			ball.ReboundX();
+	// y collision
+	if (std::signbit(ballVel.x) == std::signbit((ballPosCenter - posCenter).x)
+		|| (ballPosCenter.x >= paddleRect.left && ballRect.right <= paddleRect.right)){
+		Vec2 dir;
+		const float xDifference = ballPosCenter.x - posCenter.x;
+		const int fixedZoneHalfWidth = (attr.width / 8);
+		const float fixedXComponent = fixedZoneHalfWidth * exitXFactor;
+		if (std::abs(xDifference) < fixedZoneHalfWidth)
+		{
+			dir = Vec2((xDifference < 0.0f ? -1.0f : 1.0f) * fixedXComponent, -1.0f);
 		}
-		else {
-			// y collision
-			const float halfWidth = (paddleRect.right - paddleRect.left) / 2.0f;
-			const float distanceFromCenter = ballCenter.x - (paddleRect.left + halfWidth);
-			const float normalized = distanceFromCenter / halfWidth;
-
-			ball.DoBrickPrecisionMoveY(paddleRect);
-			ball.SetDirection(Vec2{ normalized * 2.0f, -1.0f });
+		else
+		{
+			dir = Vec2(xDifference * exitXFactor, -1.0f);
 		}
+		ball.SetDirection(dir);
+	}
+	// x collision
+	else {
+		ball.ReboundX();
 	}
 
 	ball.SetLastObjectReboundPtr(this);
@@ -92,10 +93,10 @@ void Paddle::DoWallCollision(const RectF& walls)
 {
 	const RectF rect = GetRect();
 
-	if (rect.left < walls.left){
+	if (rect.left < walls.left) {
 		posCenter.x += walls.left - rect.left;
 	}
-	else if (rect.right > walls.right){
+	else if (rect.right > walls.right) {
 		posCenter.x -= rect.right - walls.right;
 	}
 }

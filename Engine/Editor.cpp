@@ -8,8 +8,8 @@ Editor::Editor(Game& game)
 	:
 	game(game),
 	font(&game.fontTiny),
-	buttonEditBrickGrid(font, "Edit BrickGrid", Vei2{ 20, 0 }),
-	buttonClearBrickGrid(font, "Clear", Vei2{ 20, buttonEditBrickGrid.GetRect().GetHeight() + buttonEditBrickGrid.GetPos().y}),
+	stateButtonEditBrickGrid(font, Vei2{20, 0}, false, true, "Editor YES", "Editor NO"),
+	buttonClearBrickGrid(font, "Clear", Vei2{ 20, stateButtonEditBrickGrid.GetRect().GetHeight() + stateButtonEditBrickGrid.GetPos().y}),
 	buttonLoad(font, "Load", Vei2{ 20, buttonClearBrickGrid.GetRect().GetHeight() + buttonClearBrickGrid.GetPos().y }),
 	buttonSave(font, "Save", Vei2{ 20, buttonLoad.GetRect().GetHeight() + buttonLoad.GetPos().y }),
 	stateButtonBrickType(font, Vei2{ 20, buttonSave.GetRect().GetHeight() + buttonSave.GetPos().y }, Brick::Type::Breakable, Brick::Type::Unbreakable, "Unbreakable", "Breakable"),
@@ -27,7 +27,7 @@ void Editor::Draw(Graphics& gfx) const
 		}
 		else
 		{
-			buttonEditBrickGrid.Draw(gfx);
+			stateButtonEditBrickGrid.Draw(gfx);
 			stateButtonBrickType.Draw(gfx);
 			if (editingBrickGrid == false) {
 				buttonLoad.Draw(gfx);
@@ -77,11 +77,11 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 	if (IsHandlingMessage() == false)
 	{
 		// Processing Mouse in GUI editor brick mode
-		buttonEditBrickGrid.ProcessMouse(event);
+		stateButtonEditBrickGrid.ProcessMouse(event);
 		stateButtonBrickType.ProcessMouse(event);
 
 		// Editing BrickGrid
-		if (buttonEditBrickGrid.IsClicked()) {
+		if (stateButtonEditBrickGrid.IsClicked()) {
 			editingBrickGrid = !editingBrickGrid;
 			if (editingBrickGrid) {
 				newBrick = CreateBrickWithDataFromButton();
@@ -90,7 +90,10 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 				delete newBrick;
 			}
 		}
-		else if(editingBrickGrid && game.wnd.mouse.LeftIsPressed()){
+		else if (stateButtonBrickType.IsClicked()) {
+			newBrick = CreateBrickWithDataFromButton();
+		}
+		else if(editingBrickGrid && event.GetType() == Mouse::Event::Type::LPress){
 			game.gf_brickGrid.AddBrickToGrid(newBrick);
 			newBrick = CreateBrickWithDataFromButton();
 		}

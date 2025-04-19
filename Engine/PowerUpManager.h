@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include <random>
+#include <string>
 
 #include "Graphics.h"
 #include "Surface.h"
@@ -12,12 +13,13 @@ class Game;
 class PowerUpManager
 {
 public:
-	PowerUpManager(Game& game);
+	PowerUpManager(Game& game, const std::string& filename);
 	void Draw(Graphics& gfx) const;
 	void Update(float dt);
 	void AddRng(const Vec2& posBrickCenter);
 	void DoCollectAndUsePowerUp();
 	void DoWallCollision();
+
 private:
 	Game& game;
 	std::vector<PowerUp> powerUps;

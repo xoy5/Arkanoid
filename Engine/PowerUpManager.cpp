@@ -1,10 +1,10 @@
 #include "PowerUpManager.h"
 #include "Game.h"
 
-PowerUpManager::PowerUpManager(Game& game)
+PowerUpManager::PowerUpManager(Game& game, const std::string& filename)
 	:
 	game(game),
-	spriteBox(std::make_shared<Surface>("Files/Sprites/PowerUpBox15x15.bmp"))
+	spriteBox(std::make_shared<Surface>(filename))
 {
 }
 

@@ -28,9 +28,9 @@ Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	gf_powerUpManager(*this),
+	gf_powerUpManager(*this, "Files/Sprites/PowerUpBox15x15.bmp"),
+	gf_brickGrid(*this, "Files/BrickGrid/", 325),
 	gf_ballManager(*this),
-	gf_brickGrid(*this, 325),
 	gf_editor(*this)
 {}
 

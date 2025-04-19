@@ -25,8 +25,6 @@ public:
 
 	void DoBrickPrecisionMoveX(const RectF& rect);
 	void DoBrickPrecisionMoveY(const RectF& rect);
-	void DoPaddlePrecisionMoveX(const RectF& rect, const Vec2& vel);
-	void DoPaddlePrecisionMoveY (const RectF& rect, const Vec2& vel);
 
 	WallHit DoWallCollision(const RectF& walls);
 	void SetDirection(const Vec2& dir);

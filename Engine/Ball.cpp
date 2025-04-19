@@ -66,32 +66,6 @@ void Ball::DoBrickPrecisionMoveY(const RectF& rect)
 	}
 }
 
-void Ball::DoPaddlePrecisionMoveX(const RectF& rect, const Vec2& vel)
-{
-	RectF ballRect = GetRect();
-	// left
-	if (vel.x < 0) {
-		posCenter.x = rect.right + radius;
-	}
-	// right
-	else if (vel.x > 0) {
-		posCenter.x = rect.left - radius;
-	}
-}
-
-void Ball::DoPaddlePrecisionMoveY(const RectF& rect, const Vec2& vel)
-{
-	RectF ballRect = GetRect();
-	// top
-	if (vel.y > 0) {
-		posCenter.y = rect.top - radius;
-	}
-	// bottom
-	else if (vel.y < 0) {
-		posCenter.y = rect.bottom + radius;
-	}
-}
-
 Ball::WallHit Ball::DoWallCollision(const RectF& walls)
 {
 	WallHit hit = WallHit::NoWallHit;
