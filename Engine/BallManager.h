@@ -21,13 +21,15 @@ public:
 	void Paddle_DoBallCollision();
 	void BrickGrid_DoBallCollision();
 	void DoWallCollision();
-	void AddBallOnPaddle();
+	void AddBallOnPaddlePlayer1(); 
+	void AddBallOnPaddlePlayer2();
 	void DoubleBallsX();
 
 private:
 	Game& game;
 	std::vector<Ball> balls;
-	Ball* pBallOnPaddle = nullptr;
+	Ball* pBallOnPaddlePlayer1 = nullptr;
+	Ball* pBallOnPaddlePlayer2 = nullptr;
 	bool curBallOnPaddle = false;
 	static constexpr int nMaxBalls = 100;
 };

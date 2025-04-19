@@ -3,14 +3,15 @@
 Brick::Brick(const RectF& rect)
 	:
 	rect(rect)
-{}
+{
+}
 RectF Brick::GetRect() const
 {
 	return rect;
 }
 void Brick::SetPos(const Vec2& pos)
 {
-	rect = RectF{pos, GetRect().GetWidth(), GetRect().GetHeight()};
+	rect = RectF{ pos, GetRect().GetWidth(), GetRect().GetHeight() };
 }
 void Brick::SetRect(const RectF& rect)
 {
@@ -29,66 +30,98 @@ void Brick::Load(std::ifstream& file)
 	file.read(reinterpret_cast<char*>(&rect), sizeof(rect));
 }
 //////////////////////////////////////////////////////////////////////////////
-BreakableBrick::BreakableBrick(const RectF& rect, int hp, const Color& color)
+BreakableBrick::BreakableBrick(const RectF& rect, const Color& color)
 	:
 	Brick(rect),
-	hp(hp),
 	color(color)
-{}
-void BreakableBrick::Draw(Graphics & gfx) const
+{
+}
+void BreakableBrick::Draw(Graphics& gfx) const
 {
 	gfx.DrawRect(rect, color);
-}
-void BreakableBrick::Hitted()
-{
-	if (!IsDestroyed())
-	{
-		// sound
-		hp -= 1;
-	}
-}
-bool BreakableBrick::IsDestroyed() const
-{
-	return hp <= 0;
-}
-void BreakableBrick::SetColor(const Color& color)
-{
-	this->color = color;
-}
-int BreakableBrick::GetHp() const
-{
-	return hp;
 }
 void BreakableBrick::Save(std::ofstream& file) const
 {
 	Type breakable = Type::Breakable;
-	file.write(reinterpret_cast<char*>(&breakable), sizeof(breakable));	
+	file.write(reinterpret_cast<char*>(&breakable), sizeof(breakable));
 	Brick::Save(file);
-	file.write(reinterpret_cast<const char*>(&hp), sizeof(hp));
 	file.write(reinterpret_cast<const char*>(&color), sizeof(color));
 }
 void BreakableBrick::Load(std::ifstream& file)
 {
 	Brick::Load(file);
+	file.read(reinterpret_cast<char*>(&color), sizeof(color));
+}
+void BreakableBrick::Hitted()
+{
+	if (!destroyed) {
+		// sound
+		destroyed = true;
+	}
+}
+bool BreakableBrick::IsDestroyed() const
+{
+	return destroyed;
+}
+void BreakableBrick::SetColor(const Color& color)
+{
+	this->color = color;
+}
+//////////////////////////////////////////////////////////////////////////////
+BreakableHpBrick::BreakableHpBrick(const RectF& rect, int hp, const Color& color)
+	:
+	Brick(rect),
+	hp(hp),
+	color(color)
+{
+}
+void BreakableHpBrick::Draw(Graphics& gfx) const
+{
+	gfx.DrawRect(rect, color);
+}
+void BreakableHpBrick::Save(std::ofstream& file) const
+{
+	Type breakableHp = Type::BreakableHp;
+	file.write(reinterpret_cast<char*>(&breakableHp), sizeof(breakableHp));
+	Brick::Save(file);
+	file.write(reinterpret_cast<const char*>(&hp), sizeof(hp));
+	file.write(reinterpret_cast<const char*>(&color), sizeof(color));
+}
+void BreakableHpBrick::Load(std::ifstream& file)
+{
+	Brick::Load(file);
 	file.read(reinterpret_cast<char*>(&hp), sizeof(hp));
 	file.read(reinterpret_cast<char*>(&color), sizeof(color));
+}
+void BreakableHpBrick::Hitted()
+{
+	if (!IsDestroyed()) {
+		// sound
+		hp -= 1;
+	}
+}
+bool BreakableHpBrick::IsDestroyed() const
+{
+	return hp <= 0;
+}
+void BreakableHpBrick::SetColor(const Color& color)
+{
+	this->color = color;
+}
+int BreakableHpBrick::GetHp() const
+{
+	return hp;
 }
 //////////////////////////////////////////////////////////////////////////////
 UnbreakableBrick::UnbreakableBrick(const RectF& rect)
 	:
 	Brick(rect)
-{}
-
-void UnbreakableBrick::Draw(Graphics & gfx) const
+{
+}
+void UnbreakableBrick::Draw(Graphics& gfx) const
 {
 	gfx.DrawRect(rect, Colors::Gray);
 }
-
-void UnbreakableBrick::Hitted()
-{
-	// sound or effect
-}
-
 void UnbreakableBrick::Save(std::ofstream& file) const
 {
 	Type unbreakable = Type::Unbreakable;
@@ -99,4 +132,13 @@ void UnbreakableBrick::Save(std::ofstream& file) const
 void UnbreakableBrick::Load(std::ifstream& file)
 {
 	Brick::Load(file);
+}
+void UnbreakableBrick::Hitted()
+{
+	// sound or effect
+}
+
+bool UnbreakableBrick::IsDestroyed() const
+{
+	return false;
 }

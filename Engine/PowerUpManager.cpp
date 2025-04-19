@@ -38,13 +38,27 @@ void PowerUpManager::AddRng(const Vec2& posBrickCenter)
 void PowerUpManager::DoCollectAndUsePowerUp()
 {
 	for (int i = 0; i < powerUps.size();) {
-		if (powerUps[i].GetRect().IsOverlappingWith(game.paddle.GetRect())) {
+		if (powerUps[i].GetRect().IsOverlappingWith(game.paddlePlayer1.GetRect())) {
 			switch (powerUps[i].GetType()) {
 			case PowerUp::Type::AddBall:
-				game.gf_ballManager.AddBallOnPaddle();
+				game.gf_ballManager.AddBallOnPaddlePlayer1();
 				break;
 			case PowerUp::Type::GrowWidthPaddle:
-				game.paddle.GrowWidth();
+				game.paddlePlayer1.GrowWidth();
+				break;
+			case PowerUp::Type::DoubleBalls:
+				game.gf_ballManager.DoubleBallsX();
+				break;
+			}
+			powerUps.erase(powerUps.begin() + i);
+		}
+		else if (powerUps[i].GetRect().IsOverlappingWith(game.paddlePlayer2.GetRect())) {
+			switch (powerUps[i].GetType()) {
+			case PowerUp::Type::AddBall:
+				game.gf_ballManager.AddBallOnPaddlePlayer2();
+				break;
+			case PowerUp::Type::GrowWidthPaddle:
+				game.paddlePlayer2.GrowWidth();
 				break;
 			case PowerUp::Type::DoubleBalls:
 				game.gf_ballManager.DoubleBallsX();

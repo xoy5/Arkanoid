@@ -40,7 +40,7 @@ private:
 public:
 	StateButton(const Font* font, const Vei2& pos, T firstStateValue, T secondStateValue,
 		const std::string& firstString, const std::string& secondString,
-		const Color& firstColor = Colors::LightGreen, const Color& secondColor = Colors::LightRed)
+		const Color& firstColor = Colors::LightGreen, const Color& secondColor = Colors::LightCoral)
 			:
 		Button(font, firstString, pos),
 		firstStateValue(firstStateValue),

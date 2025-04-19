@@ -31,7 +31,9 @@ Game::Game(MainWindow& wnd)
 	gf_powerUpManager(*this, "Files/Sprites/PowerUpBox15x15.bmp"),
 	gf_brickGrid(*this, "Files/BrickGrid/", 325),
 	gf_ballManager(*this),
-	gf_editor(*this)
+	gf_editor(*this),
+	paddlePlayer1(Paddle::Player::Player1, Vec2(Graphics::GetScreenCenter().x, walls.bottom - 15)),
+	paddlePlayer2(Paddle::Player::Player2, Vec2(Graphics::GetScreenCenter().x, walls.top + 15))
 {}
 
 void Game::Go()
@@ -76,9 +78,19 @@ void Game::ProcessInput()
 			{
 				switch (keyPressed.GetCode())
 				{
-				case 'M': gf_ballManager.AddBallOnPaddle(); break;
+				case 'M': 
+					gf_ballManager.AddBallOnPaddlePlayer1(); 
+					if (isTwoPlayerMode) {
+						gf_ballManager.AddBallOnPaddlePlayer2();
+					}
+					break;
 				case 'K': gf_ballManager.DoubleBallsX(); break;
-				case 'L': paddle.GrowWidth(); break;
+				case 'L': 
+					paddlePlayer1.GrowWidth(); 
+					if (isTwoPlayerMode) {
+						paddlePlayer2.GrowWidth();
+					}
+					break;
 				}
 			}
 		}
@@ -106,13 +118,21 @@ void Game::UpdateModel(float dt)
 {
 	if (gf_editor.IsHandlingMessage() == false) {
 		gf_powerUpManager.Update(dt);
-		paddle.Update(dt, wnd.kbd);
-		gf_ballManager.Update(dt, wnd.kbd);
+
+		paddlePlayer1.Update(dt, wnd.kbd);
+		paddlePlayer1.DoWallCollision(walls);
+		if (isTwoPlayerMode) {
+			paddlePlayer2.Update(dt, wnd.kbd);
+			paddlePlayer2.DoWallCollision(walls);
+		}
+
 		gf_powerUpManager.DoCollectAndUsePowerUp();
+
+		gf_ballManager.Update(dt, wnd.kbd);
 		gf_ballManager.BrickGrid_DoBallCollision();
 		gf_ballManager.Paddle_DoBallCollision();
+
 		gf_powerUpManager.DoWallCollision();
-		paddle.DoWallCollision(walls);
 		gf_ballManager.DoWallCollision();
 	}
 }
@@ -121,7 +141,10 @@ void Game::ComposeFrame()
 {
 	if (gf_editor.IsHandlingMessage() == false) {
 		gf_brickGrid.Draw(gfx);
-		paddle.Draw(gfx);
+		paddlePlayer1.Draw(gfx);
+		if (isTwoPlayerMode) {
+			paddlePlayer2.Draw(gfx);
+		}
 		gf_powerUpManager.Draw(gfx);
 		gf_ballManager.Draw(gfx);
 		if (gf_editor.IsEditing() == false) {

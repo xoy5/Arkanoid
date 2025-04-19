@@ -1,7 +1,8 @@
 #include "Paddle.h"
 
-Paddle::Paddle(const Vec2& posCenter, float speed, int width, int height, const Color& color)
+Paddle::Paddle(Player player, const Vec2& posCenter, float speed, int width, int height, const Color& color)
 	:
+	player(player),
 	posCenter(posCenter),
 	defaultAttr(PaddleAttributes{ speed, width, height, color }),
 	attr(defaultAttr),
@@ -9,8 +10,9 @@ Paddle::Paddle(const Vec2& posCenter, float speed, int width, int height, const 
 {
 }
 
-Paddle::Paddle(float speed, int width, int height, const Color& color)
+Paddle::Paddle(Player player, float speed, int width, int height, const Color& color)
 	:
+	player(player),
 	posCenter(Vec2{ float(Graphics::ScreenWidth / 2), float(Graphics::ScreenHeight - Graphics::ScreenHeight / 8) }),
 	defaultAttr(PaddleAttributes{ speed, width, height, color }),
 	attr(defaultAttr),
@@ -26,8 +28,14 @@ void Paddle::Draw(Graphics& gfx) const
 void Paddle::Update(float dt, const Keyboard& kbd)
 {
 	float xDir = 0.0f;
-	if (kbd.KeyIsPressed('A')) xDir += -1.0f;
-	if (kbd.KeyIsPressed('D')) xDir += 1.0f;
+	if (player == Player::Player1) {
+		if (kbd.KeyIsPressed('A')) xDir += -1.0f;
+		if (kbd.KeyIsPressed('D')) xDir += 1.0f;
+	}
+	else {
+		if (kbd.KeyIsPressed(VK_LEFT)) xDir += -1.0f;
+		if (kbd.KeyIsPressed(VK_RIGHT)) xDir += 1.0f;
+	}
 
 	vel = Vec2{ xDir * attr.speed, 0.0f };
 	posCenter += vel * dt;
@@ -62,8 +70,9 @@ bool Paddle::DoBallCollision(Ball& ball) const
 	const Vec2 ballPosCenter = ball.GetPosCenter();
 	const Vec2 ballVel = ball.GetVelocity();
 
+	float yDir = std::signbit(-ballVel.y) ? -1.0f : 1.0f;
 	// y collision
-	if (std::signbit(ballVel.x) == std::signbit((ballPosCenter - posCenter).x)
+	if ( ( std::signbit(ballVel.x) == std::signbit((ballPosCenter - posCenter).x) && ballVel.x != 0.0f)
 		|| (ballPosCenter.x >= paddleRect.left && ballRect.right <= paddleRect.right)){
 		Vec2 dir;
 		const float xDifference = ballPosCenter.x - posCenter.x;
@@ -71,17 +80,22 @@ bool Paddle::DoBallCollision(Ball& ball) const
 		const float fixedXComponent = fixedZoneHalfWidth * exitXFactor;
 		if (std::abs(xDifference) < fixedZoneHalfWidth)
 		{
-			dir = Vec2((xDifference < 0.0f ? -1.0f : 1.0f) * fixedXComponent, -1.0f);
+			dir = Vec2((xDifference < 0.0f ? -1.0f : 1.0f) * fixedXComponent, yDir);
 		}
 		else
 		{
-			dir = Vec2(xDifference * exitXFactor, -1.0f);
+			dir = Vec2(xDifference * exitXFactor, yDir);
 		}
 		ball.SetDirection(dir);
 	}
 	// x collision
 	else {
-		ball.ReboundX();
+		if (ballVel.x == 0.0f) {
+			ball.SetDirection(Vec2((std::signbit(ballPosCenter.x - posCenter.x) ? -1.0f : 1.0f), -yDir));
+		}
+		else {
+			ball.ReboundX();
+		}
 	}
 
 	ball.SetLastObjectReboundPtr(this);

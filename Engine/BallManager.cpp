@@ -5,7 +5,10 @@ BallManager::BallManager(Game& game)
 	:
 	game(game)
 {
-	AddBallOnPaddle();
+	AddBallOnPaddlePlayer1();
+	if (game.isTwoPlayerMode) {
+		AddBallOnPaddlePlayer2();
+	}
 }
 
 BallManager::BallManager(Game& game, Vec2 ballPos)
@@ -17,13 +20,17 @@ BallManager::BallManager(Game& game, Vec2 ballPos)
 
 BallManager::~BallManager()
 {
-	delete pBallOnPaddle;
+	delete pBallOnPaddlePlayer1;
+	delete pBallOnPaddlePlayer2;
 }
 
 void BallManager::Draw(Graphics& gfx) const
 {
-	if (pBallOnPaddle) {
-		pBallOnPaddle->Draw(gfx);
+	if (pBallOnPaddlePlayer1) {
+		pBallOnPaddlePlayer1->Draw(gfx);
+	}
+	if (game.isTwoPlayerMode && pBallOnPaddlePlayer2) {
+		pBallOnPaddlePlayer2->Draw(gfx);
 	}
 	for (const auto& b : balls) {
 		b.Draw(gfx);
@@ -32,15 +39,26 @@ void BallManager::Draw(Graphics& gfx) const
 
 void BallManager::Update(float dt, Keyboard& kbd)
 {
-	if(pBallOnPaddle)
+	if(pBallOnPaddlePlayer1)
 	{
-		if (kbd.KeyIsPressed(VK_SPACE)){
-			balls.emplace_back(std::move(*pBallOnPaddle));
-			delete pBallOnPaddle;
-			pBallOnPaddle = nullptr;
+		if (kbd.KeyIsPressed('W')) {
+			balls.emplace_back(std::move(*pBallOnPaddlePlayer1));
+			delete pBallOnPaddlePlayer1;
+			pBallOnPaddlePlayer1 = nullptr;
 		}
-		else if (pBallOnPaddle) {
-			pBallOnPaddle->UpdateByPaddleX(game.paddle.GetRect().GetCenter().x);
+		else if (pBallOnPaddlePlayer1) {
+			pBallOnPaddlePlayer1->UpdateByPaddleX(game.paddlePlayer1.GetRect().GetCenter().x);
+		}
+	}
+	if (game.isTwoPlayerMode && pBallOnPaddlePlayer2)
+	{
+		if (kbd.KeyIsPressed(VK_UP)) {
+			balls.emplace_back(std::move(*pBallOnPaddlePlayer2));
+			delete pBallOnPaddlePlayer2;
+			pBallOnPaddlePlayer2 = nullptr;
+		}
+		else if (pBallOnPaddlePlayer2) {
+			pBallOnPaddlePlayer2->UpdateByPaddleX(game.paddlePlayer2.GetRect().GetCenter().x);
 		}
 	}
 
@@ -57,7 +75,10 @@ void BallManager::ClearBalls()
 void BallManager::Paddle_DoBallCollision()
 {
 	for (auto& b : balls) {
-		game.paddle.DoBallCollision(b);
+		game.paddlePlayer1.DoBallCollision(b);
+		if (game.isTwoPlayerMode) {
+			game.paddlePlayer2.DoBallCollision(b);
+		}
 	}
 }
 
@@ -101,11 +122,19 @@ void BallManager::DoWallCollision()
 	}
 }
 
-void BallManager::AddBallOnPaddle()
+void BallManager::AddBallOnPaddlePlayer1()
 {
-	if (pBallOnPaddle == nullptr && int(balls.size()) < nMaxBalls) {
-		float offset = float(game.paddle.GetHeight()) / 2.0f + 10.0f;
-		pBallOnPaddle = new Ball(game.paddle.GetRect().GetCenter() - Vec2{ 0.0f, offset }, true);
+	if (pBallOnPaddlePlayer1 == nullptr && int(balls.size()) < nMaxBalls) {
+		float offset = float(game.paddlePlayer1.GetHeight()) / 2.0f + 10.0f;
+		pBallOnPaddlePlayer1 = new Ball(game.paddlePlayer1.GetRect().GetCenter() - Vec2{ 0.0f, offset }, true);
+	}
+}
+
+void BallManager::AddBallOnPaddlePlayer2()
+{
+	if (pBallOnPaddlePlayer2 == nullptr && int(balls.size()) < nMaxBalls) {
+		float offset = float(game.paddlePlayer2.GetHeight()) / 2.0f + 10.0f;
+		pBallOnPaddlePlayer2 = new Ball(game.paddlePlayer2.GetRect().GetCenter() + Vec2{ 0.0f, offset }, true);
 	}
 }
 

@@ -18,7 +18,7 @@ BrickGrid::BrickGrid(Game& game, const std::string& dir, int brickGridWidth, int
 	for (int y = 0; y < nRowBricks; y++, brickPos = Vec2{ gridPos.x, brickPos.y + brickHeight + gapY }) {
 		if (y == 4)
 		{
-			for (int x = 0; x < nColBricks; x++, brickPos += Vec2{ (float)brickWidth + (float)gapX, 0 }) 
+			for (int x = 0; x < nColBricks; x++, brickPos += Vec2{ (float)brickWidth + (float)gapX, 0 })
 			{
 				if (x % 2 == 0) {
 					bricks.emplace_back(new UnbreakableBrick(RectF(brickPos, brickPos + Vec2{ (float)brickWidth, (float)brickHeight })));
@@ -28,7 +28,7 @@ BrickGrid::BrickGrid(Game& game, const std::string& dir, int brickGridWidth, int
 		else
 		{
 			for (int x = 0; x < nColBricks; x++, brickPos += Vec2{ (float)brickWidth + (float)gapX, 0 }) {
-				bricks.emplace_back(new BreakableBrick(RectF(brickPos, brickPos + Vec2{ (float)brickWidth, (float)brickHeight }), x + 1, GetColorByHp(x + 1)));
+				bricks.emplace_back(new BreakableBrick(RectF(brickPos, brickPos + Vec2{ (float)brickWidth, (float)brickHeight }), Colors::Bisque));
 			}
 		}
 	}
@@ -52,35 +52,38 @@ BrickGrid::MessageFile BrickGrid::Load(std::string filename)
 
 	std::ifstream file(filename);
 
-	if (!file){
+	if (!file) {
 		messageFile = MessageFile::NotExists;
 		return messageFile;
 	};
 
 	bricks.clear();
 	game.gf_ballManager.ClearBalls();
-	game.gf_ballManager.AddBallOnPaddle();
+	game.gf_ballManager.AddBallOnPaddlePlayer1();
+	if (game.isTwoPlayerMode) {
+		game.gf_ballManager.AddBallOnPaddlePlayer2();
+	}
 
 	size_t nBricks = 0;
 	file.read(reinterpret_cast<char*>(&nBricks), sizeof(nBricks));
 
-	for (size_t i = 0; i < nBricks; i++) 
+	for (size_t i = 0; i < nBricks; i++)
 	{
 		Brick* brick = nullptr;
 		Brick::Type type;
 		file.read(reinterpret_cast<char*>(&type), sizeof(type));
 		switch (type)
 		{
-			case Brick::Type::Unbreakable:
-				brick = new UnbreakableBrick;
-				brick->Load(file);
-				break;
-			case Brick::Type::Breakable:
-				brick = new BreakableBrick;
-				brick->Load(file);
-				break;
-			default:
-				assert(false);
+		case Brick::Type::Unbreakable:
+			brick = new UnbreakableBrick;
+			brick->Load(file);
+			break;
+		case Brick::Type::Breakable:
+			brick = new BreakableBrick;
+			brick->Load(file);
+			break;
+		default:
+			assert(false);
 		}
 		bricks.emplace_back(brick);
 	}
@@ -101,7 +104,7 @@ BrickGrid::MessageFile BrickGrid::Save(std::string filename)
 
 	std::ofstream file(filename);
 
-	if (!file.good()){
+	if (!file.good()) {
 		messageFile = MessageFile::Error;
 		return messageFile;
 	}
@@ -126,13 +129,17 @@ Brick* BrickGrid::CreateBrick(Brick::Type type, const RectF& rect)
 {
 	Brick* brick = nullptr;
 
-	switch (type) 
+	switch (type)
 	{
+	case Brick::Type::Breakable:
+		brick = new BreakableBrick(rect, GetColorByHp(1));
+		break;
+	case Brick::Type::BreakableHp:
+		brick = new BreakableHpBrick(rect, 5, GetColorByHp(5));
+		break;
 	case Brick::Type::Unbreakable:
 		brick = new UnbreakableBrick(rect);
 		break;
-	case Brick::Type::Breakable:
-		brick = new BreakableBrick(rect, 1, GetColorByHp(1));
 	}
 
 	return brick;
@@ -219,26 +226,23 @@ void BrickGrid::ExecuteBallCollision(Ball& ball, int brickIndex, Vec2* pHitPos, 
 	}
 
 	bricks[brickIndex]->Hitted();
-	if (BreakableBrick* brick = dynamic_cast<BreakableBrick*>(bricks[brickIndex])) 
+	if (*pDestroyed = bricks[brickIndex]->IsDestroyed())
 	{
-		if (*pDestroyed = brick->IsDestroyed()) 
-		{
-			if (pHitPos) {
-				*pHitPos = bricks[brickIndex]->GetPosCenter();
-			}
-			delete bricks[brickIndex];
-			bricks[brickIndex] = std::move(bricks.back());
-			bricks.pop_back();
+		if (pHitPos) {
+			*pHitPos = bricks[brickIndex]->GetPosCenter();
 		}
-		else
-		{
-			UpdateBrickColor(brick);
-		}
+		delete bricks[brickIndex];
+		bricks[brickIndex] = std::move(bricks.back());
+		bricks.pop_back();
+	}
+	else if(BreakableHpBrick* brick = dynamic_cast<BreakableHpBrick*>(bricks[brickIndex]))
+	{
+		UpdateBrickColor(brick);
 	}
 }
 
 
-void BrickGrid::UpdateBrickColor(BreakableBrick* pBrick)
+void BrickGrid::UpdateBrickColor(BreakableHpBrick* pBrick)
 {
 	pBrick->SetColor(GetColorByHp(pBrick->GetHp()));
 }
@@ -270,9 +274,9 @@ void BrickGrid::PrepareFilename(std::string& filename)
 RectF BrickGrid::GetRectBrickForRoundPos(Vei2 posMouse)
 {
 	Vei2 posInGrid = posMouse - Vei2{ 0, topOffset };
-	if (posInGrid.x < 0 || posInGrid.y < 0) return RectF{0, brickWidth, 0, brickHeight};
+	if (posInGrid.x < 0 || posInGrid.y < 0) return RectF{ 0, brickWidth, 0, brickHeight };
 
-	Vei2 addToNext = Vei2{brickWidth+gapX, brickHeight+gapY};
+	Vei2 addToNext = Vei2{ brickWidth + gapX, brickHeight + gapY };
 	int fullBricksX = posInGrid.x / addToNext.x;
 	int fullBricksY = posInGrid.y / addToNext.y;
 

@@ -11,8 +11,15 @@
 class Paddle
 {
 public:
-	explicit Paddle(const Vec2& pos, float speed = 250.0f, int width = 50, int height = 15, const Color& color = Colors::White);
-	explicit Paddle(float speed = 250.0f, int width = 50, int height = 15, const Color& color = Colors::White);
+	enum class Player 
+	{
+		None,
+		Player1,
+		Player2
+	};
+public:
+	explicit Paddle(Player player, const Vec2& pos, float speed = 250.0f, int width = 50, int height = 15, const Color& color = Colors::White);
+	explicit Paddle(Player player, float speed = 250.0f, int width = 50, int height = 15, const Color& color = Colors::White);
 	void Draw(Graphics& gfx) const;
 	void Update(float dt, const Keyboard& kbd);
 	bool DoBallCollision(Ball& ball) const;
@@ -29,6 +36,7 @@ public:
 	RectF GetRect() const;
 
 private:
+	Player player;
 	Vec2 posCenter;
 	Vec2 vel = Vec2{0.0f, 0.0f};
 	const PaddleAttributes defaultAttr;

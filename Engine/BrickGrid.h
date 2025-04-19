@@ -27,6 +27,7 @@ public:
 		Deleted,
 		Error
 	};
+
 public:
 	BrickGrid(Game& game, const std::string& dir, int brickGridWidth = 600, int nRowBricks = 8);
 	~BrickGrid();
@@ -48,7 +49,7 @@ public:
 	static RectF GetRectBrickForRoundPos(Vei2 posMouse);
 
 private:
-	void UpdateBrickColor(BreakableBrick* pBrick);
+	void UpdateBrickColor(BreakableHpBrick* pBrick);
 	static constexpr Color GetColorByHp(int i);
 	static constexpr void SetFilenameBat(std::string& filename);
 	void PrepareFilename(std::string& filename);
@@ -61,7 +62,7 @@ private:
 	static constexpr int gapX = 1;
 	static constexpr int gapY = 1;
 	static constexpr int topOffset = 15;
-	static constexpr Color colorsBricks[] = { Colors::Red, Colors::Grapefruit, Colors::Pink, Colors::Purple, Colors::Green, Colors::Yellow, Colors::Blue, Colors::Cyan };
-	static constexpr int colorsBricksSize = 8;
+	static constexpr Color colorsBricks[] = { Colors::Red, Colors::Orange, Colors::Yellow, Colors::GreenYellow, Colors::Green };
+	static constexpr int colorsBricksSize = 5;
 	const std::string directory;
 };

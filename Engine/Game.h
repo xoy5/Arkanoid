@@ -80,14 +80,18 @@ private:
 	friend class Editor;
 
 	// Objects
-	Paddle paddle;
+	Paddle paddlePlayer1;
+	bool isTwoPlayerMode = true;
+	Paddle paddlePlayer2;
 	BrickGrid gf_brickGrid;
 	BallManager gf_ballManager;
 	PowerUpManager gf_powerUpManager;
 	Editor gf_editor;
 
 	// TO DO
-	// Better collision based on circle
+	// more Bricks types
+	// Enemies 
+	// More power ups
 	// Scaling
 	// Animation
 	// Sounds
