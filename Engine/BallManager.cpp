@@ -1,9 +1,11 @@
 #include "BallManager.h"
 #include "Game.h"
 
-BallManager::BallManager(Game& game)
+BallManager::BallManager(Game& game, float speed, float radius)
 	:
-	game(game)
+	game(game),
+	ballsSpeed(speed),
+	ballsRadius(radius)
 {
 	AddBallOnPaddlePlayer1();
 	if (game.isTwoPlayerMode) {
@@ -11,11 +13,13 @@ BallManager::BallManager(Game& game)
 	}
 }
 
-BallManager::BallManager(Game& game, Vec2 ballPos)
+BallManager::BallManager(Game& game, Vec2 ballPos, float radius, float speed)
 	:
-	game(game)
+	game(game),
+	ballsSpeed(speed),
+	ballsRadius(radius)
 {
-	balls.emplace_back(Ball{ballPos, false});
+	balls.emplace_back(Ball{ballPos, false, ballsSpeed, ballsRadius});
 }
 
 BallManager::~BallManager()
@@ -112,10 +116,21 @@ void BallManager::DoWallCollision()
 			balls[i] = std::move(balls.back());
 			balls.pop_back();
 			break;
+		case Ball::WallHit::TopWallHit:
+			if (game.isTwoPlayerMode) {
+				balls[i] = std::move(balls.back());
+				balls.pop_back();
+			}
+			else {
+				balls[i].SetLastObjectReboundPtr(&game.walls);
+				i++;
+			}
+			break;
 		case Ball::WallHit::WallHit:
 			balls[i].SetLastObjectReboundPtr(&game.walls);
-			[[fallthrough]];
-		default:
+			i++;
+			break;
+		case Ball::WallHit::NoWallHit:
 			i++;
 			break;
 		}
@@ -126,7 +141,7 @@ void BallManager::AddBallOnPaddlePlayer1()
 {
 	if (pBallOnPaddlePlayer1 == nullptr && int(balls.size()) < nMaxBalls) {
 		float offset = float(game.paddlePlayer1.GetHeight()) / 2.0f + 10.0f;
-		pBallOnPaddlePlayer1 = new Ball(game.paddlePlayer1.GetRect().GetCenter() - Vec2{ 0.0f, offset }, true);
+		pBallOnPaddlePlayer1 = new Ball(game.paddlePlayer1.GetRect().GetCenter() - Vec2{ 0.0f, offset }, true, ballsSpeed, ballsRadius );
 	}
 }
 
@@ -134,7 +149,7 @@ void BallManager::AddBallOnPaddlePlayer2()
 {
 	if (pBallOnPaddlePlayer2 == nullptr && int(balls.size()) < nMaxBalls) {
 		float offset = float(game.paddlePlayer2.GetHeight()) / 2.0f + 10.0f;
-		pBallOnPaddlePlayer2 = new Ball(game.paddlePlayer2.GetRect().GetCenter() + Vec2{ 0.0f, offset }, true);
+		pBallOnPaddlePlayer2 = new Ball(game.paddlePlayer2.GetRect().GetCenter() + Vec2{ 0.0f, offset }, true, ballsSpeed, ballsRadius);
 	}
 }
 

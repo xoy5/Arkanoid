@@ -35,7 +35,6 @@ void Editor::Draw(Graphics& gfx) const
 				buttonClearBrickGrid.Draw(gfx);
 
 				font->DrawText("filename:", { 20, textBoxFilename.GetRect().top }, Colors::White, gfx);
-				/*font->DrawText("filename:", { 20, textBoxFilename.GetRect().top + textBoxFilename.GetPadding().y }, Colors::White, gfx);*/
 				textBoxFilename.Draw(gfx);
 			}
 			else {
@@ -44,23 +43,6 @@ void Editor::Draw(Graphics& gfx) const
 			}
 		}
 	}
-}
-
-void Editor::ChangeEditing()
-{
-	textBoxFilename.SetText("");
-	if (editing == true) {
-		textBoxFilename.SetFocusOff();
-	}
-	else {
-		game.wnd.kbd.Flush();
-	}
-	editing = !editing;
-}
-
-bool Editor::IsEditing() const
-{
-	return editing;
 }
 
 void Editor::ProcessInputChar(char character)
@@ -199,9 +181,23 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 	//////////////////////////////////////////////////////////////
 }
 
-bool Editor::IsHandlingMessage() const
+///// Setters and Getters /////
+
+void Editor::ChangeEditing()
 {
-	return messageFile != BrickGrid::MessageFile::NoMessage;
+	textBoxFilename.SetText("");
+	if (editing == true) {
+		textBoxFilename.SetFocusOff();
+	}
+	else {
+		game.wnd.kbd.Flush();
+	}
+	editing = !editing;
+}
+
+bool Editor::IsEditing() const
+{
+	return editing;
 }
 
 bool Editor::IsEditingBrickGrid() const
@@ -209,8 +205,13 @@ bool Editor::IsEditingBrickGrid() const
 	return editingBrickGrid;
 }
 
+bool Editor::IsHandlingMessage() const
+{
+	return messageFile != BrickGrid::MessageFile::NoMessage;
+}
+
 Brick* Editor::CreateBrickWithDataFromButton() const
 {
 	RectF rect = BrickGrid::GetRectBrickForRoundPos(game.wnd.mouse.GetPos());
-	return BrickGrid::CreateBrick(stateButtonBrickType.GetActiveStateValue(), rect);
+	return game.gf_brickGrid.CreateBrick(stateButtonBrickType.GetActiveStateValue(), rect);
 }

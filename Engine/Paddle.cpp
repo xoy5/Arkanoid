@@ -1,28 +1,18 @@
 #include "Paddle.h"
 
-Paddle::Paddle(Player player, const Vec2& posCenter, float speed, int width, int height, const Color& color)
+Paddle::Paddle(Player player, const Vec2& posCenter, const Color& color)
 	:
 	player(player),
 	posCenter(posCenter),
-	defaultAttr(PaddleAttributes{ speed, width, height, color }),
-	attr(defaultAttr),
-	maxWidth(int(width * 1.6f))
+	color(color),
+	maxWidth(int(fixedWidth * 1.6f))
 {
 }
 
-Paddle::Paddle(Player player, float speed, int width, int height, const Color& color)
-	:
-	player(player),
-	posCenter(Vec2{ float(Graphics::ScreenWidth / 2), float(Graphics::ScreenHeight - Graphics::ScreenHeight / 8) }),
-	defaultAttr(PaddleAttributes{ speed, width, height, color }),
-	attr(defaultAttr),
-	maxWidth(int(width * 1.6f))
-{
-}
 
 void Paddle::Draw(Graphics& gfx) const
 {
-	gfx.DrawRect(GetRect(), attr.color);
+	gfx.DrawRect(GetRect(), color);
 }
 
 void Paddle::Update(float dt, const Keyboard& kbd)
@@ -37,33 +27,13 @@ void Paddle::Update(float dt, const Keyboard& kbd)
 		if (kbd.KeyIsPressed(VK_RIGHT)) xDir += 1.0f;
 	}
 
-	vel = Vec2{ xDir * attr.speed, 0.0f };
+	vel = Vec2{ xDir * speed, 0.0f };
 	posCenter += vel * dt;
-}
-
-void Paddle::SetAttributesToDefault()
-{
-	attr = defaultAttr;
-}
-
-void Paddle::SetSpeed(float speed)
-{
-	attr.speed = speed;
-}
-
-void Paddle::SetWidth(int width)
-{
-	attr.width = width;
-}
-
-void Paddle::SetColor(const Color& color)
-{
-	attr.color = color;
 }
 
 bool Paddle::DoBallCollision(Ball& ball) const
 {
-	if (ball.GetPaddleCooldown()) return false;
+	if (ball.GetLastObjectReboundPtr() == this) return false;
 	const RectF paddleRect = GetRect();
 	const RectF ballRect = ball.GetRect();
 	if (paddleRect.IsOverlappingWith(ballRect) == false) return false;
@@ -76,7 +46,7 @@ bool Paddle::DoBallCollision(Ball& ball) const
 		|| (ballPosCenter.x >= paddleRect.left && ballRect.right <= paddleRect.right)){
 		Vec2 dir;
 		const float xDifference = ballPosCenter.x - posCenter.x;
-		const int fixedZoneHalfWidth = (attr.width / 8);
+		const float fixedZoneHalfWidth = width / 8.0f;
 		const float fixedXComponent = fixedZoneHalfWidth * exitXFactor;
 		if (std::abs(xDifference) < fixedZoneHalfWidth)
 		{
@@ -99,7 +69,6 @@ bool Paddle::DoBallCollision(Ball& ball) const
 	}
 
 	ball.SetLastObjectReboundPtr(this);
-	ball.SetPaddleCooldown();
 	return true;
 }
 
@@ -115,22 +84,40 @@ void Paddle::DoWallCollision(const RectF& walls)
 	}
 }
 
-int Paddle::GetHeight() const
-{
-	return attr.height;
-}
-
-int Paddle::GetWidth() const
-{
-	return attr.width;
-}
-
 void Paddle::GrowWidth()
 {
-	attr.width = std::min(int(attr.width * 1.1f), maxWidth);
+	width = std::min(width * 1.1f, maxWidth);
 }
+
+///// Setter and Getters /////
+void Paddle::SetSpeed(float speed)
+{
+	this->speed = speed;
+}
+
+void Paddle::SetWidth(float width)
+{
+	this->width = width;
+}
+
+void Paddle::SetColor(const Color& color)
+{
+	this->color = color;
+}
+
+
+float Paddle::GetHeight() const
+{
+	return height;
+}
+
+float Paddle::GetWidth() const
+{
+	return width;
+}
+
 
 RectF Paddle::GetRect() const
 {
-	return RectF::FromCenter(posCenter, float(attr.width) / 2.0f, float(attr.height) / 2.0f);
+	return RectF::FromCenter(posCenter, width / 2.0f, height / 2.0f);
 }

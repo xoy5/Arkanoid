@@ -139,7 +139,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
-    <ClInclude Include="Attributes.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="BallManager.h" />
     <ClInclude Include="Brick.h" />
@@ -157,6 +156,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="InterfaceObject.h" />
+    <ClInclude Include="Sprite.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="MainWindow.h" />

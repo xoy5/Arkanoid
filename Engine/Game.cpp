@@ -28,12 +28,12 @@ Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	gf_powerUpManager(*this, "Files/Sprites/PowerUpBox15x15.bmp"),
-	gf_brickGrid(*this, "Files/BrickGrid/", 325),
-	gf_ballManager(*this),
+	gf_powerUpManager(*this, "Files/Sprites/PowerUpBox.bmp"),
+	gf_brickGrid(*this, "Files/BrickGrid/", "Files/Sprites/BricksRGBOP55x20.bmp", "Files/Sprites/UnbreakableBrick550x20.bmp"),
+	gf_ballManager(*this, 600.0f, 10.0f),
 	gf_editor(*this),
-	paddlePlayer1(Paddle::Player::Player1, Vec2(Graphics::GetScreenCenter().x, walls.bottom - 15)),
-	paddlePlayer2(Paddle::Player::Player2, Vec2(Graphics::GetScreenCenter().x, walls.top + 15))
+	paddlePlayer1(Paddle::Player::Player1, Vec2(walls.GetCenter().x, walls.bottom - 15), 600.0f),
+	paddlePlayer2(Paddle::Player::Player2, Vec2(walls.GetCenter().x, walls.top + 15), 600.0f)
 {}
 
 void Game::Go()
@@ -118,7 +118,7 @@ void Game::UpdateModel(float dt)
 {
 	if (gf_editor.IsHandlingMessage() == false) {
 		gf_powerUpManager.Update(dt);
-
+		gf_brickGrid.Update(dt);
 		paddlePlayer1.Update(dt, wnd.kbd);
 		paddlePlayer1.DoWallCollision(walls);
 		if (isTwoPlayerMode) {
@@ -139,6 +139,8 @@ void Game::UpdateModel(float dt)
 
 void Game::ComposeFrame()
 {
+	//gfx.DrawRect(walls.GetExpanded(20.0f), Colors::Blue);
+	//gfx.DrawRect(walls, Colors::Black);
 	if (gf_editor.IsHandlingMessage() == false) {
 		gf_brickGrid.Draw(gfx);
 		paddlePlayer1.Draw(gfx);

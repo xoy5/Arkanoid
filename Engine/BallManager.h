@@ -10,8 +10,8 @@ class Game;
 class BallManager
 {
 public:
-	BallManager(Game& game);
-	BallManager(Game& game, Vec2 ballPos);
+	BallManager(Game& game, float speed, float radius);
+	BallManager(Game& game, Vec2 ballPos, float speed, float radius);
 	~BallManager();
 	void Draw(Graphics& gfx) const;
 	void Update(float dt, Keyboard& kbd);
@@ -32,4 +32,6 @@ private:
 	Ball* pBallOnPaddlePlayer2 = nullptr;
 	bool curBallOnPaddle = false;
 	static constexpr int nMaxBalls = 100;
+	const float ballsSpeed;
+	const float ballsRadius;
 };

@@ -59,8 +59,8 @@ private:
 	const Font fontTiny = Font("Files/Fonts/font8x14.bmp");
 	const Font fontSm = Font("Files/Fonts/font16x28.bmp");
 	const Font fontLg = Font("Files/Fonts/font32x56.bmp");
-	const RectF walls = RectF(Graphics::GetScreenRect());
-	MyMessageBox myMessageBox = MyMessageBox(&fontSm);
+	RectF walls = RectF(Vec2{ 20.0f, 20.0f }, 605.0f, 580.0f);
+	MyMessageBox myMessageBox = MyMessageBox(&fontLg);
 	FrameTimer ft;
 	const float precision = 0.025f;
 	/////////// FPS //////////
@@ -80,8 +80,8 @@ private:
 	friend class Editor;
 
 	// Objects
+	bool isTwoPlayerMode = false;
 	Paddle paddlePlayer1;
-	bool isTwoPlayerMode = true;
 	Paddle paddlePlayer2;
 	BrickGrid gf_brickGrid;
 	BallManager gf_ballManager;
@@ -92,7 +92,6 @@ private:
 	// more Bricks types
 	// Enemies 
 	// More power ups
-	// Scaling
 	// Animation
 	// Sounds
 	// Editor Adding Bricks etc

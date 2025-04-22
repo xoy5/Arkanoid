@@ -16,11 +16,13 @@ class Editor
 public:
 	Editor(Game& game);
 	void Draw(Graphics& gfx) const;
-	void ChangeEditing();
+
+public:
 	void ProcessInputChar(char character);
 	void ProcessMouse(const Mouse::Event& event);
 
 public:
+	void ChangeEditing();
 	bool IsEditing() const;
 	bool IsEditingBrickGrid() const;
 	bool IsHandlingMessage() const;

@@ -61,6 +61,10 @@ public:
 	{
 		return Vec2_<T>( (left + right) / (T)2,(top + bottom) / (T)2 );
 	}
+	Vec2_<T> GetPos() const
+	{
+		return Vec2_<T>(left, top);
+	}
 	T GetWidth() const
 	{
 		return right - left;
