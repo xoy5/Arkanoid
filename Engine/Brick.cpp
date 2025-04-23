@@ -1,5 +1,8 @@
 #include "Brick.h"
+#include <assert.h>
+
 #include "SpriteEffect.h"
+
 
 Brick::Brick(const RectF& rect, const Sprite* sprite)
 	:
@@ -82,11 +85,29 @@ bool BreakableBrick::IsDestroyed() const
 	return destroyed;
 }
 
-void BreakableBrick::SetColor(const Color& color)
+void BreakableBrick::SetSpriteColor(const RectI& srcRectSpriteColor)
 {
-//	this->color = color;
+//	this->color = color;prite
 }
 
+RectI BreakableBrick::GetSrcRectSpriteColor(int i)
+{
+	assert(i >= 0);
+
+	switch (i % nColors)
+	{
+	case 0:
+		return srcRectRed;
+	case 1:
+		return srcRectGreen;
+	case 2:
+		return srcRectBlue;
+	case 3:
+		return srcRectOrange;
+	case 4:
+		return srcRectPink;
+	};
+}
 //////////////////////////////////////////////////////////////////////////////
 BreakableHpBrick::BreakableHpBrick(const RectF& rect, int hp, const Color& color)
 	:

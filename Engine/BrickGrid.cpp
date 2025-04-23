@@ -31,7 +31,7 @@ BrickGrid::BrickGrid(Game& game, const std::string& dir, const std::string& file
 		else
 		{
 			for (int x = 0; x < nColBricks; x++, brickPos += Vec2{ brickWidth, 0.0f }) {
-				bricks.emplace_back(new BreakableBrick(RectF(brickPos, brickPos + Vec2{ brickWidth, brickHeight }), &breakableBricksSprites, BreakableBrick::srcRectGreen));
+				bricks.emplace_back(new BreakableBrick(RectF(brickPos, brickPos + Vec2{ brickWidth, brickHeight }), &breakableBricksSprites, BreakableBrick::GetSrcRectSpriteColor(y)));
 			}
 		}
 	}

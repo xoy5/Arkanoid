@@ -4,8 +4,7 @@ Paddle::Paddle(Player player, const Vec2& posCenter, const Color& color)
 	:
 	player(player),
 	posCenter(posCenter),
-	color(color),
-	maxWidth(int(fixedWidth * 1.6f))
+	color(color)
 {
 }
 
@@ -86,7 +85,7 @@ void Paddle::DoWallCollision(const RectF& walls)
 
 void Paddle::GrowWidth()
 {
-	width = std::min(width * 1.1f, maxWidth);
+	size = Size(std::min((int)Size::Large, (int)size + 1));
 }
 
 ///// Setter and Getters /////

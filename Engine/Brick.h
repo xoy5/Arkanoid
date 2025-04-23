@@ -46,6 +46,9 @@ public:
 	static constexpr RectI srcRectBlue = { 110, 165, 0, 20 };
 	static constexpr RectI srcRectOrange = { 165, 220, 0, 20 };
 	static constexpr RectI srcRectPink = { 220, 275, 0, 20 };
+	static constexpr int nColors = 5;
+public:
+	static RectI GetSrcRectSpriteColor(int i);
 
 public:
 	BreakableBrick() = default;
@@ -57,7 +60,7 @@ public:
 public:
 	void Hitted() override;
 	bool IsDestroyed() const override;
-	void SetColor(const Color& color);
+	void SetSpriteColor(const RectI& srcRectSpriteColor);
 
 private:
 	bool destroyed = false;
