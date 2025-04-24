@@ -44,7 +44,7 @@ void PowerUpManager::DoCollectAndUsePowerUp()
 				game.gf_ballManager.AddBallOnPaddlePlayer1();
 				break;
 			case PowerUp::Type::GrowWidthPaddle:
-				game.paddlePlayer1.GrowWidth();
+				game.paddlePlayer1.WidthGrow();
 				break;
 			case PowerUp::Type::DoubleBalls:
 				game.gf_ballManager.DoubleBallsX();
@@ -58,7 +58,7 @@ void PowerUpManager::DoCollectAndUsePowerUp()
 				game.gf_ballManager.AddBallOnPaddlePlayer2();
 				break;
 			case PowerUp::Type::GrowWidthPaddle:
-				game.paddlePlayer2.GrowWidth();
+				game.paddlePlayer2.WidthGrow();
 				break;
 			case PowerUp::Type::DoubleBalls:
 				game.gf_ballManager.DoubleBallsX();

@@ -23,18 +23,18 @@ public:
 		Large
 	};
 public:
-	explicit Paddle(Player player, const Vec2& pos, const Color& color = Colors::White);
+	explicit Paddle(Player player, const Vec2& pos, const Color& color = Colors::White, Size size = Size::Small);
 	void Draw(Graphics& gfx) const;
 	void Update(float dt, const Keyboard& kbd);
 
 public:
 	bool DoBallCollision(Ball& ball) const;
 	void DoWallCollision(const RectF& walls);
-	void GrowWidth();
+	void WidthGrow();
+	void WidthShrink();
 
 public:
 	void SetSpeed(float speed);
-	void SetWidth(float width);
 	void SetColor(const Color& color);
 	float GetHeight() const;
 	float GetWidth() const;

@@ -1,10 +1,11 @@
 #include "Paddle.h"
 
-Paddle::Paddle(Player player, const Vec2& posCenter, const Color& color)
+Paddle::Paddle(Player player, const Vec2& posCenter, const Color& color, Size size)
 	:
 	player(player),
 	posCenter(posCenter),
-	color(color)
+	color(color),
+	size(size)
 {
 }
 
@@ -41,8 +42,8 @@ bool Paddle::DoBallCollision(Ball& ball) const
 
 	float yDir = std::signbit(-ballVel.y) ? -1.0f : 1.0f;
 	// y collision
-	if ( ( std::signbit(ballVel.x) == std::signbit((ballPosCenter - posCenter).x) && ballVel.x != 0.0f)
-		|| (ballPosCenter.x >= paddleRect.left && ballRect.right <= paddleRect.right)){
+	if ((std::signbit(ballVel.x) == std::signbit((ballPosCenter - posCenter).x) && ballVel.x != 0.0f)
+		|| (ballPosCenter.x >= paddleRect.left && ballRect.right <= paddleRect.right)) {
 		Vec2 dir;
 		const float xDifference = ballPosCenter.x - posCenter.x;
 		const float fixedZoneHalfWidth = width / 8.0f;
@@ -83,20 +84,46 @@ void Paddle::DoWallCollision(const RectF& walls)
 	}
 }
 
-void Paddle::GrowWidth()
+void Paddle::WidthGrow()
 {
-	size = Size(std::min((int)Size::Large, (int)size + 1));
+	size = Size(std::min(int(Size::Large), int(size) + 1));
+
+	switch (size)
+	{
+	case Size::Small:
+		width = smWidth;
+		break;
+	case Size::Medium:
+		width = mdWidth;
+		break;
+	case Size::Large:
+		width = lgWidth;
+		break;
+	}
+}
+
+void Paddle::WidthShrink()
+{
+	size = Size(std::max(int(Size::Large), int(size) + 1));
+
+	switch (size)
+	{
+	case Size::Small:
+		width = smWidth;
+		break;
+	case Size::Medium:
+		width = mdWidth;
+		break;
+	case Size::Large:
+		width = lgWidth;
+		break;
+	}
 }
 
 ///// Setter and Getters /////
 void Paddle::SetSpeed(float speed)
 {
 	this->speed = speed;
-}
-
-void Paddle::SetWidth(float width)
-{
-	this->width = width;
 }
 
 void Paddle::SetColor(const Color& color)

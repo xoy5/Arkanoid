@@ -87,7 +87,7 @@ bool BreakableBrick::IsDestroyed() const
 
 void BreakableBrick::SetSpriteColor(const RectI& srcRectSpriteColor)
 {
-//	this->color = color;prite
+	srcRect = srcRectSpriteColor;
 }
 
 RectI BreakableBrick::GetSrcRectSpriteColor(int i)

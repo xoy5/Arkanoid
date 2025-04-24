@@ -86,9 +86,9 @@ void Game::ProcessInput()
 					break;
 				case 'K': gf_ballManager.DoubleBallsX(); break;
 				case 'L': 
-					paddlePlayer1.GrowWidth(); 
+					paddlePlayer1.WidthGrow(); 
 					if (isTwoPlayerMode) {
-						paddlePlayer2.GrowWidth();
+						paddlePlayer2.WidthGrow();
 					}
 					break;
 				}
