@@ -139,6 +139,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="Background.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="BallManager.h" />
     <ClInclude Include="Brick.h" />

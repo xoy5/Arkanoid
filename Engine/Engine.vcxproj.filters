@@ -144,6 +144,9 @@
     <ClInclude Include="Sprite.h">
       <Filter>Header Files\Framework\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Background.h">
+      <Filter>Header Files\Project</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graphics.cpp">

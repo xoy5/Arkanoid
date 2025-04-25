@@ -1,11 +1,12 @@
 #include "PowerUp.h"
 #include "SpriteEffect.h"
 
-PowerUp::PowerUp(std::shared_ptr<Surface> spriteBox, Type type, Vec2 pos, int size, float speed)
+PowerUp::PowerUp(std::shared_ptr<Surface> spriteBox, Type type, const Vec2& pos, const Vec2& dir, int size, float speed)
 	:
 	spriteBox(spriteBox),
 	type(type),
 	pos(pos),
+	dir(dir),
 	size(size),
 	speed(speed)
 {
@@ -18,7 +19,7 @@ void PowerUp::Draw(Graphics& gfx) const
 
 void PowerUp::Update(float dt)
 {
-	pos += Vec2{ 0.0f,  speed * dt };
+	pos += Vec2{ dir.x,  dir.y * speed * dt };
 }
 
 RectF PowerUp::GetRect() const

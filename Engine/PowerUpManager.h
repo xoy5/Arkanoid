@@ -18,14 +18,14 @@ public:
 	void Update(float dt);
 
 public:
-	void AddRng(const Vec2& posBrickCenter);
+	void AddRng(const Vec2& posBrickCenter, const Vec2& dir);
 	void DoCollectAndUsePowerUp();
 	void DoWallCollision();
 
 private:
 	Game& game;
 	std::vector<PowerUp> powerUps;
-	const float powerUpSpeed = 300.0f;
+	const float powerUpSpeed = 200.0f;
 	static constexpr int powerUpSizeDimension = 30;
 	std::shared_ptr<Surface> spriteBox;
 	static constexpr int chanceOfDropPowerUp = 12;

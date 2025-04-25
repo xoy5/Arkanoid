@@ -14,7 +14,7 @@ BrickGrid::BrickGrid(Game& game, const std::string& dir, const std::string& file
 	const int brickGridWidth = game.walls.GetWidth();
 
 	int brickGridWHeight = nRowBricks * brickHeight;
-	Vec2 gridPos = Vec2{ game.walls.left, game.walls.top };
+	Vec2 gridPos = Vec2{ game.walls.left, game.walls.top + brickHeight * 4 };
 
 	Vec2 brickPos = gridPos;
 

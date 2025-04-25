@@ -2,7 +2,7 @@
 #include "SpriteEffect.h"
 
 Animation::Animation( int x,int y,int width,int height,int count,
-					  const Surface* sprite,float holdTime,Color chroma )
+					  const Sprite* sprite,float holdTime,Color chroma )
 	:
 	sprite( sprite ),
 	holdTime( holdTime ),

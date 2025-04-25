@@ -108,7 +108,7 @@ public:
 private:
 	float animationTimeCounter = 0.0f;
 	bool activeAnimation = false;
-	static constexpr float animationTime = 1.0f;
+	static constexpr float animationTime = 0.6f;
 	static constexpr int nFrames = 9;
 	static constexpr float animationOneFrameTime = animationTime / nFrames;
 	Animation animation;

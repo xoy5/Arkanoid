@@ -1,18 +1,24 @@
 #include "Ball.h"
+#include "Paddle.h"
+#include "SpriteEffect.h"
+#include "assert.h"
 
-Ball::Ball(const Vec2& posCenter, bool onPaddle, float speed, float radius, const Color& color)
+Ball::Ball(const Sprite* pSprite, const Vec2& posCenter, bool onPaddle, float speed, float radius, Paddle::Player lastPlayerRebound)
 	:
+	pSprite(pSprite),
+	posCenter(posCenter),
 	speed(speed),
 	radius(radius),
-	color(color),
-	posCenter(posCenter),
-	vel(Vec2{ 0.0f, (onPaddle ? -1.0f : 1.0f) * speed })
+	vel(Vec2{ 0.0f, (onPaddle == false ? 1.0f : (lastPlayerRebound == Paddle::Player::Player1 ? -1.0f : 1.0f)) * speed}),
+	lastPlayerRebound(lastPlayerRebound)
 {
+	assert(!(onPaddle == true && lastPlayerRebound == Paddle::Player::None));
 }
 
 void Ball::Draw(Graphics& gfx) const
 {
-	gfx.DrawCircle(posCenter, radius, color);
+	RectI rect = RectI(GetRect());
+	gfx.DrawSprite(rect.left, rect.top, *pSprite, SpriteEffect::Chroma(Colors::Magenta));
 }
 
 void Ball::Update(float dt)
@@ -123,4 +129,14 @@ void Ball::SetLastObjectReboundPtr(const void* pObjectRebound)
 const void* Ball::GetLastObjectReboundPtr() const
 {
 	return pLastObjectRebound;
+}
+
+void Ball::SetLastPlayerRebound(Paddle::Player player)
+{
+	lastPlayerRebound = player;
+}
+
+Paddle::Player Ball::GetLastPlayerRebound() const
+{
+	return lastPlayerRebound;
 }

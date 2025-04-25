@@ -28,12 +28,13 @@ Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
+	background("Files/Sprites/Pipe18x50.bmp", "Files/Sprites/PipeExtra20x50.bmp", "Files/Sprites/PipeAnimationOppening200x50.bmp", walls.GetExpandedWidth(24)),
 	gf_powerUpManager(*this, "Files/Sprites/PowerUpBox.bmp"),
-	gf_brickGrid(*this, "Files/BrickGrid/", "Files/Sprites/BricksRGBOP55x20x2.bmp", "Files/Sprites/UnbreakableBrick550x20.bmp"),
-	gf_ballManager(*this, 600.0f, 10.0f),
+	gf_brickGrid(*this, "Files/BrickGrid/", "Files/Sprites/BricksRGBOP55x20x2.bmp", "Files/Sprites/UnbreakableBrick550x20.bmp", 22),
+	gf_ballManager(*this, "Files/Sprites/Ball19x19.bmp", walls.GetCenter(), 480.0f),
 	gf_editor(*this),
-	paddlePlayer1(Paddle::Player::Player1, Vec2(walls.GetCenter().x, walls.bottom - 15), 600.0f),
-	paddlePlayer2(Paddle::Player::Player2, Vec2(walls.GetCenter().x, walls.top + 15), 600.0f)
+	paddlePlayer1(Paddle::Player::Player1, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.bottom - 25 - (50/2 - 1)), 600.0f),
+	paddlePlayer2(Paddle::Player::Player2, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.top + 25 + (50/2)), 600.0f)
 {}
 
 void Game::Go()
@@ -117,6 +118,7 @@ void Game::ProcessInput()
 void Game::UpdateModel(float dt)
 {
 	if (gf_editor.IsHandlingMessage() == false) {
+		background.Update(dt);
 		gf_powerUpManager.Update(dt);
 		gf_brickGrid.Update(dt);
 		paddlePlayer1.Update(dt, wnd.kbd);
@@ -139,8 +141,8 @@ void Game::UpdateModel(float dt)
 
 void Game::ComposeFrame()
 {
-	//gfx.DrawRect(walls.GetExpanded(20.0f), Colors::Blue);
-	//gfx.DrawRect(walls, Colors::Black);
+	gfx.DrawRect(walls, Colors::Green);
+	background.Draw(gfx);
 	if (gf_editor.IsHandlingMessage() == false) {
 		gf_brickGrid.Draw(gfx);
 		paddlePlayer1.Draw(gfx);

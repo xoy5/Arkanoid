@@ -22,13 +22,14 @@ void PowerUpManager::Update(float dt)
 	}
 }
 
-void PowerUpManager::AddRng(const Vec2& posBrickCenter)
+void PowerUpManager::AddRng(const Vec2& posBrickCenter, const Vec2& dir)
 {
 	if (from1to100(game.rng) <= chanceOfDropPowerUp) {
 		powerUps.emplace_back(
 			spriteBox,
 			PowerUp::Type(choosePowerUpType(game.rng)),
 			posBrickCenter - Vec2{ powerUpSizeDimension / 2 - 0.5f, powerUpSizeDimension / 2 - 0.5f },
+			dir,
 			powerUpSizeDimension,
 			powerUpSpeed
 		);

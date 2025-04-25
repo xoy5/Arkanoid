@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Surface.h"
+#include "Sprite.h"
 #include "SpriteEffect.h"
 #include "Graphics.h"
 #include <vector>
@@ -9,7 +9,7 @@ class Animation
 {
 public:
 	Animation() = default;
-	Animation(int x, int y, int width, int height, int count, const Surface* sprite, float holdTime, Color chroma = Colors::Magenta);
+	Animation(int x, int y, int width, int height, int count, const Sprite* sprite, float holdTime, Color chroma = Colors::Magenta);
 	template<typename E>
 	void Draw(const Vei2& pos, Graphics& gfx, E effect) const
 	{
@@ -25,7 +25,7 @@ private:
 	void Advance();
 private:
 	Color chroma;
-	const Surface* sprite;
+	const Sprite* sprite = nullptr;
 	std::vector<RectI> frames;
 	int iCurFrame = 0;
 	float holdTime;

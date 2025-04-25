@@ -3,6 +3,8 @@
 #include "Colors.h"
 #include "Vec2.h"
 #include "Rect.h"
+#include "Sprite.h"
+#include "Paddle.h"
 
 class Ball
 {
@@ -16,7 +18,7 @@ public:
 	};
 
 public:
-	explicit Ball(const Vec2& posCenter, bool onPaddle, float speed, float radius, const Color& color = Colors::White);
+	explicit Ball(const Sprite* pSprite, const Vec2& posCenter, bool onPaddle, float speed, float radius, Paddle::Player lastPlayerRebound);
 	void Draw(Graphics& gfx) const;
 	void Update(float dt);
 
@@ -35,12 +37,15 @@ public:
 	Vec2 GetVelocity() const;
 	void SetLastObjectReboundPtr(const void* pObjectRebound);
 	const void* GetLastObjectReboundPtr() const;
+	void SetLastPlayerRebound(Paddle::Player player);
+	Paddle::Player GetLastPlayerRebound() const;
 
 private:
+	const Sprite* pSprite;
 	float speed;
 	float radius;
-	Color color;
 	Vec2 posCenter;
 	Vec2 vel;
 	const void* pLastObjectRebound = nullptr;
+	Paddle::Player lastPlayerRebound;
 };

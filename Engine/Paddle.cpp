@@ -1,8 +1,12 @@
 #include "Paddle.h"
+#include "Ball.h"
 
-Paddle::Paddle(Player player, const Vec2& posCenter, const Color& color, Size size)
+#include "SpriteEffect.h"
+
+Paddle::Paddle(Player player, const std::string& filenamePaddleSprites, const Vec2& posCenter, const Color& color, Size size)
 	:
 	player(player),
+	sprite(filenamePaddleSprites),
 	posCenter(posCenter),
 	color(color),
 	size(size)
@@ -12,7 +16,19 @@ Paddle::Paddle(Player player, const Vec2& posCenter, const Color& color, Size si
 
 void Paddle::Draw(Graphics& gfx) const
 {
-	gfx.DrawRect(GetRect(), color);
+	RectI rect = RectI(GetRect());
+	switch (size)
+	{
+	case Size::Small:
+		gfx.DrawSprite(rect.left, rect.top, srcRectSmSprite, sprite, SpriteEffect::Chroma(Colors::Magenta));
+		break;
+	case Size::Medium:
+		gfx.DrawSprite(rect.left, rect.top, srcRectMdSprite, sprite, SpriteEffect::Chroma(Colors::Magenta));
+		break;
+	case Size::Large:
+		gfx.DrawSprite(rect.left, rect.top, srcRectLgSprite, sprite, SpriteEffect::Chroma(Colors::Magenta));
+		break;
+	}
 }
 
 void Paddle::Update(float dt, const Keyboard& kbd)
@@ -37,8 +53,12 @@ bool Paddle::DoBallCollision(Ball& ball) const
 	const RectF paddleRect = GetRect();
 	const RectF ballRect = ball.GetRect();
 	if (paddleRect.IsOverlappingWith(ballRect) == false) return false;
+
+	ball.SetLastPlayerRebound(player);
+
 	const Vec2 ballPosCenter = ball.GetPosCenter();
 	const Vec2 ballVel = ball.GetVelocity();
+
 
 	float yDir = std::signbit(-ballVel.y) ? -1.0f : 1.0f;
 	// y collision
@@ -67,6 +87,7 @@ bool Paddle::DoBallCollision(Ball& ball) const
 			ball.ReboundX();
 		}
 	}
+
 
 	ball.SetLastObjectReboundPtr(this);
 	return true;
@@ -132,7 +153,7 @@ void Paddle::SetColor(const Color& color)
 }
 
 
-float Paddle::GetHeight() const
+float Paddle::GetHeight()
 {
 	return height;
 }

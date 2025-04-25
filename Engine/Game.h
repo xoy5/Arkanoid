@@ -30,13 +30,14 @@
 #include "Font.h"
 #include "Button.h"
 #include "TextBox.h"
+#include "MyMessageBox.h"
 
 #include "Editor.h"
 #include "BrickGrid.h"
 #include "Paddle.h"
 #include "BallManager.h"
 #include "PowerUpManager.h"
-#include "MyMessageBox.h"
+#include "Background.h"
 
 class Game
 {
@@ -59,7 +60,8 @@ private:
 	const Font fontTiny = Font("Files/Fonts/font8x14.bmp");
 	const Font fontSm = Font("Files/Fonts/font16x28.bmp");
 	const Font fontLg = Font("Files/Fonts/font32x56.bmp");
-	RectF walls = RectF(Vec2{ 20.0f, 20.0f }, 605.0f, 580.0f);
+	//RectF walls = RectF(Vec2{ 20.0f, 20.0f }, 605.0f, 580.0f);
+	RectF walls = RectF(Vec2{ 24.0f, 0.0f }, 605.0f, 600.0f);
 	MyMessageBox myMessageBox = MyMessageBox(&fontLg);
 	FrameTimer ft;
 	const float precision = 0.025f;
@@ -72,6 +74,7 @@ private:
 	/********************************/
 	/*  User Variables  */
 	bool hacksMode = true;
+	Background background;
 
 	// Friends;
 	friend class PowerUpManager;
@@ -80,7 +83,7 @@ private:
 	friend class Editor;
 
 	// Objects
-	bool isTwoPlayerMode = false;
+	bool isTwoPlayerMode = true;
 	Paddle paddlePlayer1;
 	Paddle paddlePlayer2;
 	BrickGrid gf_brickGrid;

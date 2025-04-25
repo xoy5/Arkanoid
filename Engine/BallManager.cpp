@@ -1,11 +1,11 @@
 #include "BallManager.h"
 #include "Game.h"
 
-BallManager::BallManager(Game& game, float speed, float radius)
+BallManager::BallManager(Game& game, const std::string& filenameBallSprite, float speed)
 	:
 	game(game),
-	ballsSpeed(speed),
-	ballsRadius(radius)
+	sprite(filenameBallSprite),
+	ballsSpeed(speed)
 {
 	AddBallOnPaddlePlayer1();
 	if (game.isTwoPlayerMode) {
@@ -13,13 +13,13 @@ BallManager::BallManager(Game& game, float speed, float radius)
 	}
 }
 
-BallManager::BallManager(Game& game, Vec2 ballPos, float radius, float speed)
+BallManager::BallManager(Game& game, const std::string& filenameBallSprite, Vec2 ballPos, float speed)
 	:
 	game(game),
-	ballsSpeed(speed),
-	ballsRadius(radius)
+	sprite(filenameBallSprite),
+	ballsSpeed(speed)
 {
-	balls.emplace_back(Ball{ballPos, false, ballsSpeed, ballsRadius});
+	balls.emplace_back(Ball{&sprite, ballPos, false, ballsSpeed, ballsRadius, Paddle::Player::None});
 }
 
 BallManager::~BallManager()
@@ -39,6 +39,8 @@ void BallManager::Draw(Graphics& gfx) const
 	for (const auto& b : balls) {
 		b.Draw(gfx);
 	}
+
+	game.fontSm.DrawText(std::to_string(balls.size()), Vei2{ 0,300 }, Colors::Red, gfx);
 }
 
 void BallManager::Update(float dt, Keyboard& kbd)
@@ -98,8 +100,13 @@ void BallManager::BrickGrid_DoBallCollision()
 			bool destroyed = false; // if destroyed change to true
 			game.gf_brickGrid.ExecuteBallCollision(b, pairBrick.second, &pos, &destroyed);
 			if (destroyed) {
-				game.gf_powerUpManager.AddRng(pos);
-			}
+				if (b.GetLastPlayerRebound() == Paddle::Player::Player1) {
+					game.gf_powerUpManager.AddRng(pos, Vec2{ 0.0f, 1.0f });
+				}
+				else if (b.GetLastPlayerRebound() == Paddle::Player::Player2) {
+					game.gf_powerUpManager.AddRng(pos, Vec2{ 0.0f, -1.0f });
+				}
+			};	
 		}
 	}
 }
@@ -140,16 +147,15 @@ void BallManager::DoWallCollision()
 void BallManager::AddBallOnPaddlePlayer1()
 {
 	if (pBallOnPaddlePlayer1 == nullptr && int(balls.size()) < nMaxBalls) {
-		float offset = float(game.paddlePlayer1.GetHeight()) / 2.0f + 10.0f;
-		pBallOnPaddlePlayer1 = new Ball(game.paddlePlayer1.GetRect().GetCenter() - Vec2{ 0.0f, offset }, true, ballsSpeed, ballsRadius );
+		float offset = float(game.paddlePlayer1.GetHeight()) / 2.0f + ballsRadius;
+		pBallOnPaddlePlayer1 = new Ball(&sprite, game.paddlePlayer1.GetRect().GetCenter() - Vec2{ 0.0f, ballsOffsetOnPaddle }, true, ballsSpeed, ballsRadius, Paddle::Player::Player1 );
 	}
 }
 
 void BallManager::AddBallOnPaddlePlayer2()
 {
 	if (pBallOnPaddlePlayer2 == nullptr && int(balls.size()) < nMaxBalls) {
-		float offset = float(game.paddlePlayer2.GetHeight()) / 2.0f + 10.0f;
-		pBallOnPaddlePlayer2 = new Ball(game.paddlePlayer2.GetRect().GetCenter() + Vec2{ 0.0f, offset }, true, ballsSpeed, ballsRadius);
+		pBallOnPaddlePlayer2 = new Ball(&sprite, game.paddlePlayer2.GetRect().GetCenter() + Vec2{ 0.0f, ballsOffsetOnPaddle }, true, ballsSpeed, ballsRadius, Paddle::Player::Player2 );
 	}
 }
 
@@ -164,4 +170,9 @@ void BallManager::DoubleBallsX()
 			balls.emplace_back(ball);
 		}
 	}
+}
+
+const Ball& BallManager::GetFirstBall() const
+{
+	return balls[0];
 }

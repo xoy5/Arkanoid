@@ -17,7 +17,7 @@ public:
 	};
 
 public:
-	PowerUp(std::shared_ptr<Surface> spriteBox, Type type, Vec2 pos, int size, float speed);
+	PowerUp(std::shared_ptr<Surface> spriteBox, Type type, const Vec2& pos, const Vec2& dir, int size, float speed);
 	void Draw(Graphics& gfx) const;
 	void Update(float dt);
 
@@ -28,6 +28,7 @@ public:
 private:
 	Type type;
 	Vec2 pos;
+	Vec2 dir;
 	int size;
 	float speed;
 	std::shared_ptr<Surface> spriteBox;
