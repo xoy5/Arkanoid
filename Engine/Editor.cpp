@@ -7,7 +7,7 @@
 Editor::Editor(Game& game)
 	:
 	game(game),
-	font(&game.fontTiny),
+	font(&game.fontSm),
 	stateButtonEditBrickGrid(font, Vei2{20, 0}, false, true, "Editor YES", "Editor NO"),
 	buttonClearBrickGrid(font, "Clear", Vei2{ 20, stateButtonEditBrickGrid.GetRect().GetHeight() + stateButtonEditBrickGrid.GetPos().y}),
 	buttonLoad(font, "Load", Vei2{ 20, buttonClearBrickGrid.GetRect().GetHeight() + buttonClearBrickGrid.GetPos().y }),

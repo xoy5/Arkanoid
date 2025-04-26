@@ -22,16 +22,15 @@
 #include "Game.h"
 #include <assert.h>
 #include <algorithm>
-#include <thread>
 
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	background("Files/Sprites/Pipe18x50.bmp", "Files/Sprites/PipeExtra20x50.bmp", "Files/Sprites/PipeAnimationOppening200x50.bmp", walls.GetExpandedWidth(24)),
+	background("Files/Sprites/Pipes340x90.bmp", walls),
 	gf_powerUpManager(*this, "Files/Sprites/PowerUpBox.bmp"),
-	gf_brickGrid(*this, "Files/BrickGrid/", "Files/Sprites/BricksRGBOP55x20x2.bmp", "Files/Sprites/UnbreakableBrick550x20.bmp", 22),
-	gf_ballManager(*this, "Files/Sprites/Ball19x19.bmp", walls.GetCenter(), 480.0f),
+	gf_brickGrid(*this, "Files/BrickGrid/", "Files/Sprites/BricksRGBOP55x20x4.bmp", "Files/Sprites/UnbreakableBrick550x20.bmp", 8),
+	gf_ballManager(*this, "Files/Sprites/Ball19x19.bmp", 480.0f),
 	gf_editor(*this),
 	paddlePlayer1(Paddle::Player::Player1, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.bottom - 25 - (50/2 - 1)), 600.0f),
 	paddlePlayer2(Paddle::Player::Player2, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.top + 25 + (50/2)), 600.0f)
@@ -141,9 +140,8 @@ void Game::UpdateModel(float dt)
 
 void Game::ComposeFrame()
 {
-	gfx.DrawRect(walls, Colors::Green);
-	background.Draw(gfx);
 	if (gf_editor.IsHandlingMessage() == false) {
+		background.Draw(gfx);
 		gf_brickGrid.Draw(gfx);
 		paddlePlayer1.Draw(gfx);
 		if (isTwoPlayerMode) {

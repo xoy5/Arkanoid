@@ -21,6 +21,9 @@ public:
 		gfx.DrawSprite(pos.x, pos.y, frames[iCurFrame], clip, *sprite, SpriteEffect::Ghost{ chroma });
 	};
 	void Update(float dt);
+	int GetFullAnimationCount() const;
+	void ResetFullAnimationCount();
+	void Reset();
 private:
 	void Advance();
 private:
@@ -28,6 +31,7 @@ private:
 	const Sprite* sprite = nullptr;
 	std::vector<RectI> frames;
 	int iCurFrame = 0;
+	int fullAnimationCount = 0;
 	float holdTime;
 	float curFrameTime = 0.0f;
 };

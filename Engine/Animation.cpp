@@ -24,10 +24,27 @@ void Animation::Update( float dt )
 	}
 }
 
+int Animation::GetFullAnimationCount() const
+{
+	return fullAnimationCount;
+}
+
+void Animation::ResetFullAnimationCount()
+{
+	fullAnimationCount = 0;
+}
+
+void Animation::Reset()
+{
+	ResetFullAnimationCount();
+	curFrameTime = 0.0f;
+}
+
 void Animation::Advance()
 {
 	if( ++iCurFrame >= frames.size() )
 	{
+		fullAnimationCount++;
 		iCurFrame = 0;
 	}
 }

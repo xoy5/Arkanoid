@@ -166,3 +166,23 @@ RectI Surface::GetRect() const
 {
 	return{ 0,width,0,height };
 }
+
+void Surface::RotateBy90Deg()
+{
+	int newWidth = height;
+	int newHeight = width;
+	Color* pNewPixels = new Color[width*height];
+
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			pNewPixels[x * newWidth + y] = pPixels[y * width + x];
+		}
+	}
+
+	delete pPixels;
+	pPixels = pNewPixels;
+	width = newWidth;
+	height = newHeight;
+}

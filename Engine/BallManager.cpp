@@ -164,7 +164,7 @@ void BallManager::DoubleBallsX()
 	if (balls.size() < nMaxBalls)
 	{
 		const size_t ballsSize = balls.size();
-		for (size_t i = 0; i < ballsSize; i++) {
+		for (size_t i = 0; i < std::min(nMaxBalls - ballsSize, ballsSize); i++) {
 			Ball ball = balls[i];
 			ball.ReboundX();
 			balls.emplace_back(ball);

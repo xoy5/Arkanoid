@@ -61,6 +61,10 @@ public:
 	{
 		return Rect_(left - offset, right + offset, top - offset, bottom + offset);
 	}
+	Rect_ GetExpanded(T topOffset, T rightOffset, T bottomOffset, T leftOffset) const
+	{
+		return Rect_(left - topOffset, right + rightOffset, top - topOffset, bottom + bottomOffset);
+	}
 	Rect_ GetExpandedWidth(T offset) const
 	{
 		return Rect_(left - offset, right + offset, top, bottom);

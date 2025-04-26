@@ -20,6 +20,7 @@ public:
 	int GetWidth() const;
 	int GetHeight() const;
 	RectI GetRect() const;
+	void RotateBy90Deg();
 private:
 	Color* pPixels = nullptr;
 	int width = 0;
