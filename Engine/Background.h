@@ -31,10 +31,35 @@ public:
 		gfx.DrawRect(walls, Colors::Green);
 		RectF walls = this->walls.GetExpanded(pipesWidth + borderOffset, pipesWidth + borderOffset, 0.0f, pipesWidth + borderOffset);
 
+		////////////////////////////////////
+
 		Vec2 posLeftWall = { walls.left, walls.bottom - pipesHeight / 2 };
 		Vec2 posRightWall = { walls.right - pipesWidth, walls.bottom - pipesHeight / 2 };
 
-		for (int i = 0; i < 7; i++)
+		// left
+		gfx.DrawSprite(posLeftWall.x, posLeftWall.y, srcRectHalfPipe, pipesSprite, SpriteEffect::Chroma{ Colors::Magenta });
+		posLeftWall -= {0.0f, pipesHeight};
+		gfx.DrawSprite(posLeftWall.x, posLeftWall.y, srcRectPipeExtra, pipesSprite, SpriteEffect::Chroma{ Colors::Magenta });
+		posLeftWall -= {0.0f, pipesHeight};
+
+		// right
+		gfx.DrawSprite(posRightWall.x, posRightWall.y, srcRectHalfPipe, pipesSprite, SpriteEffect::Chroma{ Colors::Magenta });
+		posRightWall -= {0.0f, pipesHeight};
+		switch (doorState)
+		{
+		case DoorState::Closed:
+			gfx.DrawSprite(posRightWall.x, posRightWall.y, srcRectPipeExtra, pipesSprite, SpriteEffect::Chroma{ Colors::Magenta });
+			break;
+		case DoorState::Oppening:
+			pipeAnimationOppening.Draw(Vei2(posRightWall), gfx, SpriteEffect::Chroma(Colors::Magenta));
+			break;
+		case DoorState::Laser:
+			pipeAnimationLaser.Draw(Vei2(posRightWall), gfx, SpriteEffect::Chroma(Colors::Magenta));
+			break;
+		}
+		posRightWall -= {0.0f, pipesHeight};
+
+		for (int i = 0; i < 5; i++)
 		{
 			// left
 			gfx.DrawSprite(posLeftWall.x, posLeftWall.y, srcRectPipe, pipesSprite, SpriteEffect::Chroma{ Colors::Magenta });
@@ -44,28 +69,20 @@ public:
 			// right
 			gfx.DrawSprite(posRightWall.x, posRightWall.y, srcRectPipe, pipesSprite, SpriteEffect::Chroma{ Colors::Magenta });
 			posRightWall -= {0.0f, pipesHeight};
-			if (i == 0)
-			{
-				switch (doorState)
-				{
-				case DoorState::Closed:
-					gfx.DrawSprite(posRightWall.x, posRightWall.y, srcRectPipeExtra, pipesSprite, SpriteEffect::Chroma{ Colors::Magenta });
-					break;
-				case DoorState::Oppening:
-					pipeAnimationOppening.Draw(Vei2(posRightWall), gfx, SpriteEffect::Chroma(Colors::Magenta));
-					break;
-				case DoorState::Laser:
-					pipeAnimationLaser.Draw(Vei2(posRightWall), gfx, SpriteEffect::Chroma(Colors::Magenta));
-					break;
-				}
-			}
-			else
-			{
-				gfx.DrawSprite(posRightWall.x, posRightWall.y, srcRectPipeExtra, pipesSprite, SpriteEffect::Chroma{ Colors::Magenta });
-			}
+			gfx.DrawSprite(posRightWall.x, posRightWall.y, srcRectPipeExtra, pipesSprite, SpriteEffect::Chroma{ Colors::Magenta });
 			posRightWall -= {0.0f, pipesHeight};
 		}
 
+		// left
+		posLeftWall.y = walls.top + pipesWidth;
+		gfx.DrawSprite(posLeftWall.x, posLeftWall.y, srcRectPieceOfPipe, pipesSprite, SpriteEffect::Chroma{ Colors::Magenta });
+
+		// right
+		posRightWall.y = walls.top + pipesWidth;
+		gfx.DrawSprite(posRightWall.x, posRightWall.y, srcRectPieceOfPipe, pipesSprite, SpriteEffect::Chroma{ Colors::Magenta });
+
+		////////////////////////////////////
+		////////////////////////////////////
 
 		// swap
 		const int pipesWidth = this->pipesHeight;
@@ -101,6 +118,8 @@ public:
 		}
 
 		gfx.DrawSprite(posTopWallLeft.x, posTopWallLeft.y, srcRectTopPipe, pipesSprite, SpriteEffect::Chroma{ Colors::Magenta });
+
+		////////////////////////////////////
 	}
 
 	void Update(float dt)
@@ -130,6 +149,8 @@ private:
 
 	// Left and Right
 	static constexpr RectI srcRectPipe = { 0, 20, 0, 50 };
+	static constexpr RectI srcRectHalfPipe{ 0, 20, 0, 25 };
+	static constexpr RectI srcRectPieceOfPipe = { 0, 20, 0, (Graphics::ScreenHeight - 11 * pipesHeight - pipesHeight / 2 - pipesWidth) };
 	static constexpr RectI srcRectPipeExtra = { 20, 40, 0, 50 };
 
 	// Top

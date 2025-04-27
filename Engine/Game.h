@@ -62,7 +62,7 @@ private:
 	const Font fontMd = Font("Files/Fonts/font16x28.bmp");
 	const Font fontLg = Font("Files/Fonts/font32x56.bmp");
 	//RectF walls = RectF(Vec2{ 20.0f, 20.0f }, 605.0f, 580.0f);
-	RectF walls = RectF(Vec2{ 22.0f, 22.0f }, 605.0f, 578.0f);
+	RectF walls = RectF(Vec2{ 24.0f, 24.0f }, 605.0f, 576.0f);
 	MyMessageBox myMessageBox = MyMessageBox(&fontLg);
 	FrameTimer ft;
 	const float precision = 0.025f;
