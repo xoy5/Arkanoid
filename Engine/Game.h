@@ -77,6 +77,7 @@ private:
 	bool hacksMode = true;
 	bool isTwoPlayerMode = false;
 	Background background;
+	int curLevel = 1;
 
 	// Friends;
 	friend class PowerUpManager;

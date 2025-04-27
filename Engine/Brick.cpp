@@ -180,15 +180,12 @@ void UnbreakableBrick::Draw(Graphics& gfx) const
 
 void UnbreakableBrick::Update(float dt)
 {
-	if (activeAnimation) {
-		if (animation.GetFullAnimationCount() >= 1) 
-		{
+	if (activeAnimation)
+	{
+		animation.Update(dt);
+		if (animation.GetFullAnimationCount() >= 1) {
 			animation.ResetFullAnimationCount();
 			activeAnimation = false;
-		}
-		else
-		{
-			animation.Update(dt);
 		}
 	}
 }

@@ -139,7 +139,7 @@ void Game::UpdateModel(float dt)
 }
 
 void Game::ComposeFrame()
-{
+{   
 	if (gf_editor.IsHandlingMessage() == false) {
 		background.Draw(gfx);
 		gf_brickGrid.Draw(gfx);
