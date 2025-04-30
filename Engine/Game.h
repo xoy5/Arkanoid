@@ -38,6 +38,8 @@
 #include "BallManager.h"
 #include "PowerUpManager.h"
 #include "Background.h"
+#include "GameStats.h"
+#include "SelectionMenu.h"
 
 class Game
 {
@@ -76,8 +78,12 @@ private:
 	/*  User Variables  */
 	bool hacksMode = true;
 	bool isTwoPlayerMode = false;
-	Background background;
 	int curLevel = 1;
+	Background background;
+	GameStats gameStats;
+	SelectionMenu selectionMenu;
+	SelectionMenu::GameState gameState = SelectionMenu::GameState::MainMenu;
+	
 
 	// Friends;
 	friend class PowerUpManager;

@@ -155,8 +155,10 @@
     <ClInclude Include="Font.h" />
     <ClInclude Include="FrameTimer.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameStats.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="InterfaceObject.h" />
+    <ClInclude Include="SelectionMenu.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="Keyboard.h" />
@@ -187,6 +189,7 @@
     <ClCompile Include="Editor.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameStats.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Main.cpp" />

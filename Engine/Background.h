@@ -17,12 +17,13 @@ private:
 		Laser
 	};
 public:
-	Background(const std::string& filenamePipes, const RectF& walls)
+	Background(const std::string& filenamePipes, const RectF& walls, int borderOffset)
 		:
 		pipesSprite(filenamePipes),
 		pipeAnimationOppening(40, 0, pipesWidth, pipesHeight, 10, &pipesSprite, 0.1f, Colors::Magenta),
 		pipeAnimationLaser(240, 0, pipesWidth, pipesHeight, 5, &pipesSprite, 0.05f, Colors::Magenta),
-		walls(walls)
+		walls(walls),
+		borderOffset(borderOffset)
 	{
 	}
 
@@ -142,7 +143,7 @@ public:
 private:
 	RectF walls;
 	DoorState doorState = DoorState::Oppening;
-	static constexpr int borderOffset = 4;
+	const int borderOffset = 4;
 	static constexpr int pipesHeight = 50;
 	static constexpr int pipesWidth = 20;
 	static constexpr int pipesCornerWidth = 20;
