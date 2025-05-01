@@ -28,7 +28,7 @@ GameStats::GameStats(const Font* font, const std::string& filenameRecords, const
 
 void GameStats::Draw(Graphics& gfx) const
 {
-	Vei2 posCenter = Vei2{ rect.left + (restPixels) / 2, rect.top + charHeight * 2 };
+	Vei2 posCenter = Vei2{ rect.left + (restPixels) / 2, rect.top + charHeight };
 
 	font->DrawText(" HIGH\n  SCORE", posCenter, Colors::BlueViolet, gfx, -5);
 	posCenter.y += charHeight * 2 - 5;
@@ -49,6 +49,13 @@ void GameStats::Draw(Graphics& gfx) const
 	std::string strHp = std::to_string(hp);
 	std::string spacesForHp(fullChars - int(strHp.size()), ' ');
 	font->DrawText(spacesForHp + strHp, posCenter, Colors::White, gfx);
+
+	posCenter.y += 50;
+	font->DrawText(" ROUND", posCenter, Colors::Green, gfx);
+	posCenter.y += charHeight - 5;
+	std::string strRound = std::to_string(round);
+	std::string spacesForRound(fullChars - int(strRound.size()), ' ');
+	font->DrawText(spacesForRound + strRound, posCenter, Colors::White, gfx);
 
 	posCenter.y += 50;
 	font->DrawText(" PLAY\n  TIME", posCenter, Colors::RedOrange, gfx, -5);
