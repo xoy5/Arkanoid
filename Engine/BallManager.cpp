@@ -40,7 +40,7 @@ void BallManager::Draw(Graphics& gfx) const
 		b.Draw(gfx);
 	}
 
-	game.fontSm.DrawText(std::to_string(balls.size()), Vei2{ 0,300 }, Colors::Red, gfx);
+	game.fontXs.DrawText(std::to_string(balls.size()), Vei2(game.wallsPlusBorder.right + 50, 0), Colors::RedOrange, gfx);
 }
 
 void BallManager::Update(float dt, Keyboard& kbd)
@@ -100,11 +100,19 @@ void BallManager::BrickGrid_DoBallCollision()
 			bool destroyed = false; // if destroyed change to true
 			game.gf_brickGrid.ExecuteBallCollision(b, pairBrick.second, &pos, &destroyed);
 			if (destroyed) {
-				if (b.GetLastPlayerRebound() == Paddle::Player::Player1) {
+				if (game.gameState == SelectionMenu::GameState::Solo)
+				{
 					game.gf_powerUpManager.AddRng(pos, Vec2{ 0.0f, 1.0f });
+					game.gameStats.AddPoints(100);
 				}
-				else if (b.GetLastPlayerRebound() == Paddle::Player::Player2) {
-					game.gf_powerUpManager.AddRng(pos, Vec2{ 0.0f, -1.0f });
+				else
+				{
+					if (b.GetLastPlayerRebound() == Paddle::Player::Player1) {
+						game.gf_powerUpManager.AddRng(pos, Vec2{ 0.0f, 1.0f });
+					}
+					else if (b.GetLastPlayerRebound() == Paddle::Player::Player2) {
+						game.gf_powerUpManager.AddRng(pos, Vec2{ 0.0f, -1.0f });
+					}
 				}
 			};	
 		}

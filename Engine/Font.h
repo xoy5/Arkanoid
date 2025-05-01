@@ -7,14 +7,14 @@
 class Font
 {
 public:
-	Font( const std::string& filename,Color chroma = Colors::White );
-	void DrawText( const std::string& text,const Vei2& pos,Color color,Graphics& gfx ) const;
+	Font(const std::string& filename, Color chroma = Colors::White);
+	void DrawText(const std::string& text, const Vei2& pos, Color color, Graphics& gfx, int textSpaceY = 0) const;
 	int GetWidthChar() const;
 	int GetHeightChar() const;
 	static const int GetLongestLineSize(const std::string& text);
 	static const int NumberOfLines(const std::string& text);
 private:
-	RectI MapGlyphRect( char c ) const;
+	RectI MapGlyphRect(char c) const;
 private:
 	// holds the font sheet bitmap data
 	Surface surface;

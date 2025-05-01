@@ -59,12 +59,16 @@ private:
 	MainWindow& wnd;
 	Graphics gfx;
 	std::mt19937 rng = std::mt19937(std::random_device{}());
-	const Font fontTiny = Font("Files/Fonts/font8x14.bmp");
+	const Font fontXs = Font("Files/Fonts/font8x14.bmp");
 	const Font fontSm = Font("Files/Fonts/font12x21.bmp");
-	const Font fontMd = Font("Files/Fonts/font16x28.bmp");
-	const Font fontLg = Font("Files/Fonts/font32x56.bmp");
-	//RectF walls = RectF(Vec2{ 20.0f, 20.0f }, 605.0f, 580.0f);
+	const Font fontBase = Font("Files/Fonts/font16x28.bmp");
+	const Font fontLg = Font("Files/Fonts/font18x32.bmp");
+	const Font fontXl = Font("Files/Fonts/font20x35.bmp");
+	const Font font2Xl = Font("Files/Fonts/font24x42.bmp");
+	const Font font3Xl = Font("Files/Fonts/font32x56.bmp");
 	RectF walls = RectF(Vec2{ 24.0f, 24.0f }, 605.0f, 576.0f);
+	RectF wallsPlusBorder = RectF(Vec2{ 0.0f, 0.0f }, 653.0f, 600.0f);
+	RectI rectStats = RectI{ 653, 800, 0, 600 };
 	MyMessageBox myMessageBox = MyMessageBox(&fontLg);
 	FrameTimer ft;
 	const float precision = 0.025f;
@@ -82,8 +86,8 @@ private:
 	Background background;
 	GameStats gameStats;
 	SelectionMenu selectionMenu;
-	SelectionMenu::GameState gameState = SelectionMenu::GameState::MainMenu;
-	
+	SelectionMenu::GameState gameState = SelectionMenu::GameState::Solo;
+	Surface darkenedSurface;
 
 	// Friends;
 	friend class PowerUpManager;

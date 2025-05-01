@@ -15,7 +15,7 @@ Font::Font( const std::string& filename,Color chroma )
 	assert( glyphHeight * nRows == surface.GetHeight() );
 }
 
-void Font::DrawText( const std::string& text,const Vei2& pos,Color color,Graphics& gfx ) const
+void Font::DrawText( const std::string& text,const Vei2& pos,Color color,Graphics& gfx, int textSpaceY) const
 {
 	// create effect functor
 	SpriteEffect::Substitution e{ chroma,color };
@@ -29,7 +29,7 @@ void Font::DrawText( const std::string& text,const Vei2& pos,Color color,Graphic
 			// carriage return
 			curPos.x = pos.x;
 			// line feed
-			curPos.y += glyphHeight;
+			curPos.y += glyphHeight + textSpaceY;
 			// we don't want to advance the character position right for a newline
 			continue;
 		}

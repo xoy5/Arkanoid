@@ -4,10 +4,10 @@
 #include "MainWindow.h"
 #include <filesystem>
 
-Editor::Editor(Game& game)
+Editor::Editor(Game& game, const Font* font)
 	:
 	game(game),
-	font(&game.fontSm),
+	font(font),
 	stateButtonEditBrickGrid(font, Vei2{20, 0}, false, true, "Editor YES", "Editor NO"),
 	buttonClearBrickGrid(font, "Clear", Vei2{ 20, stateButtonEditBrickGrid.GetRect().GetHeight() + stateButtonEditBrickGrid.GetPos().y}),
 	buttonLoad(font, "Load", Vei2{ 20, buttonClearBrickGrid.GetRect().GetHeight() + buttonClearBrickGrid.GetPos().y }),

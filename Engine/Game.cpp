@@ -28,15 +28,17 @@ Game::Game(MainWindow& wnd)
 	wnd(wnd),
 	gfx(wnd),
 	background("Files/Sprites/Pipes340x90.bmp", walls, 4),
-	gameStats(&fontSm, walls, 3),
-	selectionMenu(&fontLg, Graphics::GetScreenCenter() - Vei2{ 0, 100 }),
+	gameStats(&fontLg, "Files/Records.txt", rectStats, 3),
+	selectionMenu(&font3Xl, Graphics::GetScreenCenter() - Vei2{ 0, 100 }),
 	gf_powerUpManager(*this, "Files/Sprites/PowerUpBox.bmp"),
 	gf_brickGrid(*this, "Files/BrickGrid/", "Files/Sprites/BricksRGBOP55x20x4.bmp", "Files/Sprites/UnbreakableBrick550x20.bmp", 8),
 	gf_ballManager(*this, "Files/Sprites/Ball19x19.bmp", 480.0f),
-	gf_editor(*this),
+	gf_editor(*this, &fontSm),
 	paddlePlayer1(Paddle::Player::Player1, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.bottom - 25 - (50 / 2)), 600.0f),
-	paddlePlayer2(Paddle::Player::Player2, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.top + 25 + (50 / 2)), 600.0f)
+	paddlePlayer2(Paddle::Player::Player2, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.top + 25 + (50 / 2)), 600.0f),
+	darkenedSurface(walls.GetWidth(), walls.GetHeight())
 {
+	darkenedSurface.Fill(Colors::Black);
 }
 
 void Game::Go()
@@ -150,8 +152,10 @@ void Game::UpdateModel(float dt)
 	case SelectionMenu::GameState::Solo:
 	case SelectionMenu::GameState::Duo:
 		background.Update(dt);
+		gameStats.Update(dt);
 		gf_powerUpManager.Update(dt);
 		gf_brickGrid.Update(dt);
+
 		paddlePlayer1.Update(dt, wnd.kbd);
 		paddlePlayer1.DoWallCollision(walls);
 		if (isTwoPlayerMode) {
@@ -160,16 +164,14 @@ void Game::UpdateModel(float dt)
 		}
 
 		gf_powerUpManager.DoCollectAndUsePowerUp();
-
 		gf_ballManager.Update(dt, wnd.kbd);
 		gf_ballManager.BrickGrid_DoBallCollision();
 		gf_ballManager.Paddle_DoBallCollision();
-
 		gf_powerUpManager.DoWallCollision();
 		gf_ballManager.DoWallCollision();
 		break;
-	case SelectionMenu::GameState::EditorMode:
 
+	case SelectionMenu::GameState::EditorMode:
 		break;
 	}
 }
@@ -181,23 +183,30 @@ void Game::ComposeFrame()
 	case SelectionMenu::GameState::MainMenu:
 		selectionMenu.Draw(gfx);
 		break;
+
 	case SelectionMenu::GameState::Solo:
 	case SelectionMenu::GameState::Duo:
+		gameStats.Draw(gfx);
 		background.Draw(gfx);
 		gf_brickGrid.Draw(gfx);
+
 		paddlePlayer1.Draw(gfx);
-		if (isTwoPlayerMode)
-		{
+		if (isTwoPlayerMode) {
 			paddlePlayer2.Draw(gfx);
 		}
+
 		gf_powerUpManager.Draw(gfx);
 		gf_ballManager.Draw(gfx);
-		fontTiny.DrawText(std::to_string(FPS), { 0,0 }, Colors::White, gfx);
-		if (hacksMode)
-		{
-			fontTiny.DrawText("HACKS", Vei2{ Graphics::GetScreenRect().right, 0 } - Vei2{ 5 * fontTiny.GetWidthChar(), 0 }, Colors::Red, gfx);
+
+		// Shitty stuf developer
+		fontXs.DrawText(std::to_string(FPS), Vei2{ int(wallsPlusBorder.right), 0 }, Colors::White, gfx);
+		if (hacksMode) {
+			fontXs.DrawText("HACKS", Vei2{ Graphics::GetScreenRect().right, 0 } - Vei2{ 5 * fontXs.GetWidthChar(), 0 }, Colors::Red, gfx);
 		}
+
+		//gfx.DrawSprite(walls.left, walls.top, darkenedSurface, SpriteEffect::Ghost{ Colors::Magenta });
 		break;
+
 	case SelectionMenu::GameState::EditorMode:
 		gf_editor.Draw(gfx);
 		break;

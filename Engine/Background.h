@@ -26,7 +26,6 @@ public:
 		borderOffset(borderOffset)
 	{
 	}
-
 	void Draw(Graphics& gfx) const
 	{
 		gfx.DrawRect(walls, Colors::Green);
@@ -122,7 +121,6 @@ public:
 
 		////////////////////////////////////
 	}
-
 	void Update(float dt)
 	{
 		switch (doorState)
@@ -139,6 +137,7 @@ public:
 			break;
 		}
 	}
+
 
 private:
 	RectF walls;

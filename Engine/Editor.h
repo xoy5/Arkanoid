@@ -14,7 +14,7 @@ class Game;
 class Editor
 {
 public:
-	Editor(Game& game);
+	Editor(Game& game, const Font* font);
 	void Draw(Graphics& gfx) const;
 
 public:
