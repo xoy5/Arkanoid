@@ -56,10 +56,13 @@ void GameStats::Draw(Graphics& gfx) const
 	int minutes = time / 60.0f;
 	int seconds = std::fmod(time, 60.0f);
 	std::string strMinutes = std::to_string(minutes);
-	std::string zerosForMinutes(2 - int(strMinutes.size()), '0');
+	std::string zerosForMinutes;
+	if (strMinutes.size() <= 2) {
+		std::string zerosForMinutes = std::string(2 - int(strMinutes.size()), '0');
+	}
 	std::string strSeconds = std::to_string(seconds);
 	std::string zerosForSeconds(2 - int(strSeconds.size()), '0');
-	font->DrawText("  " + zerosForMinutes + strMinutes + ':' + zerosForSeconds + strSeconds, posCenter, Colors::White, gfx);
+	font->DrawText((strMinutes.size() <= 2 ? "  " : " ") + zerosForMinutes + strMinutes + ':' + zerosForSeconds + strSeconds, posCenter, Colors::White, gfx);
 
 }
 

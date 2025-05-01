@@ -30,5 +30,5 @@ private:
 	int hp;
 	int recordScore;
 	int score = 0;
-	float time = 0.0f;
+	float time = 600.0f;
 };
