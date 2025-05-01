@@ -58,7 +58,7 @@ void GameStats::Draw(Graphics& gfx) const
 	std::string strMinutes = std::to_string(minutes);
 	std::string zerosForMinutes;
 	if (strMinutes.size() <= 2) {
-		std::string zerosForMinutes = std::string(2 - int(strMinutes.size()), '0');
+		zerosForMinutes = std::string(2 - int(strMinutes.size()), '0');
 	}
 	std::string strSeconds = std::to_string(seconds);
 	std::string zerosForSeconds(2 - int(strSeconds.size()), '0');
