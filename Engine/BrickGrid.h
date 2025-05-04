@@ -43,12 +43,12 @@ public:
 	void AddBrickToGrid(Brick* newBrick);
 	std::pair<void*, int> CheckBallCollision(const Ball& ball) const;
 	void ExecuteBallCollision(Ball& ball, int BrickIndex, Vec2* pHitPos = nullptr, bool* pDestroyed = nullptr);
-	Brick* CreateBrick(Brick::Type type, const RectF& rect = {0, brickWidth, 0, brickHeight});
+	Brick* CreateBrick(Brick::Type type, const RectF& rect = {0, brickWidth, 0, brickHeight}, const BreakableBrick::Color& color = BreakableBrick::Color::None);
 
 public:
 	static int GetBrickWidth();
 	static int GetBrickHeight();
-	static RectF GetRectBrickForRoundPos(Vei2 posMouse);
+	RectF GetRectBrickForRoundPos(Vei2 posMouse);
 
 private:
 	static constexpr void SetFilenameBat(std::string& filename);
@@ -62,7 +62,6 @@ private:
 	static constexpr  int brickWidth = 55;
 	static constexpr int brickHeight = 20;
 	static constexpr int nColBricks = 11;
-	static constexpr int topOffset = 15;
 
 	const Sprite breakableBricksSprites;
 	static constexpr int breakableBricksNSprites = 5;

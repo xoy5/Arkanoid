@@ -17,24 +17,41 @@ private:
 		Laser
 	};
 public:
-	Background(const std::string& filenamePipes, const RectF& walls, int borderOffset)
+	Background(const std::string& filenamePipes, const std::string& filenameBackground, const RectF& walls, int borderOffset)
 		:
 		pipesSprite(filenamePipes),
+		background(filenameBackground),
 		pipeAnimationOppening(40, 0, pipesWidth, pipesHeight, 10, &pipesSprite, 0.1f, Colors::Magenta),
 		pipeAnimationLaser(240, 0, pipesWidth, pipesHeight, 5, &pipesSprite, 0.05f, Colors::Magenta),
-		walls(walls),
-		borderOffset(borderOffset)
+		borderOffset(borderOffset),
+		wallsExpanded(walls.GetExpanded(float(borderOffset + pipesWidth), float(borderOffset + pipesWidth), 0.0f, float(borderOffset + pipesWidth))),
+		wallsBackground(walls.GetExpanded(float(borderOffset + 1), float(borderOffset + 1), 0.0f, float(borderOffset + 1))),
+		nBackgroundTilesX(wallsBackground.GetWidth() / 121),
+		nBackgroundTilesY(wallsBackground.GetHeight() / 100),
+		srcRectPieceOfBackground(0, nBackgroundTilesX % 121, 0, 100)
 	{
 	}
+
 	void Draw(Graphics& gfx) const
 	{
-		gfx.DrawRect(walls, Colors::Green);
-		RectF walls = this->walls.GetExpanded(pipesWidth + borderOffset, pipesWidth + borderOffset, 0.0f, pipesWidth + borderOffset);
-
+		for (int x = 0; x < 5; x++)
+		{
+			for (int y = 0; y < 6; y++)
+			{
+				gfx.DrawSprite(wallsBackground.left + x * 121, wallsBackground.top + y * 100, background, SpriteEffect::Chroma(Colors::Magenta));
+			}
+		}
+		{
+			const int x = 5;
+			for (int y = 0; y < 6; y++)
+			{
+				gfx.DrawSprite(wallsBackground.left + x * 121, wallsBackground.top + y * 100, srcRectPieceOfBackground, background, SpriteEffect::Chroma(Colors::Magenta));
+			}
+		}
 		////////////////////////////////////
 
-		Vec2 posLeftWall = { walls.left, walls.bottom - pipesHeight / 2 };
-		Vec2 posRightWall = { walls.right - pipesWidth, walls.bottom - pipesHeight / 2 };
+		Vec2 posLeftWall = { wallsExpanded.left, wallsExpanded.bottom - pipesHeight / 2 };
+		Vec2 posRightWall = { wallsExpanded.right - pipesWidth, wallsExpanded.bottom - pipesHeight / 2 };
 
 		// left
 		gfx.DrawSprite(posLeftWall.x, posLeftWall.y, srcRectHalfPipe, pipesSprite, SpriteEffect::Chroma{ Colors::Magenta });
@@ -74,11 +91,11 @@ public:
 		}
 
 		// left
-		posLeftWall.y = walls.top + pipesWidth;
+		posLeftWall.y = wallsExpanded.top + pipesWidth;
 		gfx.DrawSprite(posLeftWall.x, posLeftWall.y, srcRectPieceOfPipe, pipesSprite, SpriteEffect::Chroma{ Colors::Magenta });
 
 		// right
-		posRightWall.y = walls.top + pipesWidth;
+		posRightWall.y = wallsExpanded.top + pipesWidth;
 		gfx.DrawSprite(posRightWall.x, posRightWall.y, srcRectPieceOfPipe, pipesSprite, SpriteEffect::Chroma{ Colors::Magenta });
 
 		////////////////////////////////////
@@ -88,8 +105,8 @@ public:
 		const int pipesWidth = this->pipesHeight;
 		const int pipesHeight = this->pipesWidth;
 
-		Vec2 posTopWallLeft = { walls.left, walls.top };
-		Vec2 posTopWallRight = { walls.right - pipesCornerWidth, walls.top };
+		Vec2 posTopWallLeft = { wallsExpanded.left, wallsExpanded.top };
+		Vec2 posTopWallRight = { wallsExpanded.right - pipesCornerWidth, wallsExpanded.top };
 
 		gfx.DrawSprite(posTopWallLeft.x, posTopWallLeft.y, srcRectTopLeftCornerPipe, pipesSprite, SpriteEffect::Chroma{ Colors::Magenta });
 		gfx.DrawSprite(posTopWallRight.x, posTopWallRight.y, srcRectTopRightCornerPipe, pipesSprite, SpriteEffect::Chroma{ Colors::Magenta });
@@ -140,9 +157,13 @@ public:
 
 
 private:
-	RectF walls;
+	const int borderOffset;
+	RectF wallsExpanded;
+	RectF wallsBackground;
+	int nBackgroundTilesX;
+	int nBackgroundTilesY;
+	RectI srcRectPieceOfBackground;
 	DoorState doorState = DoorState::Oppening;
-	const int borderOffset = 4;
 	static constexpr int pipesHeight = 50;
 	static constexpr int pipesWidth = 20;
 	static constexpr int pipesCornerWidth = 20;
@@ -160,6 +181,7 @@ private:
 	static constexpr RectI srcRectTopRightCornerPipe = { 70, 90, 70, 90 };
 	static constexpr RectI srcRectTopPipeLong = { 90, 180, 70, 90 };
 	Sprite pipesSprite;
+	Sprite background;
 	Animation pipeAnimationOppening;
 	Animation pipeAnimationLaser;
 	Animation topPipeAnimationOppening;

@@ -20,7 +20,7 @@ public:
 	void ProcessMouse(const Mouse::Event& event) override
 	{
 		// hovered
-		hovered = GetRect().Contains(event.GetPos());
+		hovered = GetRect().IsContains(event.GetPos());
 
 		if (hovered && !hoveredAlready) {
 			hoverSound.Play();
@@ -47,13 +47,19 @@ public:
 	{
 		if (focused)
 		{
-			if (character == 8 && !text.empty()) {
+			if (character == 8 && !text.empty()) 
+			{
 				text.pop_back();
-				SetSizeWidth(sizeWidth - font->GetWidthChar());
+				if (isSetDynamicSize) {
+					SetSizeWidthContentBox(sizeWidth - font->GetWidthChar());
+				}
 			}
-			else if (character != 8) {
+			else if (character != 8) 
+			{
 				text += character;
-				SetSizeWidth(sizeWidth + font->GetWidthChar());
+				if (isSetDynamicSize) {
+					SetSizeWidthContentBox(sizeWidth + font->GetWidthChar());
+				}
 			}
 		}
 	}
@@ -64,6 +70,10 @@ public:
 	void SetFocusOff()
 	{
 		focused = false;
+	}
+	int GetSize() const
+	{
+		return (int)text.size();
 	}
 
 private:

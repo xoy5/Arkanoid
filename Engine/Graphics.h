@@ -92,6 +92,24 @@ public:
 		DrawRect((int)rect.left, (int)rect.top, (int)rect.right, (int)rect.bottom, c);
 	}
 
+	void DrawDisabled(const RectI& rect);
+
+	template<typename E>
+	void DrawSprite(float x, float y, const Surface& s, E effect)
+	{
+		DrawSprite((int)x, (int)y, s, effect);
+	}
+	template<typename E>
+	void DrawSprite(float x, float y, const RectI& srcRect, const Surface& s, E effect)
+	{
+		DrawSprite((int)x, (int)y, srcRect, s, effect);
+	}
+	template<typename E>
+	void DrawSprite(float x, float y, RectI srcRect, const RectI& clip, const Surface& s, E effect)
+	{
+		DrawSprite((int)x, (int)y, srcRect, GetScreenRect(), s, effect);
+	}
+
 	template<typename E>
 	void DrawSprite( int x,int y,const Surface& s,E effect )
 	{

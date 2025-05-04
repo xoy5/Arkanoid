@@ -34,7 +34,7 @@ public:
 		buttonYes.SetPositionCenter(true);
 		buttonNo.SetPositionCenter(true);
 		buttonOk.SetPositionCenter(true);
-		buttonNo.SetSizeWidth(font->GetWidthChar() * 3);
+		buttonNo.SetSizeWidthContentBox(font->GetWidthChar() * 3);
 		int paddingBetween = 20;
 		buttonNo.SetPos(buttonNo.GetPos() - Vei2{ buttonNo.GetRect().GetWidth() / 2 + paddingBetween / 2, 0 });
 		buttonYes.SetPos(buttonYes.GetPos() + Vei2{ buttonYes.GetRect().GetWidth() / 2 + paddingBetween / 2,0 });
@@ -42,20 +42,21 @@ public:
 	}
 	void Draw(Graphics& gfx) const
 	{
+		// Dark
+		gfx.DrawDisabled(Graphics::GetScreenRect());
+
 		// Background
 		gfx.DrawRect(rect, Colors::Gray);
 
 		// Text
-		{
-			Vei2 posText;
-			if (font->NumberOfLines(messageText) == 1) {
-				posText = Vei2{ Graphics::GetScreenCenter().x, rect.top + 65 } - Vei2{ int(messageText.size()) * font->GetWidthChar() / 2, 0 };
-			}
-			else {
-				posText = Vei2{ Graphics::GetScreenCenter().x, rect.top + 45 } - Vei2{ font->GetLongestLineSize(messageText) * font->GetWidthChar() / 2, 0 };
-			}
-			font->DrawText(messageText, posText, Colors::White, gfx);
+		Vei2 posText;
+		if (font->NumberOfLines(messageText) == 1) {
+			posText = Vei2{ Graphics::GetScreenCenter().x, rect.top + rect.GetHeight() / 4 } - Vei2{int(messageText.size()) * font->GetWidthChar() / 2, 0};
 		}
+		else {
+			posText = Vei2{ Graphics::GetScreenCenter().x, rect.top + rect.GetHeight() / 5 } - Vei2{ font->GetLongestLineSize(messageText) * font->GetWidthChar() / 2, 0 };
+		}
+		font->DrawText(messageText, posText, Colors::White, gfx);
 
 		// Buttons
 		switch (buttons)

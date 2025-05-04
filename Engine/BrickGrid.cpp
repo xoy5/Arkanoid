@@ -11,7 +11,7 @@ BrickGrid::BrickGrid(Game& game, const std::string& dir, const std::string& file
 	unbreakableBricksSprite({fileUnbreakableBrickSprite})
 {
 
-	const int brickGridWidth = game.walls.GetWidth();
+	const int brickGridWidth = (int)game.walls.GetWidth();
 
 	int brickGridWHeight = nRowBricks * brickHeight;
 	Vec2 gridPos = Vec2{ game.walls.left, game.walls.top + brickHeight * 4 };
@@ -31,7 +31,7 @@ BrickGrid::BrickGrid(Game& game, const std::string& dir, const std::string& file
 		else
 		{
 			for (int x = 0; x < nColBricks; x++, brickPos += Vec2{ brickWidth, 0.0f }) {
-				bricks.emplace_back(new BreakableBrick(RectF(brickPos, brickPos + Vec2{ brickWidth, brickHeight }), &breakableBricksSprites, BreakableBrick::GetSrcRectSpriteColor(y)));
+				bricks.emplace_back(new BreakableBrick(RectF(brickPos, brickPos + Vec2{ brickWidth, brickHeight }), &breakableBricksSprites, BreakableBrick::GetSrcRectSpriteColor(y + (y > 4 ? -1 : 0))));
 			}
 		}
 	}
@@ -96,7 +96,7 @@ BrickGrid::MessageFile BrickGrid::Load(std::string filename)
 
 BrickGrid::MessageFile BrickGrid::Save(std::string filename)
 {
-	MessageFile  messageFile = MessageFile::Saved;
+	MessageFile messageFile = MessageFile::Saved;
 	PrepareFilename(filename);
 
 	if (std::filesystem::exists(filename)) {
@@ -127,14 +127,14 @@ BrickGrid::MessageFile BrickGrid::DeleteBrickGrid(std::string filename)
 	return std::filesystem::remove(filename) ? MessageFile::Deleted : MessageFile::Error;
 }
 
-Brick* BrickGrid::CreateBrick(Brick::Type type, const RectF& rect)
+Brick* BrickGrid::CreateBrick(Brick::Type type, const RectF& rect, const BreakableBrick::Color& color)
 {
 	Brick* brick = nullptr;
 
 	switch (type)
 	{
 	case Brick::Type::Breakable:
-		brick = new BreakableBrick(rect, &breakableBricksSprites, BreakableBrick::srcRectGreen);
+		brick = new BreakableBrick(rect, &breakableBricksSprites, BreakableBrick::GetSrcRectSpriteColor((int)color));
 		break;
 	case Brick::Type::BreakableHp:
 		brick = new BreakableHpBrick(rect, 5, Colors::Red );
@@ -261,17 +261,24 @@ constexpr void BrickGrid::SetFilenameBat(std::string& filename)
 
 void BrickGrid::PrepareFilename(std::string& filename)
 {
-	if (filename.empty()) {
-		filename = "default";
+	const std::string::size_type pos = filename.find_last_of("/");
+	const std::string sub = filename.substr(pos + 1);
+
+	if (pos != std::string::npos && sub.empty()) {
+		filename += "default";
 	}
+	else if (pos == std::string::npos) {
+		filename = "Edits/default";
+	}
+
 	filename = directory + filename;
 	SetFilenameBat(filename);
 }
 
 RectF BrickGrid::GetRectBrickForRoundPos(Vei2 posMouse)
 {
-	Vei2 posInGrid = posMouse - Vei2{ 0, topOffset };
-	if (posInGrid.x < 0 || posInGrid.y < 0) return RectF{ 0, brickWidth, 0, brickHeight };
+	Vei2 posInGrid = posMouse - Vei2(game.walls.left, game.walls.top);
+	if (posInGrid.x < 0 || posInGrid.y < 0) return RectF(game.walls.left, brickWidth, game.walls.top, brickHeight);
 
 	Vei2 addToNext = Vei2{ brickWidth, brickHeight };
 	int fullBricksX = posInGrid.x / addToNext.x;
@@ -279,14 +286,14 @@ RectF BrickGrid::GetRectBrickForRoundPos(Vei2 posMouse)
 
 
 	enum Pos {
-		TopLeft = 0,
+		TopLeft,
 		TopRight,
 		BottomLeft,
 		BottomRight,
 		Count
 	};
 
-	Vei2 posFrom = Vei2{ 0, topOffset } + Vei2{ addToNext.x * fullBricksX + brickWidth / 2, addToNext.y * fullBricksY + brickHeight / 2 };
+	Vei2 posFrom = Vei2(game.walls.left, game.walls.top) + Vei2(addToNext.x * fullBricksX + brickWidth / 2, addToNext.y * fullBricksY + brickHeight / 2);
 	Vei2 positionsCenter[Pos::Count] = {
 		posFrom,
 		posFrom + Vei2{addToNext.x, 0},
@@ -304,5 +311,5 @@ RectF BrickGrid::GetRectBrickForRoundPos(Vei2 posMouse)
 		}
 	}
 
-	return RectF::FromCenter(Vec2(positionsCenter[pos]), brickWidth / 2.0f, brickHeight / 2.0f);
+	return RectF::FromCenter(Vec2(positionsCenter[pos]) + Vec2(1.0f, 0.0f), brickWidth / 2.0f, brickHeight / 2.0f);
 }

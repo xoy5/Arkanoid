@@ -88,6 +88,9 @@ public:
 		}
 		font->DrawText(text, textPos, fontColor, gfx);
 		///////////////////////////////
+		if (isDisabled) {
+			gfx.DrawDisabled(GetRect());
+		}
 	}
 public:
 	void SetActive(bool set = false)
@@ -115,7 +118,7 @@ public:
 	virtual void ProcessMouse(const Mouse::Event& event)
 	{
 		// hovered
-		hovered = GetRect().Contains(event.GetPos());
+		hovered = GetRect().IsContains(event.GetPos());
 
 		if (hovered && !hoveredAlready) {
 			hoverSound.Play();
@@ -164,13 +167,21 @@ public:
 	{
 		return text;
 	}
-	void SetSizeWidth(int width)
+	void SetSizeWidthContentBox(int width)
 	{
 		this->sizeWidth = width;
 	}
-	void SetSizeHeight(int height)
+	void SetSizeHeightContentBox(int height)
 	{
 		this->sizeHeight = height;
+	}
+	void SetSizeWidthBorderBox(int width)
+	{
+		this->sizeWidth = width - (paddingX * 2) - (borderSize * 2);
+	}
+	void SetSizeHeightBorderBox(int height)
+	{
+		this->sizeHeight = height - (paddingY * 2) - (borderSize * 2);
 	}
 
 public:
@@ -214,6 +225,11 @@ public:
 		isSetBackgroundHoverDarker = true;
 	}
 	//*********** SETTERS FOR STYLES ***********//
+	// disabled
+	void SetDisabled(bool set = false)
+	{
+		this->isDisabled = set;
+	}
 	// dynamic size
 	void SetDynamicSize(bool set = true)
 	{
@@ -233,6 +249,10 @@ public:
 	void SetFontHoverDarker(bool set = true)
 	{
 		this->isSetFontHoverDarker = set;
+	}
+	void SetFontColor(const Color& color)
+	{
+		this->fontColor = color;
 	}
 	// text
 	void SetTextAlignCenter(bool set = true)
@@ -281,6 +301,8 @@ protected:
 	bool hoveredAlready = false;
 
 	//*********** STYLES ***********//
+	// disabled
+	bool isDisabled = false;
 	// dynamic size
 	bool isSetDynamicSize = true;
 	// darker

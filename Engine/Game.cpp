@@ -27,18 +27,16 @@ Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	background("Files/Sprites/Pipes340x90.bmp", walls, 4),
-	gameStats(&fontLg, "Files/Records.txt", rectStats, 3),
+	background("Files/Sprites/Pipes340x90.bmp", "Files/Sprites/Background121x100.bmp", walls, 2),
+	gameStats(&fontLg, "Files/Records.txt", rightPanelRect, 3),
 	selectionMenu(&font3Xl, Graphics::GetScreenCenter() - Vei2{ 0, 100 }),
 	gf_powerUpManager(*this, "Files/Sprites/PowerUpBox.bmp"),
-	gf_brickGrid(*this, "Files/BrickGrid/", "Files/Sprites/BricksRGBOP55x20x4.bmp", "Files/Sprites/UnbreakableBrick550x20.bmp", 8),
+	gf_brickGrid(*this, "Files/BrickGrid/", "Files/Sprites/BricksRGBOP55x20x4.bmp", "Files/Sprites/UnbreakableBrick550x20.bmp", 11),
 	gf_ballManager(*this, "Files/Sprites/Ball19x19.bmp", 480.0f),
-	gf_editor(*this, &fontSm),
+	gf_editor(*this, &fontSm, rightPanelRect),
 	paddlePlayer1(Paddle::Player::Player1, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.bottom - 25 - (50 / 2)), 600.0f),
-	paddlePlayer2(Paddle::Player::Player2, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.top + 25 + (50 / 2)), 600.0f),
-	darkenedSurface(walls.GetWidth(), walls.GetHeight())
+	paddlePlayer2(Paddle::Player::Player2, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.top + 25 + (50 / 2)), 600.0f)
 {
-	darkenedSurface.Fill(Colors::Black);
 }
 
 void Game::Go()
@@ -46,8 +44,10 @@ void Game::Go()
 	gfx.BeginFrame();
 	ProcessInput();
 	const float elapsedTime = ft.Mark();
-	if (!gf_editor.IsEditing())
+	switch(gameState)
 	{
+	case SelectionMenu::GameState::Solo:
+	case SelectionMenu::GameState::Duo:
 		float time = elapsedTime;
 		while (time > 0.0f) {
 			const float dt = std::min(precision, time);
@@ -134,6 +134,11 @@ void Game::ProcessInput()
 			if (state != SelectionMenu::GameState::Invalid)
 			{
 				gameState = state;
+				switch (gameState)
+				{
+				case SelectionMenu::GameState::EditorMode:
+					gf_brickGrid.ClearBrickGrid();
+				}
 			}
 			break;
 		}
@@ -203,11 +208,11 @@ void Game::ComposeFrame()
 		if (hacksMode) {
 			fontXs.DrawText("HACKS", Vei2{ Graphics::GetScreenRect().right, 0 } - Vei2{ 5 * fontXs.GetWidthChar(), 0 }, Colors::Red, gfx);
 		}
-
-		//gfx.DrawSprite(walls.left, walls.top, darkenedSurface, SpriteEffect::Ghost{ Colors::Magenta });
 		break;
 
 	case SelectionMenu::GameState::EditorMode:
+		background.Draw(gfx);
+		gf_brickGrid.Draw(gfx);
 		gf_editor.Draw(gfx);
 		break;
 	}

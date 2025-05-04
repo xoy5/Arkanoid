@@ -60,5 +60,5 @@ private:
 	static constexpr RectI srcRectMdSprite = { (int)srcRectSmSprite.right, (int)srcRectSmSprite.right + (int)mdWidth, 0, (int)height };
 	static constexpr RectI srcRectLgSprite = { (int)srcRectMdSprite.right, (int)srcRectMdSprite.right + (int)lgWidth, 0, (int)height };
 
-	static constexpr float exitXFactor = 0.03f; // percent
+	static constexpr float exitXFactor = 0.02f; // percent
 };

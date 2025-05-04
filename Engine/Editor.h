@@ -1,5 +1,8 @@
 #pragma once
 #include "Graphics.h"
+
+#include <string>
+
 #include "Font.h"
 #include "TextBox.h"
 #include "Button.h"
@@ -14,7 +17,8 @@ class Game;
 class Editor
 {
 public:
-	Editor(Game& game, const Font* font);
+	Editor(Game& game, const Font* font, const RectI& rect);
+	~Editor();
 	void Draw(Graphics& gfx) const;
 
 public:
@@ -22,28 +26,32 @@ public:
 	void ProcessMouse(const Mouse::Event& event);
 
 public:
-	void ChangeEditing();
-	bool IsEditing() const;
-	bool IsEditingBrickGrid() const;
+	void Reset();
 	bool IsHandlingMessage() const;
 
 private:
 	Brick* CreateBrickWithDataFromButton() const;
 
 private:
+	std::string dirRounds = "Rounds/";
+	std::string dirEdits = "Edits/";
 	BrickGrid::MessageFile messageFile = BrickGrid::MessageFile::NoMessage;
 	Game& game;
 	const Font* font;
-	bool editing = false; 
-	bool editingBrickGrid = false;
-	Brick* newBrick = nullptr;
+	RectI rect;
 
-	StateButton<bool> stateButtonEditBrickGrid;
+	Button buttonBackToMenu;
 	Button buttonClearBrickGrid;
 	Button buttonLoad;
 	Button buttonSave;
+	std::vector<MenuButton<BreakableBrick::Color>> buttonsColor;
 	StateButton<Brick::Type> stateButtonBrickType;
 	TextBox textBoxFilename;
+	Button buttonPlay;
+
+	BreakableBrick::Color curColor = BreakableBrick::Color::Red;
+	Brick* newBrick = nullptr;
+	bool newBrickInWalls = false;
 
 	MyMessageBox messageBox = MyMessageBox(font);
 };

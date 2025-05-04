@@ -51,10 +51,10 @@ public:
 		secondBackgroundColor(secondColor)
 	{
 		SetBackground(true, firstColor);
-		int longestSize = std::max(firstString.size(), secondString.size());
+		int longestSize = int(std::max(firstString.size(), secondString.size()));
 		int sizeWidth = longestSize * font->GetWidthChar();
 		SetDynamicSize(false);
-		SetSizeWidth(sizeWidth);
+		SetSizeWidthContentBox(sizeWidth);
 	}
 
 	T GetActiveStateValue() const

@@ -29,8 +29,8 @@ public:
 			buttons.emplace_back(MenuButton<GameState>{font, center, GameState(i+1), texts[i]});
 			buttons[i].SetPositionCenter(true);
 			buttons[i].SetDynamicSize(false);
-			const int sizeWidth = texts[2].size() * font->GetWidthChar();
-			buttons[i].SetSizeWidth(sizeWidth);
+			const int sizeWidth = int(texts[2].size()) * font->GetWidthChar();
+			buttons[i].SetSizeWidthContentBox(sizeWidth);
 			center.y += buttons[i].GetHeight() + paddingY;
 		}
 	}

@@ -66,12 +66,9 @@ private:
 	const Font fontXl = Font("Files/Fonts/font20x35.bmp");
 	const Font font2Xl = Font("Files/Fonts/font24x42.bmp");
 	const Font font3Xl = Font("Files/Fonts/font32x56.bmp");
-	RectF walls = RectF(Vec2{ 24.0f, 24.0f }, 605.0f, 576.0f);
-	RectF wallsPlusBorder = RectF(Vec2{ 0.0f, 0.0f }, 653.0f, 600.0f);
-	RectI rectStats = RectI{ 653, 800, 0, 600 };
 	MyMessageBox myMessageBox = MyMessageBox(&fontLg);
 	FrameTimer ft;
-	const float precision = 0.025f;
+	const float precision = 0.0025f;
 	/////////// FPS //////////
 	int FPS = 0;
 	float timeFrame = 0.0f;
@@ -80,14 +77,20 @@ private:
 	//////////////////////////
 	/********************************/
 	/*  User Variables  */
+
+	const RectF wallsExtra = RectF(Vec2{ 20.0f, 20.0f }, 609.0f, 580.0f);
+	const RectF walls = RectF(Vec2{ 24.0f, 24.0f }, 605.0f, 576.0f);
+	const RectF wallsPlusBorder = RectF(Vec2{ 0.0f, 0.0f }, 653.0f, 600.0f);
+	const RectI rightPanelRect = RectI{ 653, 800, 0, 600 };
+	RectF brickGridRectSolo;
+
 	bool hacksMode = true;
 	bool isTwoPlayerMode = false;
 	int curLevel = 1;
 	Background background;
 	GameStats gameStats;
 	SelectionMenu selectionMenu;
-	SelectionMenu::GameState gameState = SelectionMenu::GameState::Solo;
-	Surface darkenedSurface;
+	SelectionMenu::GameState gameState = SelectionMenu::GameState::EditorMode;
 
 	// Friends;
 	friend class PowerUpManager;

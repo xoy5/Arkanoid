@@ -90,6 +90,30 @@ void BreakableBrick::SetSpriteColor(const RectI& srcRectSpriteColor)
 	srcRect = srcRectSpriteColor;
 }
 
+void BreakableBrick::SetColor(const Color& color)
+{
+	switch (color)
+	{
+	case Color::Red:
+		srcRect = srcRectRed;
+		break;
+	case Color::Green:
+		srcRect = srcRectGreen;
+		break;
+	case Color::Blue:
+		srcRect = srcRectBlue;
+		break;
+	case Color::Orange:
+		srcRect = srcRectOrange;
+		break;
+	case Color::Pink:
+		srcRect = srcRectPink;
+		break;
+	default:
+		assert(false);
+	}
+}
+
 RectI BreakableBrick::GetSrcRectSpriteColor(int i)
 {
 	assert(i >= 0);

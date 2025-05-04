@@ -44,7 +44,7 @@ void GameStats::Draw(Graphics& gfx) const
 	font->DrawText(spacesForCurScore + strCurScore, posCenter, Colors::White, gfx);
 
 	posCenter.y += 50;
-	font->DrawText(" HP\n  LEFT", posCenter, Colors::Red, gfx, -5);
+	font->DrawText(" LIFES\n   LEFT", posCenter, Colors::Red, gfx, -5);
 	posCenter.y += charHeight * 2 - 5;
 	std::string strHp = std::to_string(hp);
 	std::string spacesForHp(fullChars - int(strHp.size()), ' ');

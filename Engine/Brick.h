@@ -41,6 +41,17 @@ protected:
 class BreakableBrick : public Brick
 {
 public:
+	enum class Color
+	{
+		Red,
+		Green,
+		Blue,
+		Orange,
+		Pink,
+		Count, 
+		None
+	};
+public:
 	static constexpr RectI srcRectRed = {0, 55, 0, 20};
 	static constexpr RectI srcRectGreen = {55, 110, 0, 20};
 	static constexpr RectI srcRectBlue = { 110, 165, 0, 20 };
@@ -61,6 +72,7 @@ public:
 	void Hitted() override;
 	bool IsDestroyed() const override;
 	void SetSpriteColor(const RectI& srcRectSpriteColor);
+	void SetColor(const Color& color);
 
 private:
 	bool destroyed = false;
