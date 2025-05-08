@@ -14,10 +14,12 @@ public:
 	void Update(float dt);
 
 public:
+	void NextRound();
 	void AddPoints(int points);
 	void HpReset();
 	void HpSubtract();
 	int GetHp() const;
+	int GetRound() const;
 
 private:
 	const Font* font;

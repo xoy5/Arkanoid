@@ -3,17 +3,28 @@
 
 #include "SpriteEffect.h"
 
+Brick::Brick(Type type)
+	:
+	type(type)
+{
+}
 
-Brick::Brick(const RectF& rect, const Sprite* sprite)
+Brick::Brick(const RectF& rect, const Sprite* sprite, Type type)
 	:
 	rect(rect),
-	sprite(sprite)
+	sprite(sprite),
+	type(type)
 {
 }
 
 RectF Brick::GetRect() const
 {
 	return rect;
+}
+
+Brick::Type Brick::GetType() const
+{
+	return type;
 }
 
 void Brick::SetPos(const Vec2& pos)
@@ -45,10 +56,18 @@ void Brick::Load(std::ifstream& file, const Sprite* sprite)
 	file.read(reinterpret_cast<char*>(&rect), sizeof(rect));
 	this->sprite = sprite;
 }
+
+
 //////////////////////////////////////////////////////////////////////////////
+BreakableBrick::BreakableBrick()
+	:
+	Brick(Type::Breakable)
+{
+}
+
 BreakableBrick::BreakableBrick(const RectF& rect, const Sprite* sprite, const RectI& srcRect)
 	:
-	Brick(rect, sprite),
+	Brick(rect, sprite, Type::Breakable),
 	srcRect(srcRect)
 {
 }
@@ -133,9 +152,14 @@ RectI BreakableBrick::GetSrcRectSpriteColor(int i)
 	};
 }
 //////////////////////////////////////////////////////////////////////////////
+BreakableHpBrick::BreakableHpBrick()
+	:
+	Brick(Type::BreakableHp)
+{
+}
 BreakableHpBrick::BreakableHpBrick(const RectF& rect, int hp, const Color& color)
 	:
-	Brick(rect, nullptr),
+	Brick(rect, nullptr, Type::BreakableHp),
 	hp(hp),
 	color(color)
 {
@@ -185,9 +209,15 @@ int BreakableHpBrick::GetHp() const
 	return hp;
 }
 //////////////////////////////////////////////////////////////////////////////
+UnbreakableBrick::UnbreakableBrick()
+	:
+	Brick(Type::Unbreakable)
+{
+}
+
 UnbreakableBrick::UnbreakableBrick(const RectF& rect, const Sprite* sprite)
 	:
-	Brick(rect, sprite),
+	Brick(rect, sprite, Type::Unbreakable),
 	animation(55, 0, 55, 20, nFrames, sprite, animationOneFrameTime)
 {
 }

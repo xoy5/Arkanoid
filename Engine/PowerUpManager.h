@@ -21,6 +21,7 @@ public:
 	void AddRng(const Vec2& posBrickCenter, const Vec2& dir);
 	void DoCollectAndUsePowerUp();
 	void DoWallCollision();
+	void ClearPowerUps();
 
 private:
 	Game& game;

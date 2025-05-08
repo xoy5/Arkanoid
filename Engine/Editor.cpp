@@ -23,16 +23,16 @@ Editor::Editor(Game& game, const Font* font, const RectI& rect)
 	buttonsColor.emplace_back(font, stateButtonBrickType.GetPos() + Vei2{ 0, stateButtonBrickType.GetRect().GetHeight() }, BreakableBrick::Color::Red, "Red");
 	buttonsColor[0].SetBackground(true, Colors::Red);
 
-	buttonsColor.emplace_back(font, buttonsColor[0].GetPos() + Vei2{ 0, buttonsColor[0].GetRect().GetHeight() }, BreakableBrick::Color::Red, "Green");
+	buttonsColor.emplace_back(font, buttonsColor[0].GetPos() + Vei2{ 0, buttonsColor[0].GetRect().GetHeight() }, BreakableBrick::Color::Green, "Green");
 	buttonsColor[1].SetBackground(true, Colors::Green);
 
-	buttonsColor.emplace_back(font, buttonsColor[1].GetPos() + Vei2{ 0, buttonsColor[1].GetRect().GetHeight() }, BreakableBrick::Color::Red, "Blue");
+	buttonsColor.emplace_back(font, buttonsColor[1].GetPos() + Vei2{ 0, buttonsColor[1].GetRect().GetHeight() }, BreakableBrick::Color::Blue, "Blue");
 	buttonsColor[2].SetBackground(true, Colors::Blue);
 
-	buttonsColor.emplace_back(font, buttonsColor[2].GetPos() + Vei2{ 0, buttonsColor[2].GetRect().GetHeight() }, BreakableBrick::Color::Red, "Orange");
+	buttonsColor.emplace_back(font, buttonsColor[2].GetPos() + Vei2{ 0, buttonsColor[2].GetRect().GetHeight() }, BreakableBrick::Color::Orange, "Orange");
 	buttonsColor[3].SetBackground(true, Colors::Orange);
 
-	buttonsColor.emplace_back(font, buttonsColor[3].GetPos() + Vei2{ 0, buttonsColor[3].GetRect().GetHeight() }, BreakableBrick::Color::Red, "Pink");
+	buttonsColor.emplace_back(font, buttonsColor[3].GetPos() + Vei2{ 0, buttonsColor[3].GetRect().GetHeight() }, BreakableBrick::Color::Pink, "Pink");
 	buttonsColor[4].SetBackground(true, Colors::Pink);
 
 	textBoxFilename.SetDynamicSize(false);
@@ -74,7 +74,7 @@ void Editor::Draw(Graphics& gfx) const
 	buttonLoad.Draw(gfx);
 	buttonSave.Draw(gfx);
 
-	font->DrawText("filename:", buttonLoad.GetPos() + Vei2{ 5, -font->GetHeightChar() - 5 }, Colors::White, gfx);
+	font->DrawText("File:", buttonLoad.GetPos() + Vei2{ 5, -font->GetHeightChar() - 5 }, Colors::White, gfx);
 	textBoxFilename.Draw(gfx);
 
 	buttonPlay.Draw(gfx);
@@ -118,7 +118,7 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 {
 	if (IsHandlingMessage() == false)
 	{
-		if (newBrick) 
+		if (newBrick)
 		{
 			newBrickInWalls = game.walls.IsContains(Vec2(event.GetPos()));
 			newBrick->SetRect(game.gf_brickGrid.GetRectBrickForRoundPos(event.GetPos()));
@@ -131,10 +131,10 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 
 		if (stateButtonBrickType.GetActiveStateValue() == Brick::Type::Breakable)
 		{
-			for (auto& button : buttonsColor) 
+			for (auto& button : buttonsColor)
 			{
 				button.ProcessMouse(event);
-				if (button.IsClicked()) 
+				if (button.IsClicked())
 				{
 					curColor = button.GetOption();
 					static_cast<BreakableBrick*>(newBrick)->SetColor(curColor);
@@ -156,16 +156,26 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 			for (auto& button : buttonsColor) {
 				button.SetDisabled(stateButtonBrickType.GetActiveStateValue() != Brick::Type::Breakable);
 			}
+			delete newBrick;
+			newBrick = CreateBrickWithDataFromButton();
 		}
 		else if (buttonPlay.IsClicked())
 		{
 			game.gameState = SelectionMenu::GameState::Solo;
 		}
-		else if (game.walls.IsContains(Vec2(event.GetPos())) && event.GetType() == Mouse::Event::Type::LPress)
+		else if (game.walls.IsContains(Vec2(event.GetPos())))
 		{
-			/*game.gf_brickGrid.AddBrickToGrid(newBrick);
-			newBrick = CreateBrickWithDataFromButton();*/
+			if (event.GetType() == Mouse::Event::Type::LPress)
+			{
+				game.gf_brickGrid.AddBrickToGrid(newBrick);
+				newBrick = CreateBrickWithDataFromButton();
+			}
+			else if (event.GetType() == Mouse::Event::Type::RPress)
+			{
+				game.gf_brickGrid.RemoveFromGrid(event.GetPos());
+			}
 		}
+
 
 		///////////////// SETTING UP A MESSAGEBOX ////////////////////
 		buttonLoad.ProcessMouse(event);
@@ -173,7 +183,7 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 		textBoxFilename.ProcessMouse(event);
 		if (buttonSave.IsClicked())
 		{
-			messageFile = game.gf_brickGrid.Save(dirEdits + textBoxFilename.GetText());
+			messageFile = game.gf_brickGrid.Save(dirEdits, textBoxFilename.GetText());
 			switch (messageFile)
 			{
 			case BrickGrid::MessageFile::Saved:
@@ -188,7 +198,7 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 		}
 		else if (buttonLoad.IsClicked())
 		{
-			messageFile = game.gf_brickGrid.Load(dirEdits + textBoxFilename.GetText());
+			messageFile = game.gf_brickGrid.Load(dirEdits, textBoxFilename.GetText());
 			switch (messageFile)
 			{
 			case BrickGrid::MessageFile::Loaded:
@@ -236,8 +246,8 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 				if (buttonValue == MyMessageBox::ValueButton::Yes) {
 					messageBox.SetButtons(MyMessageBox::Buttons::Ok);
 					messageBox.SetText("Saved successfully!");
-					game.gf_brickGrid.DeleteBrickGrid(textBoxFilename.GetText());
-					messageFile = game.gf_brickGrid.Save(textBoxFilename.GetText());
+					game.gf_brickGrid.DeleteBrickGrid(dirEdits, textBoxFilename.GetText());
+					messageFile = game.gf_brickGrid.Save(dirEdits, textBoxFilename.GetText());
 				}
 				else if (buttonValue == MyMessageBox::ValueButton::No) {
 					messageFile = BrickGrid::MessageFile::NoMessage;

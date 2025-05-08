@@ -84,3 +84,8 @@ void PowerUpManager::DoWallCollision()
 		}
 	}
 }
+
+void PowerUpManager::ClearPowerUps()
+{
+	powerUps.clear();
+}

@@ -7,8 +7,8 @@ BrickGrid::BrickGrid(Game& game, const std::string& dir, const std::string& file
 	:
 	game(game),
 	directory(dir),
-	breakableBricksSprites({fileBreakableBrickSprites}),
-	unbreakableBricksSprite({fileUnbreakableBrickSprite})
+	breakableBricksSprites({ fileBreakableBrickSprites }),
+	unbreakableBricksSprite({ fileUnbreakableBrickSprite })
 {
 
 	const int brickGridWidth = (int)game.walls.GetWidth();
@@ -46,11 +46,11 @@ BrickGrid::~BrickGrid()
 	}
 }
 
-BrickGrid::MessageFile BrickGrid::Load(std::string filename)
+BrickGrid::MessageFile BrickGrid::Load(const std::string& folder, std::string filename)
 {
 	MessageFile messageFile = MessageFile::Loaded;
 
-	PrepareFilename(filename);
+	PrepareFilename(folder, filename);
 
 	std::ifstream file(filename);
 
@@ -61,6 +61,8 @@ BrickGrid::MessageFile BrickGrid::Load(std::string filename)
 
 	bricks.clear();
 	game.gf_ballManager.ClearBalls();
+	game.gf_powerUpManager.ClearPowerUps();
+
 	game.gf_ballManager.AddBallOnPaddlePlayer1();
 	if (game.isTwoPlayerMode) {
 		game.gf_ballManager.AddBallOnPaddlePlayer2();
@@ -94,10 +96,10 @@ BrickGrid::MessageFile BrickGrid::Load(std::string filename)
 	return messageFile;
 }
 
-BrickGrid::MessageFile BrickGrid::Save(std::string filename)
+BrickGrid::MessageFile BrickGrid::Save(const std::string& folder, std::string filename)
 {
 	MessageFile messageFile = MessageFile::Saved;
-	PrepareFilename(filename);
+	PrepareFilename(folder, filename);
 
 	if (std::filesystem::exists(filename)) {
 		messageFile = MessageFile::AlreadyExists;
@@ -121,9 +123,9 @@ BrickGrid::MessageFile BrickGrid::Save(std::string filename)
 	return messageFile;
 }
 
-BrickGrid::MessageFile BrickGrid::DeleteBrickGrid(std::string filename)
+BrickGrid::MessageFile BrickGrid::DeleteBrickGrid(const std::string& folder, std::string filename)
 {
-	BrickGrid::PrepareFilename(filename);
+	BrickGrid::PrepareFilename(folder, filename);
 	return std::filesystem::remove(filename) ? MessageFile::Deleted : MessageFile::Error;
 }
 
@@ -137,7 +139,7 @@ Brick* BrickGrid::CreateBrick(Brick::Type type, const RectF& rect, const Breakab
 		brick = new BreakableBrick(rect, &breakableBricksSprites, BreakableBrick::GetSrcRectSpriteColor((int)color));
 		break;
 	case Brick::Type::BreakableHp:
-		brick = new BreakableHpBrick(rect, 5, Colors::Red );
+		brick = new BreakableHpBrick(rect, 5, Colors::Red);
 		break;
 	case Brick::Type::Unbreakable:
 		brick = new UnbreakableBrick(rect, &unbreakableBricksSprite);
@@ -148,6 +150,20 @@ Brick* BrickGrid::CreateBrick(Brick::Type type, const RectF& rect, const Breakab
 }
 
 ///// Setters and Getters /////
+
+bool BrickGrid::IsRoundFinished() const
+{
+	bool clear = true;
+
+	for (const Brick* b : bricks) {
+		if (b->GetType() != Brick::Type::Unbreakable) {
+			clear = false;
+			break;
+		}
+	}
+
+	return clear;
+}
 
 int BrickGrid::GetBrickWidth()
 {
@@ -180,7 +196,30 @@ void BrickGrid::Update(float dt)
 
 void BrickGrid::AddBrickToGrid(Brick* newBrick)
 {
+	for (auto it = bricks.begin(); it != bricks.end(); ++it)
+	{
+		if ((*it)->GetRect().IsOverlappingWith(newBrick->GetRect()))
+		{
+			delete* it;
+			bricks.erase(it);
+			break;
+		}
+	}
+
 	bricks.emplace_back(newBrick);
+}
+
+void BrickGrid::RemoveFromGrid(const Vei2& posMouse)
+{
+	for (auto it = bricks.begin(); it != bricks.end(); ++it)
+	{
+		if ((*it)->GetRect().IsContains(Vec2(posMouse)))
+		{
+			delete* it;
+			bricks.erase(it);
+			break;
+		}
+	}
 }
 
 std::pair<void*, int> BrickGrid::CheckBallCollision(const Ball& ball) const
@@ -250,28 +289,18 @@ void BrickGrid::ExecuteBallCollision(Ball& ball, int brickIndex, Vec2* pHitPos, 
 	}
 }
 
-constexpr void BrickGrid::SetFilenameBat(std::string& filename)
+constexpr void BrickGrid::SetFilenameBat(std::string& fileSrc)
 {
-	std::string::size_type pos = filename.find_last_of(".");
+	std::string::size_type pos = fileSrc.find_last_of(".");
 	if (pos != std::string::npos) {
-		filename.erase(pos);
+		fileSrc.erase(pos);
 	}
-	filename += ".dat";
+	fileSrc += ".dat";
 }
 
-void BrickGrid::PrepareFilename(std::string& filename)
+void BrickGrid::PrepareFilename(const std::string& folder, std::string& filename)
 {
-	const std::string::size_type pos = filename.find_last_of("/");
-	const std::string sub = filename.substr(pos + 1);
-
-	if (pos != std::string::npos && sub.empty()) {
-		filename += "default";
-	}
-	else if (pos == std::string::npos) {
-		filename = "Edits/default";
-	}
-
-	filename = directory + filename;
+	filename = directory + folder + filename;
 	SetFilenameBat(filename);
 }
 

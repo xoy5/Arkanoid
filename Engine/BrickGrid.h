@@ -36,23 +36,25 @@ public:
 	void Update(float dt);
 
 public:
-	BrickGrid::MessageFile Load(std::string filename = "default.dat");
-	BrickGrid::MessageFile Save(std::string filename = "default.dat");
-	BrickGrid::MessageFile DeleteBrickGrid(std::string filename);
+	BrickGrid::MessageFile Load(const std::string& folder, std::string filename = "default.dat");
+	BrickGrid::MessageFile Save(const std::string& folder, std::string filename = "default.dat");
+	BrickGrid::MessageFile DeleteBrickGrid(const std::string& folder, std::string filename);
 	void ClearBrickGrid();
 	void AddBrickToGrid(Brick* newBrick);
+	void RemoveFromGrid(const Vei2& posMouse);
 	std::pair<void*, int> CheckBallCollision(const Ball& ball) const;
 	void ExecuteBallCollision(Ball& ball, int BrickIndex, Vec2* pHitPos = nullptr, bool* pDestroyed = nullptr);
 	Brick* CreateBrick(Brick::Type type, const RectF& rect = {0, brickWidth, 0, brickHeight}, const BreakableBrick::Color& color = BreakableBrick::Color::None);
 
 public:
+	bool IsRoundFinished() const;
 	static int GetBrickWidth();
 	static int GetBrickHeight();
 	RectF GetRectBrickForRoundPos(Vei2 posMouse);
 
 private:
-	static constexpr void SetFilenameBat(std::string& filename);
-	void PrepareFilename(std::string& filename);
+	static constexpr void SetFilenameBat(std::string& fileSrc);
+	void PrepareFilename(const std::string& folder, std::string& filename);
 
 private:
 	Game& game;

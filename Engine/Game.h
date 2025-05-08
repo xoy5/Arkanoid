@@ -86,7 +86,6 @@ private:
 
 	bool hacksMode = true;
 	bool isTwoPlayerMode = false;
-	int curLevel = 1;
 	Background background;
 	GameStats gameStats;
 	SelectionMenu selectionMenu;

@@ -81,6 +81,12 @@ void GameStats::Update(float dt)
 	}
 }
 
+void GameStats::NextRound()
+{
+	round++;
+	
+}
+
 void GameStats::AddPoints(int points)
 {
 	score += points;
@@ -99,5 +105,10 @@ void GameStats::HpSubtract()
 int GameStats::GetHp() const
 {
 	return hp;
+}
+
+int GameStats::GetRound() const
+{
+	return round;
 }
 

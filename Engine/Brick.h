@@ -18,8 +18,8 @@ public:
 	};
 
 public:
-	Brick() = default;
-	Brick(const RectF& rect, const Sprite* sprite);
+	Brick(Type type);
+	Brick(const RectF& rect, const Sprite* sprite, Type type);
 	virtual void Draw(Graphics& gfx) const = 0;
 	virtual void Update(float dt);
 	virtual void Save(std::ofstream& file) const;
@@ -32,10 +32,12 @@ public:
 	virtual void Hitted() = 0;
 	Vec2 GetPosCenter() const;
 	RectF GetRect() const;
+	Type GetType() const;
 
 protected:
 	RectF rect = RectF{ 0,0,0,0 };
 	const Sprite* sprite;
+	Type type;
 };
 
 class BreakableBrick : public Brick
@@ -62,7 +64,7 @@ public:
 	static RectI GetSrcRectSpriteColor(int i);
 
 public:
-	BreakableBrick() = default;
+	BreakableBrick();
 	BreakableBrick(const RectF& rect, const Sprite* sprite, const RectI& srcRect);
 	void Draw(Graphics& gfx) const override;
 	void Save(std::ofstream& file) const override;
@@ -82,7 +84,7 @@ private:
 class BreakableHpBrick : public Brick
 {
 public:
-	BreakableHpBrick() = default;
+	BreakableHpBrick();
 	BreakableHpBrick(const RectF& rect, int hp, const Color& color);
 	void Draw(Graphics& gfx) const override;
 	void Save(std::ofstream& file) const override;
@@ -102,7 +104,7 @@ private:
 class UnbreakableBrick : public Brick
 {
 public:
-	UnbreakableBrick() = default;
+	UnbreakableBrick();
 	UnbreakableBrick(const RectF& rect, const Sprite* sprite);
 	void Draw(Graphics& gfx) const override;
 	void Update(float dt) override;

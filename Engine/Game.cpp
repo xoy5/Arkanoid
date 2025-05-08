@@ -174,6 +174,12 @@ void Game::UpdateModel(float dt)
 		gf_ballManager.Paddle_DoBallCollision();
 		gf_powerUpManager.DoWallCollision();
 		gf_ballManager.DoWallCollision();
+
+		if (gf_brickGrid.IsRoundFinished())
+		{
+			gameStats.NextRound();
+			gf_brickGrid.Load("Rounds/", "round" + std::to_string(gameStats.GetRound()));
+		}
 		break;
 
 	case SelectionMenu::GameState::EditorMode:
