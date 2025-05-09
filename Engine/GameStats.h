@@ -16,10 +16,14 @@ public:
 public:
 	void NextRound();
 	void AddPoints(int points);
+	void ResumeTimer();
+	void PauseTimer();
+public:
 	void HpReset();
 	void HpSubtract();
 	int GetHp() const;
 	int GetRound() const;
+
 
 private:
 	const Font* font;
@@ -31,6 +35,7 @@ private:
 	const int hpMax;
 	int hp;
 	int recordScore;
+	bool timerWork = true;
 	int score = 0;
 	int round = 1;
 	float time = 0.0f;

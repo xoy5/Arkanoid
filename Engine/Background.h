@@ -145,7 +145,6 @@ public:
 		case DoorState::Oppening:
 			pipeAnimationOppening.Update(dt);
 			if (pipeAnimationOppening.GetFullAnimationCount() >= 1) {
-				pipeAnimationOppening.Reset();
 				doorState = DoorState::Laser;
 			}
 			break;
@@ -155,6 +154,23 @@ public:
 		}
 	}
 
+public:
+	void SetDoorStateToOppening()
+	{
+		doorState = DoorState::Oppening;
+	}
+	void AnimationSceneReset()
+	{
+		doorState = DoorState::Closed;
+		pipeAnimationOppening.Reset();
+		pipeAnimationLaser.Reset();
+	}
+
+public:
+	bool IsAnimationSceneEnd() const
+	{
+		return pipeAnimationOppening.GetFullAnimationCount();
+	}
 
 private:
 	const int borderOffset;
@@ -163,7 +179,7 @@ private:
 	int nBackgroundTilesX;
 	int nBackgroundTilesY;
 	RectI srcRectPieceOfBackground;
-	DoorState doorState = DoorState::Oppening;
+	DoorState doorState = DoorState::Closed;
 	static constexpr int pipesHeight = 50;
 	static constexpr int pipesWidth = 20;
 	static constexpr int pipesCornerWidth = 20;

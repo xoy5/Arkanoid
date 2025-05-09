@@ -78,18 +78,23 @@ private:
 	/********************************/
 	/*  User Variables  */
 
-	const RectF wallsExtra = RectF(Vec2{ 20.0f, 20.0f }, 609.0f, 580.0f);
 	const RectF walls = RectF(Vec2{ 24.0f, 24.0f }, 605.0f, 576.0f);
+	const RectF wallsExtra = RectF(Vec2{ 20.0f, 20.0f }, 609.0f, 580.0f);
 	const RectF wallsPlusBorder = RectF(Vec2{ 0.0f, 0.0f }, 653.0f, 600.0f);
+	const RectF wallsTeleport = RectF(Vec2{ 0.0f, 0.0f }, 640.0f, 600.0f);
+
 	const RectI rightPanelRect = RectI{ 653, 800, 0, 600 };
 	RectF brickGridRectSolo;
 
+	static constexpr float stopTime = 1.5f;
+	float stopTimeCount = 0.0f;
+	bool isAnimationNextRound = false;
 	bool hacksMode = true;
 	bool isTwoPlayerMode = false;
 	Background background;
 	GameStats gameStats;
 	SelectionMenu selectionMenu;
-	SelectionMenu::GameState gameState = SelectionMenu::GameState::EditorMode;
+	SelectionMenu::GameState gameState = SelectionMenu::GameState::MainMenu;
 
 	// Friends;
 	friend class PowerUpManager;

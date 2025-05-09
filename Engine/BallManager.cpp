@@ -48,9 +48,7 @@ void BallManager::Update(float dt, Keyboard& kbd)
 	if(pBallOnPaddlePlayer1)
 	{
 		if (kbd.KeyIsPressed('W')) {
-			balls.emplace_back(std::move(*pBallOnPaddlePlayer1));
-			delete pBallOnPaddlePlayer1;
-			pBallOnPaddlePlayer1 = nullptr;
+			ShotBallOnPaddle();
 		}
 		else if (pBallOnPaddlePlayer1) {
 			pBallOnPaddlePlayer1->UpdateByPaddleX(game.paddlePlayer1.GetRect().GetCenter().x);
@@ -70,6 +68,15 @@ void BallManager::Update(float dt, Keyboard& kbd)
 
 	for (auto& b : balls){
 		b.Update(dt);
+	}
+}
+
+void BallManager::ShotBallOnPaddle()
+{
+	if (pBallOnPaddlePlayer1) {
+		balls.emplace_back(std::move(*pBallOnPaddlePlayer1));
+		delete pBallOnPaddlePlayer1;
+		pBallOnPaddlePlayer1 = nullptr;
 	}
 }
 

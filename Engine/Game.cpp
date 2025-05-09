@@ -31,12 +31,13 @@ Game::Game(MainWindow& wnd)
 	gameStats(&fontLg, "Files/Records.txt", rightPanelRect, 3),
 	selectionMenu(&font3Xl, Graphics::GetScreenCenter() - Vei2{ 0, 100 }),
 	gf_powerUpManager(*this, "Files/Sprites/PowerUpBox.bmp"),
-	gf_brickGrid(*this, "Files/BrickGrid/", "Files/Sprites/BricksRGBOP55x20x4.bmp", "Files/Sprites/UnbreakableBrick550x20.bmp", 11),
+	gf_brickGrid(*this, "Files/BrickGrid/", "Files/Sprites/BricksRGBOP55x20x4.bmp", "Files/Sprites/UnbreakableBrick550x20.bmp"),
 	gf_ballManager(*this, "Files/Sprites/Ball19x19.bmp", 480.0f),
 	gf_editor(*this, &fontSm, rightPanelRect),
 	paddlePlayer1(Paddle::Player::Player1, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.bottom - 25 - (50 / 2)), 600.0f),
 	paddlePlayer2(Paddle::Player::Player2, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.top + 25 + (50 / 2)), 600.0f)
 {
+	gf_brickGrid.Load("Rounds/", "round1");
 }
 
 void Game::Go()
@@ -44,7 +45,7 @@ void Game::Go()
 	gfx.BeginFrame();
 	ProcessInput();
 	const float elapsedTime = ft.Mark();
-	switch(gameState)
+	switch (gameState)
 	{
 	case SelectionMenu::GameState::Solo:
 	case SelectionMenu::GameState::Duo:
@@ -156,29 +157,74 @@ void Game::UpdateModel(float dt)
 	{
 	case SelectionMenu::GameState::Solo:
 	case SelectionMenu::GameState::Duo:
+
 		background.Update(dt);
 		gameStats.Update(dt);
 		gf_powerUpManager.Update(dt);
 		gf_brickGrid.Update(dt);
-
-		paddlePlayer1.Update(dt, wnd.kbd);
-		paddlePlayer1.DoWallCollision(walls);
-		if (isTwoPlayerMode) {
-			paddlePlayer2.Update(dt, wnd.kbd);
-			paddlePlayer2.DoWallCollision(walls);
-		}
-
-		gf_powerUpManager.DoCollectAndUsePowerUp();
 		gf_ballManager.Update(dt, wnd.kbd);
+		gf_ballManager.DoWallCollision();
+
 		gf_ballManager.BrickGrid_DoBallCollision();
 		gf_ballManager.Paddle_DoBallCollision();
 		gf_powerUpManager.DoWallCollision();
-		gf_ballManager.DoWallCollision();
 
-		if (gf_brickGrid.IsRoundFinished())
+		if (!isAnimationNextRound)
 		{
-			gameStats.NextRound();
-			gf_brickGrid.Load("Rounds/", "round" + std::to_string(gameStats.GetRound()));
+			gf_powerUpManager.DoCollectAndUsePowerUp();
+
+			paddlePlayer1.Update(dt, wnd.kbd);
+			paddlePlayer1.DoWallCollision(walls);
+			if (isTwoPlayerMode) {
+				paddlePlayer2.Update(dt, wnd.kbd);
+				paddlePlayer2.DoWallCollision(walls);
+			}
+
+
+			if (gf_brickGrid.IsRoundFinished())
+			{
+				isAnimationNextRound = true;
+				background.SetDoorStateToOppening();
+				gf_ballManager.ShotBallOnPaddle();
+				gameStats.PauseTimer();
+			}
+		}
+		else
+		{
+			if (paddlePlayer1.IsAnimationSceneEnd(walls.right) == false)
+			{
+				paddlePlayer1.UpdateAnimationScene(dt, walls.right);
+			}
+			else
+			{
+				if (background.IsAnimationSceneEnd() == false)
+				{
+					background.Update(dt);
+				}
+				else
+				{
+					if (paddlePlayer1.IsAnimationSceneEndOutOfGrid(wallsPlusBorder.right) == false)
+					{
+						background.Update(dt);
+						paddlePlayer1.UpdateAnimationSceneOutOfGrid(dt);
+					}
+					else
+					{
+						stopTimeCount += dt;
+						if (stopTimeCount > stopTime)
+						{
+							stopTimeCount = 0.0f;
+							isAnimationNextRound = false;
+							background.AnimationSceneReset();
+							gameStats.ResumeTimer();
+							paddlePlayer1.SetPosX(walls.GetCenter().x);
+							gameStats.NextRound();
+							gf_brickGrid.Load("Rounds/", "round" + std::to_string(gameStats.GetRound()));
+						}
+
+					}
+				}
+			}
 		}
 		break;
 
@@ -197,23 +243,24 @@ void Game::ComposeFrame()
 
 	case SelectionMenu::GameState::Solo:
 	case SelectionMenu::GameState::Duo:
-		gameStats.Draw(gfx);
 		background.Draw(gfx);
 		gf_brickGrid.Draw(gfx);
 
-		paddlePlayer1.Draw(gfx);
+		paddlePlayer1.Draw(gfx, RectI(wallsTeleport));
 		if (isTwoPlayerMode) {
-			paddlePlayer2.Draw(gfx);
+			paddlePlayer2.Draw(gfx, RectI(wallsTeleport));
 		}
 
 		gf_powerUpManager.Draw(gfx);
 		gf_ballManager.Draw(gfx);
+		gameStats.Draw(gfx);
 
 		// Shitty stuf developer
 		fontXs.DrawText(std::to_string(FPS), Vei2{ int(wallsPlusBorder.right), 0 }, Colors::White, gfx);
 		if (hacksMode) {
 			fontXs.DrawText("HACKS", Vei2{ Graphics::GetScreenRect().right, 0 } - Vei2{ 5 * fontXs.GetWidthChar(), 0 }, Colors::Red, gfx);
 		}
+
 		break;
 
 	case SelectionMenu::GameState::EditorMode:

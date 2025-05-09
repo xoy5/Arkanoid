@@ -14,19 +14,19 @@ Paddle::Paddle(Player player, const std::string& filenamePaddleSprites, const Ve
 }
 
 
-void Paddle::Draw(Graphics& gfx) const
+void Paddle::Draw(Graphics& gfx, const RectI& walls) const
 {
 	RectI rect = RectI(GetRect());
 	switch (size)
 	{
 	case Size::Small:
-		gfx.DrawSprite(rect.left, rect.top, srcRectSmSprite, sprite, SpriteEffect::Chroma(Colors::Magenta));
+		gfx.DrawSprite(rect.left, rect.top, srcRectSmSprite, walls, sprite, SpriteEffect::Chroma(Colors::Magenta));
 		break;
 	case Size::Medium:
-		gfx.DrawSprite(rect.left, rect.top, srcRectMdSprite, sprite, SpriteEffect::Chroma(Colors::Magenta));
+		gfx.DrawSprite(rect.left, rect.top, srcRectMdSprite, walls, sprite, SpriteEffect::Chroma(Colors::Magenta));
 		break;
 	case Size::Large:
-		gfx.DrawSprite(rect.left, rect.top, srcRectLgSprite, sprite, SpriteEffect::Chroma(Colors::Magenta));
+		gfx.DrawSprite(rect.left, rect.top, srcRectLgSprite, walls, sprite, SpriteEffect::Chroma(Colors::Magenta));
 		break;
 	}
 }
@@ -45,6 +45,24 @@ void Paddle::Update(float dt, const Keyboard& kbd)
 
 	vel = Vec2{ xDir * speed, 0.0f };
 	posCenter += vel * dt;
+}
+
+void Paddle::UpdateAnimationScene(float dt, float rightWall)
+{
+	float xDir = 1.0f;
+	vel = Vec2{ xDir * speed, 0.0f };
+	posCenter += vel * dt / 3;
+	if (posCenter.x + gapBetweenExitDoor > rightWall)
+	{
+		posCenter.x = rightWall - gapBetweenExitDoor;
+	}
+}
+
+void Paddle::UpdateAnimationSceneOutOfGrid(float dt)
+{
+	float xDir = 1.0f;
+	vel = Vec2{ xDir * speed, 0.0f };
+	posCenter += vel * dt / 3;
 }
 
 bool Paddle::DoBallCollision(Ball& ball) const
@@ -141,6 +159,11 @@ void Paddle::WidthShrink()
 	}
 }
 
+void Paddle::SetPosX(float x)
+{
+	posCenter.x = x;
+}
+
 ///// Setter and Getters /////
 void Paddle::SetSpeed(float speed)
 {
@@ -167,4 +190,14 @@ float Paddle::GetWidth() const
 RectF Paddle::GetRect() const
 {
 	return RectF::FromCenter(posCenter, width / 2.0f, height / 2.0f);
+}
+
+bool Paddle::IsAnimationSceneEnd(float rightWall) const
+{
+	return GetRect().right + gapBetweenExitDoor + 1.0f /*epsilon*/ >= rightWall;
+}
+
+bool Paddle::IsAnimationSceneEndOutOfGrid(float rightWall) const
+{
+	return GetRect().left > rightWall;
 }

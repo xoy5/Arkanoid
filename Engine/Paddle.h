@@ -24,8 +24,10 @@ public:
 	};
 public:
 	explicit Paddle(Player player, const std::string& filenamePaddleSprites, const Vec2& pos, const Color& color = Colors::White, Size size = Size::Small);
-	void Draw(Graphics& gfx) const;
+	void Draw(Graphics& gfx, const RectI& walls) const;
 	void Update(float dt, const Keyboard& kbd);
+	void UpdateAnimationScene(float dt, float rightWall);
+	void UpdateAnimationSceneOutOfGrid(float dt);
 
 public:
 	bool DoBallCollision(Ball& ball) const;
@@ -34,11 +36,14 @@ public:
 	void WidthShrink();
 
 public:
+	void SetPosX(float x);
 	void SetSpeed(float speed);
 	void SetColor(const Color& color);
     static float GetHeight();
 	float GetWidth() const;
 	RectF GetRect() const;
+	bool IsAnimationSceneEnd(float rightWall) const;
+	bool IsAnimationSceneEndOutOfGrid(float rightWall) const;
 
 private:
 	Sprite sprite;
@@ -61,4 +66,5 @@ private:
 	static constexpr RectI srcRectLgSprite = { (int)srcRectMdSprite.right, (int)srcRectMdSprite.right + (int)lgWidth, 0, (int)height };
 
 	static constexpr float exitXFactor = 0.02f; // percent
+	static constexpr float gapBetweenExitDoor = 10.0f;
 };

@@ -20,6 +20,7 @@ public:
 	void Update(float dt, Keyboard& kbd);
 
 public:
+	void ShotBallOnPaddle();
 	void ClearBalls();
 	void Paddle_DoBallCollision();
 	void BrickGrid_DoBallCollision();

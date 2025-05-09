@@ -75,8 +75,12 @@ void GameStats::Draw(Graphics& gfx) const
 
 void GameStats::Update(float dt)
 {
-	time += dt;
-	if (score > recordScore) {
+	if (timerWork)
+	{
+		time += dt;
+	}
+	if (score > recordScore) 
+	{
 		recordScore = score;
 	}
 }
@@ -90,6 +94,16 @@ void GameStats::NextRound()
 void GameStats::AddPoints(int points)
 {
 	score += points;
+}
+
+void GameStats::ResumeTimer()
+{
+	timerWork = true;
+}
+
+void GameStats::PauseTimer()
+{
+	timerWork = false;
 }
 
 void GameStats::HpReset()

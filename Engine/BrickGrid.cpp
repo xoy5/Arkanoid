@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <filesystem>
 
-BrickGrid::BrickGrid(Game& game, const std::string& dir, const std::string& fileBreakableBrickSprites, const std::string& fileUnbreakableBrickSprite, int nRowBricks)
+BrickGrid::BrickGrid(Game& game, const std::string& dir, const std::string& fileBreakableBrickSprites, const std::string& fileUnbreakableBrickSprite)
 	:
 	game(game),
 	directory(dir),
@@ -11,7 +11,7 @@ BrickGrid::BrickGrid(Game& game, const std::string& dir, const std::string& file
 	unbreakableBricksSprite({ fileUnbreakableBrickSprite })
 {
 
-	const int brickGridWidth = (int)game.walls.GetWidth();
+	/*const int brickGridWidth = (int)game.walls.GetWidth();
 
 	int brickGridWHeight = nRowBricks * brickHeight;
 	Vec2 gridPos = Vec2{ game.walls.left, game.walls.top + brickHeight * 4 };
@@ -36,7 +36,7 @@ BrickGrid::BrickGrid(Game& game, const std::string& dir, const std::string& file
 		}
 	}
 
-	brickPos = Vec2{ gridPos.x, brickPos.y + brickHeight };
+	brickPos = Vec2{ gridPos.x, brickPos.y + brickHeight };*/
 }
 
 BrickGrid::~BrickGrid()

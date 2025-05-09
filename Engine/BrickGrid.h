@@ -28,7 +28,7 @@ public:
 	};
 
 public:
-	BrickGrid(Game& game, const std::string& dir, const std::string& fileBreakableBrickSprites, const std::string& fileUnbreakableBrickSprite, int nRowBricks = 8);
+	BrickGrid(Game& game, const std::string& dir, const std::string& fileBreakableBrickSprites, const std::string& fileUnbreakableBrickSprite);
 	~BrickGrid();
 	BrickGrid(const BrickGrid&) = delete;
 	BrickGrid& operator=(const BrickGrid&) = delete;
