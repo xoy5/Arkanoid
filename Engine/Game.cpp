@@ -28,7 +28,7 @@ Game::Game(MainWindow& wnd)
 	wnd(wnd),
 	gfx(wnd),
 	background("Files/Sprites/Pipes340x90.bmp", "Files/Sprites/Background121x100.bmp", walls, 2),
-	gameStats(&fontLg, "Files/Records.txt", rightPanelRect, 3),
+	gameStats(&fontLg, &font2Xl, "Files/Records.txt", rightPanelRect, 3, 4),
 	selectionMenu(&font3Xl, Graphics::GetScreenCenter() - Vei2{ 0, 100 }),
 	gf_powerUpManager(*this, "Files/Sprites/PowerUpBox.bmp"),
 	gf_brickGrid(*this, "Files/BrickGrid/", "Files/Sprites/BricksRGBOP55x20x4.bmp", "Files/Sprites/UnbreakableBrick550x20.bmp"),
@@ -184,16 +184,20 @@ void Game::UpdateModel(float dt)
 			if (gf_brickGrid.IsRoundFinished())
 			{
 				isAnimationNextRound = true;
-				background.SetDoorStateToOppening();
 				gf_ballManager.ShotBallOnPaddle();
 				gameStats.PauseTimer();
 			}
 		}
 		else
 		{
-			if (paddlePlayer1.IsAnimationSceneEnd(walls.right) == false)
+			if (paddlePlayer1.IsAnimationSceneEnd(walls.right) == false || paddleSettingPositionFirstTime)
 			{
+				paddleSettingPositionFirstTime = false;
 				paddlePlayer1.UpdateAnimationScene(dt, walls.right);
+				if (paddlePlayer1.IsAnimationSceneEnd(walls.right)) 
+				{
+					background.SetDoorStateToOppening();
+				}
 			}
 			else
 			{
@@ -214,6 +218,7 @@ void Game::UpdateModel(float dt)
 						if (stopTimeCount > stopTime)
 						{
 							stopTimeCount = 0.0f;
+							paddleSettingPositionFirstTime = true;
 							isAnimationNextRound = false;
 							background.AnimationSceneReset();
 							gameStats.ResumeTimer();

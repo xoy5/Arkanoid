@@ -2,16 +2,19 @@
 #include <fstream>
 #include <assert.h>
 
-GameStats::GameStats(const Font* font, const std::string& filenameRecords, const RectI& rect, int hp)
+GameStats::GameStats(const Font* font, const Font* fontLg, const std::string& filenameRecords, const RectI& rect, int hp, int rounds)
 	:
 	font(font),
+	fontLg(fontLg),
+	buttonBackToMenu(fontLg, "Back To Menu", Vei2{ 400,400 }),
 	charWidth(font->GetWidthChar()),
 	charHeight(font->GetHeightChar()),
 	fullChars(rect.GetWidth() / charWidth - 1),
 	restPixels(rect.GetWidth() % charWidth + charWidth),
 	rect(rect),
 	hp(hp),
-	hpMax(hp)
+	hpMax(hp),
+	nRounds(rounds)
 {
 	std::ifstream file(filenameRecords, std::ios_base::in);
 	assert(file);
@@ -73,6 +76,11 @@ void GameStats::Draw(Graphics& gfx) const
 
 }
 
+void GameStats::DrawEndScreen(Graphics& gfx) const
+{
+	gfx.DrawRect(Graphics::GetScreenRect(), Colors::Black);
+}
+
 void GameStats::Update(float dt)
 {
 	if (timerWork)
@@ -88,7 +96,10 @@ void GameStats::Update(float dt)
 void GameStats::NextRound()
 {
 	round++;
-	
+	if (round > nRounds)
+	{
+		endScreen = true;
+	}
 }
 
 void GameStats::AddPoints(int points)

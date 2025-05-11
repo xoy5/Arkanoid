@@ -52,9 +52,9 @@ void Paddle::UpdateAnimationScene(float dt, float rightWall)
 	float xDir = 1.0f;
 	vel = Vec2{ xDir * speed, 0.0f };
 	posCenter += vel * dt / 3;
-	if (posCenter.x + gapBetweenExitDoor > rightWall)
+	if (IsAnimationSceneEnd(rightWall))
 	{
-		posCenter.x = rightWall - gapBetweenExitDoor;
+		posCenter.x = rightWall - gapBetweenExitDoor - width / 2;
 	}
 }
 

@@ -86,6 +86,7 @@ private:
 	const RectI rightPanelRect = RectI{ 653, 800, 0, 600 };
 	RectF brickGridRectSolo;
 
+	bool paddleSettingPositionFirstTime = true;
 	static constexpr float stopTime = 1.5f;
 	float stopTimeCount = 0.0f;
 	bool isAnimationNextRound = false;
@@ -111,14 +112,11 @@ private:
 	Editor gf_editor;
 
 	// TO DO
-	// more Bricks types
 	// Enemies 
+	// more Bricks types
 	// More power ups
 	// Animation
 	// Sounds
-	// Editor Adding Bricks etc
-	// Levels
-	// Menu
 	// Wielowatkowac
 	// 2 Players
 

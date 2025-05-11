@@ -5,12 +5,14 @@
 
 #include "Font.h"
 #include "Rect.h"
+#include "Button.h"
 
 class GameStats
 {
 public:
-	GameStats(const Font* font, const std::string& filenameRecords, const RectI& rect, int hp);
+	GameStats(const Font* font, const Font* fontLg, const std::string& filenameRecords, const RectI& rect, int hp, int rounds);
 	void Draw(Graphics& gfx) const;
+	void DrawEndScreen(Graphics& gfx) const;
 	void Update(float dt);
 
 public:
@@ -27,6 +29,9 @@ public:
 
 private:
 	const Font* font;
+	const Font* fontLg;
+	Button buttonBackToMenu;
+	bool endScreen = false;
 	const int charWidth;
 	const int charHeight;
 	const int fullChars;
@@ -38,5 +43,6 @@ private:
 	bool timerWork = true;
 	int score = 0;
 	int round = 1;
+	const int nRounds;
 	float time = 0.0f;
 };
