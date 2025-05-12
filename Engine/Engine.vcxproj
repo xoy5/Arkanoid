@@ -158,6 +158,7 @@
     <ClInclude Include="GameStats.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="InterfaceObject.h" />
+    <ClInclude Include="Record.h" />
     <ClInclude Include="SelectionMenu.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="TextBox.h" />

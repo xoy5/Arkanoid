@@ -1,11 +1,13 @@
 #pragma once
-#include "Graphics.h"
-
 #include "string"
 
+#include "Graphics.h"
+#include "Mouse.h"
+#include "Keyboard.h"
 #include "Font.h"
 #include "Rect.h"
 #include "Button.h"
+#include "TextBox.h"
 
 class GameStats
 {
@@ -14,10 +16,12 @@ public:
 	void Draw(Graphics& gfx) const;
 	void DrawEndScreen(Graphics& gfx) const;
 	void Update(float dt);
-	bool ProcessButton(const Mouse::Event& event);
+	void ProcessMouse(const Mouse::Event& event);
+	void ProcessTextBox(char character);
 	void Reset();
 
 public:
+	bool IsButtonClicked() const;
 	void NextRound();
 	void AddPoints(int points);
 
@@ -38,6 +42,8 @@ private:
 	const Font* font;
 	const Font* fontLg;
 	Button buttonBackToMenu;
+	TextBox textBoxName;
+	
 	const RectI rect;
 	bool gameEnd = false;
 

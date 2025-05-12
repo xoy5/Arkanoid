@@ -117,6 +117,14 @@ void Game::ProcessInput()
 		const char character = wnd.kbd.ReadChar();
 		switch (gameState)
 		{
+		case SelectionMenu::GameState::Solo:
+		case SelectionMenu::GameState::Duo:
+			if (gameStats.IsGameEnd())
+			{
+				gameStats.ProcessTextBox(character);
+			}
+			break;
+
 		case SelectionMenu::GameState::EditorMode:
 			gf_editor.ProcessInputChar(character);
 			break;
@@ -155,7 +163,8 @@ void Game::ProcessInput()
 		case SelectionMenu::GameState::Duo:
 			if (gameStats.IsGameEnd())
 			{
-				if (gameStats.ProcessButton(e))
+				gameStats.ProcessMouse(e);
+				if (gameStats.IsButtonClicked())
 				{
 					gameStats.Reset();
 					gf_ballManager.AddBallOnPaddlePlayer1();

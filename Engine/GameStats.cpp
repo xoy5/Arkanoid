@@ -1,12 +1,14 @@
 #include "GameStats.h"
 #include <fstream>
 #include <assert.h>
+#include "Record.h"
 
 GameStats::GameStats(const Font* font, const Font* fontLg, const std::string& filenameRecords, const RectI& rect, int hp, int rounds)
 	:
 	font(font),
 	fontLg(fontLg),
 	buttonBackToMenu(fontLg, "Back To Menu", Vei2{ 400,400 }),
+	textBoxName(font, Vei2{ 300, 200 }),
 	charWidth(font->GetWidthChar()),
 	charHeight(font->GetHeightChar()),
 	fullChars(rect.GetWidth() / charWidth - 1),
@@ -16,17 +18,26 @@ GameStats::GameStats(const Font* font, const Font* fontLg, const std::string& fi
 	hpMax(hp),
 	nRounds(rounds)
 {
-	std::ifstream file(filenameRecords, std::ios_base::in);
-	assert(file);
+	std::ifstream file("Files/Records.txt", std::ios_base::in);
+	if (!file)
+	{
+		std::ofstream("Files/Records.txt", std::ios_base::out);
+		recordScore = 0;
+		return;
+	}
+
 	std::string line;
 	std::getline(file, line);
-	if (line == "") {
-		recordScore = 0;
-	}
-	else {
-		recordScore = std::atoi(line.c_str());
-	}
-	file.close();
+	std::stringstream ss(line);
+	std::string temp;
+	std::string highScoreText;
+
+	std::getline(ss, temp, ';');
+	std::getline(ss, temp, ';');
+	std::getline(ss, highScoreText, ';');
+
+	recordScore = std::stoi(highScoreText);
+	file.close();;
 }
 
 void GameStats::Draw(Graphics& gfx) const
@@ -79,6 +90,10 @@ void GameStats::Draw(Graphics& gfx) const
 void GameStats::DrawEndScreen(Graphics& gfx) const
 {
 	gfx.DrawRect(Graphics::GetScreenRect(), Colors::Black);
+	fontLg->DrawText("GAME OVER", Graphics::GetScreenCenter(), Colors::Red, gfx);
+	fontLg->DrawText("YOUR SCORE: " + std::to_string(score), Graphics::GetScreenCenter() + Vei2{ 0, 50 }, Colors::White, gfx);
+
+	textBoxName.Draw(gfx);
 	buttonBackToMenu.Draw(gfx);
 }
 
@@ -88,20 +103,34 @@ void GameStats::Update(float dt)
 	{
 		time += dt;
 	}
-	if (score > recordScore) 
+	if (score > recordScore)
 	{
 		recordScore = score;
 	}
 }
 
-bool GameStats::ProcessButton(const Mouse::Event& event)
+void GameStats::ProcessMouse(const Mouse::Event& event)
 {
 	if (gameEnd)
 	{
 		buttonBackToMenu.ProcessMouse(event);
-		return buttonBackToMenu.IsClicked();
+		textBoxName.ProcessMouse(event);
+
+		if (buttonBackToMenu.IsClicked())
+		{
+			updateRecords("Files/Records.txt", textBoxName.GetText(), score);
+		}
 	}
-	return false;
+}
+
+void GameStats::ProcessTextBox(char character)
+{
+	if (gameEnd)
+	{
+		if (textBoxName.GetSize() < 8 || character == VK_BACK) {
+			textBoxName.Interact(character);
+		}
+	}
 }
 
 void GameStats::Reset()
@@ -111,6 +140,11 @@ void GameStats::Reset()
 	time = 0.0f;
 	GameEndReset();
 	HpReset();
+}
+
+bool GameStats::IsButtonClicked() const
+{
+	return buttonBackToMenu.IsClicked();
 }
 
 void GameStats::NextRound()

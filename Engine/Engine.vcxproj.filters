@@ -153,6 +153,9 @@
     <ClInclude Include="SelectionMenu.h">
       <Filter>Header Files\Project</Filter>
     </ClInclude>
+    <ClInclude Include="Record.h">
+      <Filter>Header Files\Project</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graphics.cpp">
@@ -237,6 +240,51 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Chili.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Files\Sprites\Ball19x19.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Files\Sprites\bricksRGBOP55x20.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Files\Sprites\bricksRGBOP55x20x2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Files\Sprites\bricksRGBOP55x20x3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Files\Sprites\bricksRGBOP55x20x4.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Files\Sprites\Paddle80x90x100x20.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Files\Sprites\pipe18x50.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Files\Sprites\PipeAnimationLaser100x50.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Files\Sprites\PipeAnimationOppening200x50.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Files\Sprites\pipeExtra20x50.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Files\Sprites\Pipes20x50.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Files\Sprites\Pipes340x90.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Files\Sprites\Pipes340x90x2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Files\Sprites\PowerUpBox.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Files\Sprites\PowerUpBox15x15.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
