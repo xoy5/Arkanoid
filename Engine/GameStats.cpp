@@ -7,7 +7,7 @@ GameStats::GameStats(const Font* font, const Font* fontLg, const std::string& fi
 	:
 	font(font),
 	fontLg(fontLg),
-	buttonBackToMenu(fontLg, "Back To Menu", Vei2{ 400,400 }),
+	buttonBackToMenu(fontLg, "BACK TO MENU", Vei2{Graphics::GetScreenCenter().x - font->GetRectForText("BACK TO MENU").GetSizes().x, 500}),
 	textBoxName(font, Vei2{ 300, 200 }),
 	charWidth(font->GetWidthChar()),
 	charHeight(font->GetHeightChar()),
@@ -90,8 +90,17 @@ void GameStats::Draw(Graphics& gfx) const
 void GameStats::DrawEndScreen(Graphics& gfx) const
 {
 	gfx.DrawRect(Graphics::GetScreenRect(), Colors::Black);
-	fontLg->DrawText("GAME OVER", Graphics::GetScreenCenter(), Colors::Red, gfx);
-	fontLg->DrawText("YOUR SCORE: " + std::to_string(score), Graphics::GetScreenCenter() + Vei2{ 0, 50 }, Colors::White, gfx);
+
+	Vei2 screenCenter = Graphics::GetScreenCenter();
+	const std::string gameOverText = "GAME OVER";
+	std::string scoreText = "YOUR SCORE: " + std::to_string(score);
+
+	Vei2 scoreSize = fontLg->GetRectForText(scoreText).GetSizes();
+	Vei2 scorePos = screenCenter - Vei2(scoreSize.x / 2, -50);
+
+
+	fontLg->DrawText(gameOverText, screenCenter, Colors::Red, gfx);
+	fontLg->DrawText(scoreText, scorePos, Colors::White, gfx);
 
 	textBoxName.Draw(gfx);
 	buttonBackToMenu.Draw(gfx);
@@ -184,6 +193,9 @@ void GameStats::HpReset()
 void GameStats::HpSubtract()
 {
 	hp--;
+	if (hp <= 0) {
+		gameEnd = true;
+	}
 }
 
 bool GameStats::IsGameEnd() const

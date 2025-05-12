@@ -85,6 +85,11 @@ const int Font::NumberOfLines(const std::string& text)
 	return n + 1;
 }
 
+RectI Font::GetRectForText(const std::string& text, const Vei2& pos, int textSpaceY) const
+{
+	return RectI(pos, glyphWidth * GetLongestLineSize(text), glyphHeight * NumberOfLines(text));
+}
+
 RectI Font::MapGlyphRect( char c ) const
 {
 	assert( c >= firstChar && c <= lastChar );

@@ -36,7 +36,6 @@ private:
 	std::vector<Ball> balls;
 	Ball* pBallOnPaddlePlayer1 = nullptr;
 	Ball* pBallOnPaddlePlayer2 = nullptr;
-	bool curBallOnPaddle = false;
 	static constexpr int nMaxBalls = 1000;
 	const float ballsSpeed;
 	static constexpr float ballsRadius = 10.0f;

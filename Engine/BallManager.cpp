@@ -137,6 +137,10 @@ void BallManager::DoWallCollision()
 		case Ball::WallHit::BottomWallHit:
 			balls[i] = std::move(balls.back());
 			balls.pop_back();
+			if (balls.size() == 0 && pBallOnPaddlePlayer1 == nullptr)
+			{
+				game.gameStats.HpSubtract();
+			}
 			break;
 		case Ball::WallHit::TopWallHit:
 			if (game.isTwoPlayerMode) {

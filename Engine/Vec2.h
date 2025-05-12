@@ -61,7 +61,6 @@ public:
 	{
 		return this->x == rhs.x && this->y == rhs.y;
 	}
-
 	T GetLength() const
 	{
 		return (T)std::sqrt( GetLengthSq() );

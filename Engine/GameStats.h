@@ -56,7 +56,7 @@ private:
 	float time = 0.0f;
 	bool timerWork = true;
 
-	int round = 5;
+	int round = 1;
 	const int nRounds;
 
 	const int charWidth;

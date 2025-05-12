@@ -38,6 +38,10 @@ public:
 	Rect_ GetRounded() const {
 		return Rect_{ std::round(left), std::round(right), std::round(top), std::round(bottom) };
 	}
+	Vec2_<T> GetSizes() const
+	{
+		return Vec2_<T>(right - left, bottom - top);
+	}
 	bool IsOverlappingWith(const Rect_& other) const
 	{
 		return right > other.left && left < other.right

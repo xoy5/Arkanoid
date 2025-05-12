@@ -13,6 +13,7 @@ public:
 	int GetHeightChar() const;
 	static const int GetLongestLineSize(const std::string& text);
 	static const int NumberOfLines(const std::string& text);
+	RectI GetRectForText(const std::string& text, const Vei2& pos = Vei2{0,0}, int textSpaceY = 0) const;
 private:
 	RectI MapGlyphRect(char c) const;
 private:

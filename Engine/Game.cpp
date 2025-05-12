@@ -28,7 +28,7 @@ Game::Game(MainWindow& wnd)
 	wnd(wnd),
 	gfx(wnd),
 	background("Files/Sprites/Pipes340x90.bmp", "Files/Sprites/Background121x100.bmp", walls, 2),
-	gameStats(&fontLg, &font2Xl, "Files/Records.txt", rightPanelRect, 3, 4),
+	gameStats(&fontLg, &font2Xl, "Files/Records.txt", rightPanelRect, 1, 4),
 	selectionMenu(&font3Xl, Graphics::GetScreenCenter() - Vei2{ 0, 100 }),
 	gf_powerUpManager(*this, "Files/Sprites/PowerUpBox.bmp"),
 	gf_brickGrid(*this, "Files/BrickGrid/", "Files/Sprites/BricksRGBOP55x20x4.bmp", "Files/Sprites/UnbreakableBrick550x20.bmp"),
