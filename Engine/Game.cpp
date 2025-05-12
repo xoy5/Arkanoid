@@ -37,7 +37,6 @@ Game::Game(MainWindow& wnd)
 	paddlePlayer1(Paddle::Player::Player1, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.bottom - 25 - (50 / 2)), 600.0f),
 	paddlePlayer2(Paddle::Player::Player2, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.top + 25 + (50 / 2)), 600.0f)
 {
-	gf_brickGrid.Load("Rounds/", "round1");
 }
 
 void Game::Go()
@@ -78,7 +77,11 @@ void Game::ProcessInput()
 		if (keyPressed.IsValid() && keyPressed.IsPress())
 		{
 			if (keyPressed.GetCode() == VK_ESCAPE) wnd.Kill();
-			else if (keyPressed.GetCode() == VK_OEM_3) gameState = SelectionMenu::GameState::MainMenu;
+			else if (keyPressed.GetCode() == VK_OEM_3)
+			{
+				gameState = SelectionMenu::GameState::MainMenu;
+				gameStats.Reset();
+			}
 
 			switch (gameState)
 			{
@@ -137,12 +140,29 @@ void Game::ProcessInput()
 				gameState = state;
 				switch (gameState)
 				{
+				case SelectionMenu::GameState::Solo:
+				case SelectionMenu::GameState::Duo:
+					gf_brickGrid.Load("Rounds/", "round1.dat");
+					break;
 				case SelectionMenu::GameState::EditorMode:
 					gf_brickGrid.ClearBrickGrid();
+					break;
 				}
 			}
 			break;
 		}
+		case SelectionMenu::GameState::Solo:
+		case SelectionMenu::GameState::Duo:
+			if (gameStats.IsGameEnd())
+			{
+				if (gameStats.ProcessButton(e))
+				{
+					gameStats.Reset();
+					gf_ballManager.AddBallOnPaddlePlayer1();
+					paddlePlayer1.SetPosX(walls.GetCenter().x);
+					gameState = SelectionMenu::GameState::MainMenu;
+				}
+			}
 		case SelectionMenu::GameState::EditorMode:
 			gf_editor.ProcessMouse(e);
 			break;
@@ -157,80 +177,83 @@ void Game::UpdateModel(float dt)
 	{
 	case SelectionMenu::GameState::Solo:
 	case SelectionMenu::GameState::Duo:
-
-		background.Update(dt);
-		gameStats.Update(dt);
-		gf_powerUpManager.Update(dt);
-		gf_brickGrid.Update(dt);
-		gf_ballManager.Update(dt, wnd.kbd);
-		gf_ballManager.DoWallCollision();
-
-		gf_ballManager.BrickGrid_DoBallCollision();
-		gf_ballManager.Paddle_DoBallCollision();
-		gf_powerUpManager.DoWallCollision();
-
-		if (!isAnimationNextRound)
+		if (gameStats.IsGameEnd() == false)
 		{
-			gf_powerUpManager.DoCollectAndUsePowerUp();
+			background.Update(dt);
+			gameStats.Update(dt);
+			gf_powerUpManager.Update(dt);
+			gf_brickGrid.Update(dt);
+			gf_ballManager.Update(dt, wnd.kbd);
+			gf_ballManager.DoWallCollision();
 
-			paddlePlayer1.Update(dt, wnd.kbd);
-			paddlePlayer1.DoWallCollision(walls);
-			if (isTwoPlayerMode) {
-				paddlePlayer2.Update(dt, wnd.kbd);
-				paddlePlayer2.DoWallCollision(walls);
-			}
+			gf_ballManager.BrickGrid_DoBallCollision();
+			gf_ballManager.Paddle_DoBallCollision();
+			gf_powerUpManager.DoWallCollision();
 
-
-			if (gf_brickGrid.IsRoundFinished())
+			if (!isAnimationNextRound)
 			{
-				isAnimationNextRound = true;
-				gf_ballManager.ShotBallOnPaddle();
-				gameStats.PauseTimer();
-			}
-		}
-		else
-		{
-			if (paddlePlayer1.IsAnimationSceneEnd(walls.right) == false || paddleSettingPositionFirstTime)
-			{
-				paddleSettingPositionFirstTime = false;
-				paddlePlayer1.UpdateAnimationScene(dt, walls.right);
-				if (paddlePlayer1.IsAnimationSceneEnd(walls.right)) 
+				gf_powerUpManager.DoCollectAndUsePowerUp();
+
+				paddlePlayer1.Update(dt, wnd.kbd);
+				paddlePlayer1.DoWallCollision(walls);
+				if (isTwoPlayerMode) {
+					paddlePlayer2.Update(dt, wnd.kbd);
+					paddlePlayer2.DoWallCollision(walls);
+				}
+
+
+				if (gf_brickGrid.IsRoundFinished())
 				{
-					background.SetDoorStateToOppening();
+					isAnimationNextRound = true;
+					gf_ballManager.ShotBallOnPaddle();
+					gameStats.PauseTimer();
 				}
 			}
 			else
 			{
-				if (background.IsAnimationSceneEnd() == false)
+				if (paddlePlayer1.IsAnimationSceneEnd(walls.right) == false || paddleSettingPositionFirstTime)
 				{
-					background.Update(dt);
+					paddleSettingPositionFirstTime = false;
+					paddlePlayer1.UpdateAnimationScene(dt, walls.right);
+					if (paddlePlayer1.IsAnimationSceneEnd(walls.right))
+					{
+						background.SetDoorStateToOppening();
+					}
 				}
 				else
 				{
-					if (paddlePlayer1.IsAnimationSceneEndOutOfGrid(wallsPlusBorder.right) == false)
+					if (background.IsAnimationSceneEnd() == false)
 					{
 						background.Update(dt);
-						paddlePlayer1.UpdateAnimationSceneOutOfGrid(dt);
 					}
 					else
 					{
-						stopTimeCount += dt;
-						if (stopTimeCount > stopTime)
+						if (paddlePlayer1.IsAnimationSceneEndOutOfGrid(wallsPlusBorder.right) == false)
 						{
-							stopTimeCount = 0.0f;
-							paddleSettingPositionFirstTime = true;
-							isAnimationNextRound = false;
-							background.AnimationSceneReset();
-							gameStats.ResumeTimer();
-							paddlePlayer1.SetPosX(walls.GetCenter().x);
-							gameStats.NextRound();
-							gf_brickGrid.Load("Rounds/", "round" + std::to_string(gameStats.GetRound()));
+							background.Update(dt);
+							paddlePlayer1.UpdateAnimationSceneOutOfGrid(dt);
 						}
+						else
+						{
+							stopTimeCount += dt;
+							if (stopTimeCount > stopTime)
+							{
+								stopTimeCount = 0.0f;
+								paddleSettingPositionFirstTime = true;
+								isAnimationNextRound = false;
+								background.AnimationSceneReset();
+								gameStats.ResumeTimer();
+								paddlePlayer1.SetPosX(walls.GetCenter().x);
+								gameStats.NextRound();
+								gf_brickGrid.Load("Rounds/", "round" + std::to_string(gameStats.GetRound()));
+							}
 
+						}
 					}
 				}
 			}
 		}
+
 		break;
 
 	case SelectionMenu::GameState::EditorMode:
@@ -248,23 +271,31 @@ void Game::ComposeFrame()
 
 	case SelectionMenu::GameState::Solo:
 	case SelectionMenu::GameState::Duo:
-		background.Draw(gfx);
-		gf_brickGrid.Draw(gfx);
+		if (gameStats.IsGameEnd() == false)
+		{
+			background.Draw(gfx);
+			gf_brickGrid.Draw(gfx);
 
-		paddlePlayer1.Draw(gfx, RectI(wallsTeleport));
-		if (isTwoPlayerMode) {
-			paddlePlayer2.Draw(gfx, RectI(wallsTeleport));
+			paddlePlayer1.Draw(gfx, RectI(wallsTeleport));
+			if (isTwoPlayerMode) {
+				paddlePlayer2.Draw(gfx, RectI(wallsTeleport));
+			}
+
+			gf_powerUpManager.Draw(gfx);
+			gf_ballManager.Draw(gfx);
+			gameStats.Draw(gfx);
+
+			// Shitty stuf developer
+			fontXs.DrawText(std::to_string(FPS), Vei2{ int(wallsPlusBorder.right), 0 }, Colors::White, gfx);
+			if (hacksMode) {
+				fontXs.DrawText("HACKS", Vei2{ Graphics::GetScreenRect().right, 0 } - Vei2{ 5 * fontXs.GetWidthChar(), 0 }, Colors::Red, gfx);
+			}
+		}
+		else
+		{
+			gameStats.DrawEndScreen(gfx);
 		}
 
-		gf_powerUpManager.Draw(gfx);
-		gf_ballManager.Draw(gfx);
-		gameStats.Draw(gfx);
-
-		// Shitty stuf developer
-		fontXs.DrawText(std::to_string(FPS), Vei2{ int(wallsPlusBorder.right), 0 }, Colors::White, gfx);
-		if (hacksMode) {
-			fontXs.DrawText("HACKS", Vei2{ Graphics::GetScreenRect().right, 0 } - Vei2{ 5 * fontXs.GetWidthChar(), 0 }, Colors::Red, gfx);
-		}
 
 		break;
 

@@ -14,15 +14,22 @@ public:
 	void Draw(Graphics& gfx) const;
 	void DrawEndScreen(Graphics& gfx) const;
 	void Update(float dt);
+	bool ProcessButton(const Mouse::Event& event);
+	void Reset();
 
 public:
 	void NextRound();
 	void AddPoints(int points);
+
 	void ResumeTimer();
 	void PauseTimer();
-public:
+
+	void GameEndReset();
 	void HpReset();
 	void HpSubtract();
+
+public:
+	bool IsGameEnd() const;
 	int GetHp() const;
 	int GetRound() const;
 
@@ -31,18 +38,23 @@ private:
 	const Font* font;
 	const Font* fontLg;
 	Button buttonBackToMenu;
-	bool endScreen = false;
+	const RectI rect;
+	bool gameEnd = false;
+
+	const int hpMax;
+	int hp;
+
+	int recordScore;
+	int score = 0;
+
+	float time = 0.0f;
+	bool timerWork = true;
+
+	int round = 5;
+	const int nRounds;
+
 	const int charWidth;
 	const int charHeight;
 	const int fullChars;
 	const int restPixels;
-	const RectI rect;
-	const int hpMax;
-	int hp;
-	int recordScore;
-	bool timerWork = true;
-	int score = 0;
-	int round = 1;
-	const int nRounds;
-	float time = 0.0f;
 };

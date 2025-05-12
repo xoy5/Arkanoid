@@ -79,6 +79,7 @@ void GameStats::Draw(Graphics& gfx) const
 void GameStats::DrawEndScreen(Graphics& gfx) const
 {
 	gfx.DrawRect(Graphics::GetScreenRect(), Colors::Black);
+	buttonBackToMenu.Draw(gfx);
 }
 
 void GameStats::Update(float dt)
@@ -93,12 +94,31 @@ void GameStats::Update(float dt)
 	}
 }
 
+bool GameStats::ProcessButton(const Mouse::Event& event)
+{
+	if (gameEnd)
+	{
+		buttonBackToMenu.ProcessMouse(event);
+		return buttonBackToMenu.IsClicked();
+	}
+	return false;
+}
+
+void GameStats::Reset()
+{
+	score = 0;
+	round = 1;
+	time = 0.0f;
+	GameEndReset();
+	HpReset();
+}
+
 void GameStats::NextRound()
 {
 	round++;
 	if (round > nRounds)
 	{
-		endScreen = true;
+		gameEnd = true;
 	}
 }
 
@@ -117,6 +137,11 @@ void GameStats::PauseTimer()
 	timerWork = false;
 }
 
+void GameStats::GameEndReset()
+{
+	gameEnd = false;
+}
+
 void GameStats::HpReset()
 {
 	hp = hpMax;
@@ -125,6 +150,11 @@ void GameStats::HpReset()
 void GameStats::HpSubtract()
 {
 	hp--;
+}
+
+bool GameStats::IsGameEnd() const
+{
+	return gameEnd;
 }
 
 int GameStats::GetHp() const
