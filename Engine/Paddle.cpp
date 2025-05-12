@@ -159,6 +159,24 @@ void Paddle::WidthShrink()
 	}
 }
 
+void Paddle::SetWidth(Size size)
+{
+	this->size = size;
+
+	switch (size)
+	{
+	case Size::Small:
+		width = smWidth;
+		break;
+	case Size::Medium:
+		width = mdWidth;
+		break;
+	case Size::Large:
+		width = lgWidth;
+		break;
+	}
+}
+
 void Paddle::SetPosX(float x)
 {
 	posCenter.x = x;

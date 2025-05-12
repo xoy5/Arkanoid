@@ -54,6 +54,7 @@ private:
 	void ComposeFrame();
 	/********************************/
 	/*  User Functions              */
+	void Reset();
 	/********************************/
 private:
 	MainWindow& wnd;
@@ -87,10 +88,11 @@ private:
 	RectF brickGridRectSolo;
 
 	bool paddleSettingPositionFirstTime = true;
-	static constexpr float stopTime = 1.5f;
-	float stopTimeCount = 0.0f;
 	bool isAnimationNextRound = false;
-	bool hacksMode = true;
+	float stopTimeCount = 0.0f;
+	static constexpr float stopTime = 1.5f;
+
+	bool hacksMode = false;
 	bool isTwoPlayerMode = false;
 	Background background;
 	GameStats gameStats;

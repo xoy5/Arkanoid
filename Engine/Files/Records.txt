@@ -1,6 +1,15 @@
-1;Kacper;15700
-2;Nyger;15500
-3;Kamil;5500
-4;;5500
-5;nigger2;600
-6;;200
+1;xoy5;213769
+2;Kedzog;47300
+3;Aseret;47200
+4;Gimpson;41000
+5;Mikstat;38900
+6;Czazubski;31700
+7;Spermiosz;30600
+8;Skoczek;26200
+9;Paluch;25400
+10;Kacper;20000
+11;Tum Sahur;18900
+12;proba og;15700
+13;Speed12;12600
+14;cw31;400
+15;dadax;300

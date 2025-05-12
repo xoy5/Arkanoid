@@ -31,7 +31,6 @@ public:
 		srcRectPieceOfBackground(0, nBackgroundTilesX % 121, 0, 100)
 	{
 	}
-
 	void Draw(Graphics& gfx) const
 	{
 		for (int x = 0; x < 5; x++)
@@ -155,6 +154,12 @@ public:
 	}
 
 public:
+	void Reset()
+	{
+		doorState = DoorState::Closed;
+		pipeAnimationOppening.Reset();
+		pipeAnimationLaser.Reset();
+	}
 	void SetDoorStateToOppening()
 	{
 		doorState = DoorState::Oppening;

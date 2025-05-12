@@ -14,6 +14,7 @@ public:
 		Solo,
 		Duo,
 		EditorMode,
+		Ranking,
 		Count,
 		Invalid
 	};
@@ -21,15 +22,21 @@ public:
 public:
 	SelectionMenu(const Font* font, const Vei2& pos)
 	{
-		const std::string texts[] = { "Solo", "Duo", "Editor" };
+		const std::string texts[] = { "Solo", "Duo", "Editor", "Ranking"};
 		auto center = pos;
 		const int paddingY = 20;
 		for (int i = int(GameState::Solo) - 1; i < int(GameState::Count) - 1; i++)
 		{
 			buttons.emplace_back(MenuButton<GameState>{font, center, GameState(i+1), texts[i]});
+
+			if (GameState(i+1) == GameState::Duo)
+			{
+				buttons[i].SetDisabled(true);
+			}
+
 			buttons[i].SetPositionCenter(true);
 			buttons[i].SetDynamicSize(false);
-			const int sizeWidth = int(texts[2].size()) * font->GetWidthChar();
+			const int sizeWidth = int(texts[3].size()) * font->GetWidthChar();
 			buttons[i].SetSizeWidthContentBox(sizeWidth);
 			center.y += buttons[i].GetHeight() + paddingY;
 		}

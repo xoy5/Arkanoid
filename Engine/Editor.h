@@ -28,6 +28,7 @@ public:
 public:
 	void Reset();
 	bool IsHandlingMessage() const;
+	bool IsPlaying() const;
 
 private:
 	Brick* CreateBrickWithDataFromButton() const;
@@ -36,12 +37,14 @@ private:
 	std::string dirRounds = "Rounds/";
 	std::string dirEdits = "Edits/";
 	BrickGrid::MessageFile messageFile = BrickGrid::MessageFile::NoMessage;
+	bool playing = false;
 	Game& game;
 	const Font* font;
 	RectI rect;
+	RectI brickGridRect;
 
 	Button buttonBackToMenu;
-	Button buttonClearBrickGrid;
+	Button buttonReset;
 	Button buttonLoad;
 	Button buttonSave;
 	std::vector<MenuButton<BreakableBrick::Color>> buttonsColor;
@@ -51,7 +54,7 @@ private:
 
 	BreakableBrick::Color curColor = BreakableBrick::Color::Red;
 	Brick* newBrick = nullptr;
-	bool newBrickInWalls = false;
+	bool newBrickInRect = false;
 
 	MyMessageBox messageBox = MyMessageBox(font);
 };

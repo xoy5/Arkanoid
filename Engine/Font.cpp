@@ -45,6 +45,11 @@ void Font::DrawText( const std::string& text,const Vei2& pos,Color color,Graphic
 	}
 }
 
+void Font::DrawTextCenter(const std::string& text, const Vei2& pos, Color color, Graphics& gfx, int textSpaceY) const
+{
+	DrawText(text, pos - GetRectForText(text).GetSizes() / 2, color, gfx, textSpaceY);
+}
+
 int Font::GetWidthChar() const
 {
 	return surface.GetWidth() / nColumns;

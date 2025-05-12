@@ -39,7 +39,10 @@ void BallManager::Draw(Graphics& gfx) const
 	for (const auto& b : balls) {
 		b.Draw(gfx);
 	}
+}
 
+void BallManager::DrawNumberOfBalls(Graphics& gfx) const
+{
 	game.fontXs.DrawText(std::to_string(balls.size()), Vei2(game.wallsPlusBorder.right + 50, 0), Colors::RedOrange, gfx);
 }
 
@@ -49,9 +52,6 @@ void BallManager::Update(float dt, Keyboard& kbd)
 	{
 		if (kbd.KeyIsPressed('W')) {
 			ShotBallOnPaddle();
-		}
-		else if (pBallOnPaddlePlayer1) {
-			pBallOnPaddlePlayer1->UpdateByPaddleX(game.paddlePlayer1.GetRect().GetCenter().x);
 		}
 	}
 	if (game.isTwoPlayerMode && pBallOnPaddlePlayer2)
@@ -70,6 +70,14 @@ void BallManager::Update(float dt, Keyboard& kbd)
 		b.Update(dt);
 	}
 }
+
+void BallManager::UdpdateBallsOnPaddlesX()
+{
+	if (pBallOnPaddlePlayer1) {
+		pBallOnPaddlePlayer1->UpdateByPaddleX(game.paddlePlayer1.GetRect().GetCenter().x);
+	}
+}
+
 
 void BallManager::ShotBallOnPaddle()
 {
@@ -137,9 +145,10 @@ void BallManager::DoWallCollision()
 		case Ball::WallHit::BottomWallHit:
 			balls[i] = std::move(balls.back());
 			balls.pop_back();
-			if (balls.size() == 0 && pBallOnPaddlePlayer1 == nullptr)
+			if (balls.size() == 0 && pBallOnPaddlePlayer1 == nullptr && game.isAnimationNextRound == false && game.gameState == SelectionMenu::GameState::Solo)
 			{
 				game.gameStats.HpSubtract();
+				AddBallOnPaddlePlayer1();
 			}
 			break;
 		case Ball::WallHit::TopWallHit:
@@ -165,7 +174,7 @@ void BallManager::DoWallCollision()
 
 void BallManager::AddBallOnPaddlePlayer1()
 {
-	if (pBallOnPaddlePlayer1 == nullptr && int(balls.size()) < nMaxBalls) {
+	if (pBallOnPaddlePlayer1 == nullptr && game.isAnimationNextRound == false) {
 		float offset = float(game.paddlePlayer1.GetHeight()) / 2.0f + ballsRadius;
 		pBallOnPaddlePlayer1 = new Ball(&sprite, game.paddlePlayer1.GetRect().GetCenter() - Vec2{ 0.0f, ballsOffsetOnPaddle }, true, ballsSpeed, ballsRadius, Paddle::Player::Player1 );
 	}
@@ -173,7 +182,7 @@ void BallManager::AddBallOnPaddlePlayer1()
 
 void BallManager::AddBallOnPaddlePlayer2()
 {
-	if (pBallOnPaddlePlayer2 == nullptr && int(balls.size()) < nMaxBalls) {
+	if (pBallOnPaddlePlayer2 == nullptr && game.isAnimationNextRound == false) {
 		pBallOnPaddlePlayer2 = new Ball(&sprite, game.paddlePlayer2.GetRect().GetCenter() + Vec2{ 0.0f, ballsOffsetOnPaddle }, true, ballsSpeed, ballsRadius, Paddle::Player::Player2 );
 	}
 }

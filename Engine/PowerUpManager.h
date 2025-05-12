@@ -29,7 +29,7 @@ private:
 	const float powerUpSpeed = 200.0f;
 	static constexpr int powerUpSizeDimension = 30;
 	std::shared_ptr<Surface> spriteBox;
-	static constexpr int chanceOfDropPowerUp = 12;
+	static constexpr int chanceOfDropPowerUp = 20;
 	std::uniform_int_distribution<int> from1to100 = std::uniform_int_distribution<int>(1, 100);
 	std::uniform_int_distribution<int> choosePowerUpType = std::uniform_int_distribution<int>(0, int(PowerUp::Type::Count) - 1);
 };

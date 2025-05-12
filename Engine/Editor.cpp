@@ -9,14 +9,15 @@ Editor::Editor(Game& game, const Font* font, const RectI& rect)
 	game(game),
 	font(font),
 	rect(rect),
-	buttonBackToMenu(font, "Back", Vei2{ rect.left, rect.top }),
-	buttonClearBrickGrid(font, "Clear", buttonBackToMenu.GetPos() + Vei2{ 0, buttonBackToMenu.GetRect().GetHeight() }),
-	stateButtonBrickType(font, buttonClearBrickGrid.GetPos() + Vei2{ 0, buttonClearBrickGrid.GetRect().GetHeight() }, Brick::Type::Breakable, Brick::Type::Unbreakable, "Brk", "Unbrk"),
+	brickGridRect(game.walls.left, game.walls.right, game.walls.top, game.walls.top + BrickGrid::GetBrickHeight() * 20),
+	buttonBackToMenu(font, "BACK", Vei2{ rect.left, rect.top }),
+	buttonReset(font, "RESET", buttonBackToMenu.GetPos() + Vei2{ 0, buttonBackToMenu.GetRect().GetHeight() }),
+	stateButtonBrickType(font, buttonReset.GetPos() + Vei2{ 0, buttonReset.GetRect().GetHeight() }, Brick::Type::Breakable, Brick::Type::Unbreakable, "BRK", "UNBRK", Colors::GreenYellow, Colors::LightSteelBlue),
 	//////////////////
-	buttonLoad(font, "Load", Vei2{ rect.left, rect.bottom - 190 }),
-	buttonSave(font, "Save", buttonLoad.GetPos() + Vei2{ 0, buttonLoad.GetRect().GetHeight() }),
+	buttonLoad(font, "LOAD", Vei2{ rect.left, rect.bottom - 190 }),
+	buttonSave(font, "SAVE", buttonLoad.GetPos() + Vei2{ 0, buttonLoad.GetRect().GetHeight() }),
 	textBoxFilename(font, buttonSave.GetPos() + Vei2{ 0 , buttonSave.GetRect().GetHeight() }),
-	buttonPlay(font, "Play", textBoxFilename.GetPos() + Vei2{ 0, textBoxFilename.GetRect().GetHeight() }),
+	buttonPlay(font, "PLAY", textBoxFilename.GetPos() + Vei2{ 0, textBoxFilename.GetRect().GetHeight() }),
 	messageBox(&game.fontLg),
 	newBrick(CreateBrickWithDataFromButton())
 {
@@ -40,7 +41,7 @@ Editor::Editor(Game& game, const Font* font, const RectI& rect)
 	const int width = rect.GetWidth();
 
 	buttonBackToMenu.SetSizeWidthBorderBox(width);
-	buttonClearBrickGrid.SetSizeWidthBorderBox(width);
+	buttonReset.SetSizeWidthBorderBox(width);
 	stateButtonBrickType.SetSizeWidthBorderBox(width);
 
 	for (auto& button : buttonsColor) {
@@ -64,7 +65,7 @@ Editor::~Editor()
 void Editor::Draw(Graphics& gfx) const
 {
 	buttonBackToMenu.Draw(gfx);
-	buttonClearBrickGrid.Draw(gfx);
+	buttonReset.Draw(gfx);
 	stateButtonBrickType.Draw(gfx);
 
 	for (const auto& button : buttonsColor) {
@@ -79,25 +80,28 @@ void Editor::Draw(Graphics& gfx) const
 
 	buttonPlay.Draw(gfx);
 
-	if (newBrick && newBrickInWalls) {
+	if (newBrick && newBrickInRect) {
 		newBrick->Draw(gfx);
 	}
 
-	for (int y = 0; y < 20; y++)
+	if (playing == false)
 	{
-		for (int x = 0; x < 11; x++)
+		for (int y = 0; y < 20; y++)
 		{
-			// top bottom
-			gfx.DrawLine(
-				Vei2{ int(game.walls.left + x * BrickGrid::GetBrickWidth()), int(game.walls.top + y * BrickGrid::GetBrickHeight()) },
-				Vei2{ int(game.walls.left + x * BrickGrid::GetBrickWidth()), int(game.walls.top + y * BrickGrid::GetBrickHeight() + BrickGrid::GetBrickHeight()) },
-				1, Colors::Cyan);
+			for (int x = 0; x < 11; x++)
+			{
+				// top bottom
+				gfx.DrawLine(
+					Vei2{ int(game.walls.left + x * BrickGrid::GetBrickWidth()), int(game.walls.top + y * BrickGrid::GetBrickHeight()) },
+					Vei2{ int(game.walls.left + x * BrickGrid::GetBrickWidth()), int(game.walls.top + y * BrickGrid::GetBrickHeight() + BrickGrid::GetBrickHeight()) },
+					1, Colors::Cyan);
 
-			// left right
-			gfx.DrawLine(
-				Vei2{ int(game.walls.left + x * BrickGrid::GetBrickWidth()), int(game.walls.top + y * BrickGrid::GetBrickHeight()) },
-				Vei2{ int(game.walls.left + x * BrickGrid::GetBrickWidth() + BrickGrid::GetBrickWidth()), int(game.walls.top + y * BrickGrid::GetBrickHeight()) },
-				1, Colors::Cyan);
+				// left right
+				gfx.DrawLine(
+					Vei2{ int(game.walls.left + x * BrickGrid::GetBrickWidth()), int(game.walls.top + y * BrickGrid::GetBrickHeight()) },
+					Vei2{ int(game.walls.left + x * BrickGrid::GetBrickWidth() + BrickGrid::GetBrickWidth()), int(game.walls.top + y * BrickGrid::GetBrickHeight()) },
+					1, Colors::Cyan);
+			}
 		}
 	}
 
@@ -118,38 +122,64 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 {
 	if (IsHandlingMessage() == false)
 	{
-		if (newBrick)
+		if (newBrick && playing == false && brickGridRect.IsContains(event.GetPos()))
 		{
-			newBrickInWalls = game.walls.IsContains(Vec2(event.GetPos()));
+			newBrickInRect = true;
 			newBrick->SetRect(game.gf_brickGrid.GetRectBrickForRoundPos(event.GetPos()));
+		}
+		else
+		{
+			newBrickInRect = false;
 		}
 		// Processing Mouse in GUI
 		buttonBackToMenu.ProcessMouse(event);
-		buttonClearBrickGrid.ProcessMouse(event);
+		buttonReset.ProcessMouse(event);
 		stateButtonBrickType.ProcessMouse(event);
 		buttonPlay.ProcessMouse(event);
 
-		if (stateButtonBrickType.GetActiveStateValue() == Brick::Type::Breakable)
+		for (auto& button : buttonsColor)
 		{
-			for (auto& button : buttonsColor)
+			button.ProcessMouse(event);
+			if (button.IsClicked())
 			{
-				button.ProcessMouse(event);
-				if (button.IsClicked())
-				{
-					curColor = button.GetOption();
-					static_cast<BreakableBrick*>(newBrick)->SetColor(curColor);
-				}
+				curColor = button.GetOption();
+				static_cast<BreakableBrick*>(newBrick)->SetColor(curColor);
 			}
 		}
 
 		if (buttonBackToMenu.IsClicked())
 		{
-			game.gameState = SelectionMenu::GameState::MainMenu;
+			game.Reset();
 			Reset();
+			game.gf_brickGrid.ClearBrickGrid();
+			playing = false;
+			buttonPlay.SetDisabled(false);
+			stateButtonBrickType.SetDisabled(false);
+			for (auto& button : buttonsColor) {
+				if (stateButtonBrickType.GetActiveStateValue() == Brick::Type::Breakable) button.SetDisabled(false);
+			}
+			buttonSave.SetDisabled(false);
+			buttonLoad.SetDisabled(false);
+			textBoxFilename.SetDisabled(false);
 		}
-		else if (buttonClearBrickGrid.IsClicked())
+		else if (buttonReset.IsClicked())
 		{
 			game.gf_brickGrid.ClearBrickGrid();
+			playing = false;
+
+			game.paddlePlayer1.SetPosX(game.walls.GetCenter().x);
+			game.gf_ballManager.ClearBalls();
+			game.gf_ballManager.AddBallOnPaddlePlayer1();
+
+			buttonPlay.SetDisabled(false);
+			stateButtonBrickType.SetDisabled(false);
+			for (auto& button : buttonsColor) {
+				if (stateButtonBrickType.GetActiveStateValue() == Brick::Type::Breakable) button.SetDisabled(false);
+			}
+			buttonSave.SetDisabled(false);
+			buttonLoad.SetDisabled(false);
+			textBoxFilename.SetDisabled(false);
+
 		}
 		else if (stateButtonBrickType.IsClicked())
 		{
@@ -161,9 +191,18 @@ void Editor::ProcessMouse(const Mouse::Event& event)
 		}
 		else if (buttonPlay.IsClicked())
 		{
-			game.gameState = SelectionMenu::GameState::Solo;
+			playing = true;
+			buttonPlay.SetDisabled(true);
+			stateButtonBrickType.SetDisabled(true);
+			for (auto& button : buttonsColor) {
+				button.SetDisabled(true);
+			}
+			buttonSave.SetDisabled(true);
+			buttonLoad.SetDisabled(true);
+			textBoxFilename.SetDisabled(true);
+
 		}
-		else if (game.walls.IsContains(Vec2(event.GetPos())))
+		else if (newBrickInRect)
 		{
 			if (event.GetType() == Mouse::Event::Type::LPress)
 			{
@@ -279,6 +318,11 @@ void Editor::Reset()
 bool Editor::IsHandlingMessage() const
 {
 	return messageFile != BrickGrid::MessageFile::NoMessage;
+}
+
+bool Editor::IsPlaying() const
+{
+	return playing;
 }
 
 Brick* Editor::CreateBrickWithDataFromButton() const

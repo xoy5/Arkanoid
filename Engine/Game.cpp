@@ -28,11 +28,11 @@ Game::Game(MainWindow& wnd)
 	wnd(wnd),
 	gfx(wnd),
 	background("Files/Sprites/Pipes340x90.bmp", "Files/Sprites/Background121x100.bmp", walls, 2),
-	gameStats(&fontLg, &font2Xl, "Files/Records.txt", rightPanelRect, 1, 4),
-	selectionMenu(&font3Xl, Graphics::GetScreenCenter() - Vei2{ 0, 100 }),
+	gameStats(&fontLg, &font2Xl, "Files/Records.txt", rightPanelRect, 3, 5),
+	selectionMenu(&font3Xl, Graphics::GetScreenCenter() - Vei2{ 0, 140 }),
 	gf_powerUpManager(*this, "Files/Sprites/PowerUpBox.bmp"),
 	gf_brickGrid(*this, "Files/BrickGrid/", "Files/Sprites/BricksRGBOP55x20x4.bmp", "Files/Sprites/UnbreakableBrick550x20.bmp"),
-	gf_ballManager(*this, "Files/Sprites/Ball19x19.bmp", 480.0f),
+	gf_ballManager(*this, "Files/Sprites/Ball19x19.bmp", 580.0f),
 	gf_editor(*this, &fontSm, rightPanelRect),
 	paddlePlayer1(Paddle::Player::Player1, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.bottom - 25 - (50 / 2)), 600.0f),
 	paddlePlayer2(Paddle::Player::Player2, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.top + 25 + (50 / 2)), 600.0f)
@@ -48,6 +48,7 @@ void Game::Go()
 	{
 	case SelectionMenu::GameState::Solo:
 	case SelectionMenu::GameState::Duo:
+	case SelectionMenu::GameState::EditorMode:
 		float time = elapsedTime;
 		while (time > 0.0f) {
 			const float dt = std::min(precision, time);
@@ -77,17 +78,17 @@ void Game::ProcessInput()
 		if (keyPressed.IsValid() && keyPressed.IsPress())
 		{
 			if (keyPressed.GetCode() == VK_ESCAPE) wnd.Kill();
-			else if (keyPressed.GetCode() == VK_OEM_3)
-			{
-				gameState = SelectionMenu::GameState::MainMenu;
-				gameStats.Reset();
-			}
 
 			switch (gameState)
 			{
 			case SelectionMenu::GameState::Solo:
 			case SelectionMenu::GameState::Duo:
-				if (keyPressed.GetCode() == VK_OEM_5) hacksMode = !hacksMode;
+				if (keyPressed.GetCode() == VK_OEM_3)
+				{
+					gameState = SelectionMenu::GameState::MainMenu;
+					Reset();
+				}
+				else if (keyPressed.GetCode() == VK_OEM_5) hacksMode = !hacksMode;
 				else if (hacksMode)
 				{
 					switch (keyPressed.GetCode())
@@ -108,6 +109,23 @@ void Game::ProcessInput()
 					}
 				}
 				break;
+			case SelectionMenu::GameState::EditorMode:
+				switch (keyPressed.GetCode())
+				{
+				case 'M':
+					gf_ballManager.AddBallOnPaddlePlayer1();
+					if (isTwoPlayerMode) {
+						gf_ballManager.AddBallOnPaddlePlayer2();
+					}
+					break;
+				case 'K': gf_ballManager.DoubleBallsX(); break;
+				case 'L':
+					paddlePlayer1.WidthGrow();
+					if (isTwoPlayerMode) {
+						paddlePlayer2.WidthGrow();
+					}
+					break;
+				}
 			}
 		}
 	}
@@ -159,6 +177,7 @@ void Game::ProcessInput()
 			}
 			break;
 		}
+
 		case SelectionMenu::GameState::Solo:
 		case SelectionMenu::GameState::Duo:
 			if (gameStats.IsGameEnd())
@@ -166,15 +185,21 @@ void Game::ProcessInput()
 				gameStats.ProcessMouse(e);
 				if (gameStats.IsButtonClicked())
 				{
-					gameStats.Reset();
-					gf_ballManager.AddBallOnPaddlePlayer1();
-					paddlePlayer1.SetPosX(walls.GetCenter().x);
-					gameState = SelectionMenu::GameState::MainMenu;
+					Reset();
 				}
 			}
+			break;
+
 		case SelectionMenu::GameState::EditorMode:
 			gf_editor.ProcessMouse(e);
 			break;
+
+		case SelectionMenu::GameState::Ranking:
+			gameStats.ProcessMouse(e);
+			if (gameStats.IsButtonClicked())
+			{
+				gameState = SelectionMenu::GameState::MainMenu;
+			}
 		}
 	}
 	////////////////////////////////////
@@ -193,6 +218,7 @@ void Game::UpdateModel(float dt)
 			gf_powerUpManager.Update(dt);
 			gf_brickGrid.Update(dt);
 			gf_ballManager.Update(dt, wnd.kbd);
+			gf_ballManager.UdpdateBallsOnPaddlesX();
 			gf_ballManager.DoWallCollision();
 
 			gf_ballManager.BrickGrid_DoBallCollision();
@@ -253,8 +279,12 @@ void Game::UpdateModel(float dt)
 								background.AnimationSceneReset();
 								gameStats.ResumeTimer();
 								paddlePlayer1.SetPosX(walls.GetCenter().x);
+								paddlePlayer1.SetWidth(Paddle::Size::Small);
 								gameStats.NextRound();
-								gf_brickGrid.Load("Rounds/", "round" + std::to_string(gameStats.GetRound()));
+								if (gameStats.IsGameEnd() == false)
+								{
+									gf_brickGrid.Load("Rounds/", "round" + std::to_string(gameStats.GetRound()));
+								}
 							}
 
 						}
@@ -262,10 +292,30 @@ void Game::UpdateModel(float dt)
 				}
 			}
 		}
-
 		break;
 
 	case SelectionMenu::GameState::EditorMode:
+		gf_ballManager.UdpdateBallsOnPaddlesX();
+		if (gf_editor.IsPlaying())
+		{
+			gf_ballManager.Update(dt, wnd.kbd);
+			gf_powerUpManager.Update(dt);
+			gf_brickGrid.Update(dt);
+			gf_ballManager.DoWallCollision();
+
+			gf_ballManager.BrickGrid_DoBallCollision();
+			gf_ballManager.Paddle_DoBallCollision();
+			gf_powerUpManager.DoWallCollision();
+
+			gf_powerUpManager.DoCollectAndUsePowerUp();
+
+			paddlePlayer1.Update(dt, wnd.kbd);
+			paddlePlayer1.DoWallCollision(walls);
+			if (isTwoPlayerMode) {
+				paddlePlayer2.Update(dt, wnd.kbd);
+				paddlePlayer2.DoWallCollision(walls);
+			}
+		}
 		break;
 	}
 }
@@ -292,10 +342,11 @@ void Game::ComposeFrame()
 
 			gf_powerUpManager.Draw(gfx);
 			gf_ballManager.Draw(gfx);
-			gameStats.Draw(gfx);
+			gameStats.DrawStats(gfx);
 
 			// Shitty stuf developer
 			fontXs.DrawText(std::to_string(FPS), Vei2{ int(wallsPlusBorder.right), 0 }, Colors::White, gfx);
+			gf_ballManager.DrawNumberOfBalls(gfx);
 			if (hacksMode) {
 				fontXs.DrawText("HACKS", Vei2{ Graphics::GetScreenRect().right, 0 } - Vei2{ 5 * fontXs.GetWidthChar(), 0 }, Colors::Red, gfx);
 			}
@@ -304,14 +355,41 @@ void Game::ComposeFrame()
 		{
 			gameStats.DrawEndScreen(gfx);
 		}
-
-
 		break;
 
 	case SelectionMenu::GameState::EditorMode:
 		background.Draw(gfx);
 		gf_brickGrid.Draw(gfx);
+
+		paddlePlayer1.Draw(gfx, RectI(wallsTeleport));
+		if (isTwoPlayerMode) {
+			paddlePlayer2.Draw(gfx, RectI(wallsTeleport));
+		}
+
+		gf_powerUpManager.Draw(gfx);
+		gf_ballManager.Draw(gfx);
 		gf_editor.Draw(gfx);
+
+		break;
+
+	case SelectionMenu::GameState::Ranking:
+		gameStats.DrawRanking(gfx);
 		break;
 	}
+}
+
+void Game::Reset()
+{
+	gameState = SelectionMenu::GameState::MainMenu;
+	gameStats.Reset();
+	gf_ballManager.ClearBalls();
+	gf_ballManager.AddBallOnPaddlePlayer1();
+	paddlePlayer1.SetPosX(walls.GetCenter().x);
+	paddlePlayer1.SetWidth(Paddle::Size::Small);
+	paddleSettingPositionFirstTime = true;
+	isAnimationNextRound = false;
+	stopTimeCount = 0.0f;
+	gameStats.Reset();
+	gf_powerUpManager.ClearPowerUps();
+	gf_brickGrid.ClearBrickGrid();
 }

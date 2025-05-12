@@ -13,8 +13,11 @@ class GameStats
 {
 public:
 	GameStats(const Font* font, const Font* fontLg, const std::string& filenameRecords, const RectI& rect, int hp, int rounds);
-	void Draw(Graphics& gfx) const;
+
+	void DrawStats(Graphics& gfx) const;
 	void DrawEndScreen(Graphics& gfx) const;
+	void DrawRanking(Graphics& gfx) const;
+
 	void Update(float dt);
 	void ProcessMouse(const Mouse::Event& event);
 	void ProcessTextBox(char character);

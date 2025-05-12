@@ -2,13 +2,14 @@
 #include <fstream>
 #include <assert.h>
 #include "Record.h"
+#include <iomanip>
 
 GameStats::GameStats(const Font* font, const Font* fontLg, const std::string& filenameRecords, const RectI& rect, int hp, int rounds)
 	:
 	font(font),
 	fontLg(fontLg),
-	buttonBackToMenu(fontLg, "BACK TO MENU", Vei2{Graphics::GetScreenCenter().x - font->GetRectForText("BACK TO MENU").GetSizes().x, 500}),
-	textBoxName(font, Vei2{ 300, 200 }),
+	buttonBackToMenu(font, "BACK TO MENU", Graphics::GetScreenCenter() + Vei2{ 0, 250 }),
+	textBoxName(font, Vei2{ 300, 300 }),
 	charWidth(font->GetWidthChar()),
 	charHeight(font->GetHeightChar()),
 	fullChars(rect.GetWidth() / charWidth - 1),
@@ -18,6 +19,8 @@ GameStats::GameStats(const Font* font, const Font* fontLg, const std::string& fi
 	hpMax(hp),
 	nRounds(rounds)
 {
+	textBoxName.SetLimit(true, 10);
+	buttonBackToMenu.SetPositionCenter(true);
 	std::ifstream file("Files/Records.txt", std::ios_base::in);
 	if (!file)
 	{
@@ -40,7 +43,7 @@ GameStats::GameStats(const Font* font, const Font* fontLg, const std::string& fi
 	file.close();;
 }
 
-void GameStats::Draw(Graphics& gfx) const
+void GameStats::DrawStats(Graphics& gfx) const
 {
 	Vei2 posCenter = Vei2{ rect.left + (restPixels) / 2, rect.top + charHeight };
 
@@ -89,21 +92,65 @@ void GameStats::Draw(Graphics& gfx) const
 
 void GameStats::DrawEndScreen(Graphics& gfx) const
 {
-	gfx.DrawRect(Graphics::GetScreenRect(), Colors::Black);
-
 	Vei2 screenCenter = Graphics::GetScreenCenter();
-	const std::string gameOverText = "GAME OVER";
+
+	const bool isGameOver = hp <= 0;
+	const std::string gameEndText = isGameOver ? "GAME OVER" : "GAME ENDED";
+	const Color endTextColor = isGameOver ? Colors::Red : Colors::Green;
+
 	std::string scoreText = "YOUR SCORE: " + std::to_string(score);
+	std::string infoText = isGameOver ? "Better luck next time!" : "Well played!";
 
-	Vei2 scoreSize = fontLg->GetRectForText(scoreText).GetSizes();
-	Vei2 scorePos = screenCenter - Vei2(scoreSize.x / 2, -50);
+	font->DrawTextCenter("Nickname:", textBoxName.GetRect().GetPos() + Vei2(0, textBoxName.GetRect().GetHeight() / 2) - Vei2{120, 0}, Colors::White, gfx);
 
+	fontLg->DrawTextCenter(gameEndText, screenCenter - Vei2{ 0, 200 }, endTextColor, gfx);
 
-	fontLg->DrawText(gameOverText, screenCenter, Colors::Red, gfx);
-	fontLg->DrawText(scoreText, scorePos, Colors::White, gfx);
+	fontLg->DrawTextCenter(scoreText, screenCenter - Vei2{ 0, 120 }, Colors::White, gfx);
 
+	font->DrawTextCenter(infoText, screenCenter - Vei2{ 0, 60 }, Colors::Gray, gfx);
+
+	// Draw name input and back to menu button
 	textBoxName.Draw(gfx);
 	buttonBackToMenu.Draw(gfx);
+}
+
+void GameStats::DrawRanking(Graphics& gfx) const
+{
+	Vei2 screenCenter = Graphics::GetScreenCenter();
+	Vei2 pos = screenCenter - Vei2{ 0, 250 };
+	auto records = getRecords("Files/Records.txt", 10);
+
+	fontLg->DrawTextCenter("RANKING", pos, Colors::White, gfx);
+	pos.y += 50;
+
+	for (int i = 0; i < records.size(); i++)
+	{
+		std::ostringstream oss;
+		oss <<  std::right << std::setw(2) << records[i].place << ". "
+			<< std::left << std::setw(10) << records[i].name << " "
+			<< std::right << std::setw(6) << records[i].score;
+		const std::string content = oss.str();
+		if (i == 0)
+		{
+			fontLg->DrawTextCenter(content, pos, Colors::Gold, gfx);
+		}
+		else if (i == 1)
+		{
+			fontLg->DrawTextCenter(content, pos, Colors::LightSteelBlue, gfx);
+		}
+		else if (i == 2)
+		{
+			fontLg->DrawTextCenter(content, pos, Colors::Sienna, gfx);
+		}
+		else
+		{
+			fontLg->DrawTextCenter(content, pos, Colors::White, gfx);
+		}
+		pos.y += charHeight + 10 /*padding*/;
+
+		buttonBackToMenu.Draw(gfx);
+	}
+
 }
 
 void GameStats::Update(float dt)
@@ -120,26 +167,18 @@ void GameStats::Update(float dt)
 
 void GameStats::ProcessMouse(const Mouse::Event& event)
 {
-	if (gameEnd)
-	{
-		buttonBackToMenu.ProcessMouse(event);
-		textBoxName.ProcessMouse(event);
+	buttonBackToMenu.ProcessMouse(event);
+	textBoxName.ProcessMouse(event);
 
-		if (buttonBackToMenu.IsClicked())
-		{
-			updateRecords("Files/Records.txt", textBoxName.GetText(), score);
-		}
+	if (buttonBackToMenu.IsClicked())
+	{
+		updateRecords("Files/Records.txt", textBoxName.GetText(), score);
 	}
 }
 
 void GameStats::ProcessTextBox(char character)
 {
-	if (gameEnd)
-	{
-		if (textBoxName.GetSize() < 8 || character == VK_BACK) {
-			textBoxName.Interact(character);
-		}
-	}
+	textBoxName.Interact(character);
 }
 
 void GameStats::Reset()
@@ -167,7 +206,14 @@ void GameStats::NextRound()
 
 void GameStats::AddPoints(int points)
 {
-	score += points;
+	if (score + points > 1'000'000)
+	{
+		score = 1'000'000;
+	}
+	else
+	{
+		score += points;
+	}
 }
 
 void GameStats::ResumeTimer()

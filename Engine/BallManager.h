@@ -17,7 +17,9 @@ public:
 	BallManager(Game& game, const std::string& filenameBallSprite, Vec2 ballPos, float speed);
 	~BallManager();
 	void Draw(Graphics& gfx) const;
+	void DrawNumberOfBalls(Graphics& gfx) const;
 	void Update(float dt, Keyboard& kbd);
+	void UdpdateBallsOnPaddlesX();
 
 public:
 	void ShotBallOnPaddle();

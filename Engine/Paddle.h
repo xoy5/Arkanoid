@@ -34,6 +34,7 @@ public:
 	void DoWallCollision(const RectF& walls);
 	void WidthGrow();
 	void WidthShrink();
+	void SetWidth(Size size);
 
 public:
 	void SetPosX(float x);

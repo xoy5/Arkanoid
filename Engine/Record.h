@@ -40,7 +40,18 @@ void updateRecords(const std::string& filename, const std::string& name, int sco
     std::string line;
     while (std::getline(file, line)) {
         if (!line.empty()) {
-            records.push_back(parseLine(line));
+            Record record = parseLine(line);
+            if (name == record.name)
+            {
+                if (score <= record.score)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                records.push_back(record);
+            }
         }
     }
     file.close();
@@ -61,4 +72,23 @@ void updateRecords(const std::string& filename, const std::string& name, int sco
         file << formatLine(r) << '\n';
     }
     file.close();
+}
+
+std::vector<Record> getRecords(const std::string& filename, int n = 10)
+{
+    std::fstream file(filename, std::ios::in);
+    std::vector<Record> records;
+
+    std::string line;
+    int i = 0;
+    while (std::getline(file, line)) 
+    {
+		if (i++ >= n){
+			break;
+		}
+        records.push_back(parseLine(line));
+    }
+    file.close();
+
+    return records;
 }

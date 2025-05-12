@@ -118,7 +118,7 @@ public:
 	virtual void ProcessMouse(const Mouse::Event& event)
 	{
 		// hovered
-		hovered = GetRect().IsContains(event.GetPos());
+		hovered = GetRect().IsContains(event.GetPos()) && isDisabled == false;
 
 		if (hovered && !hoveredAlready) {
 			hoverSound.Play();
@@ -150,7 +150,7 @@ public:
 	}
 	bool IsClicked() const
 	{
-		return hovered && clicked;
+		return hovered && clicked && isDisabled == false;
 	}
 	bool IsHovered() const
 	{
