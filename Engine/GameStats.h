@@ -22,8 +22,10 @@ public:
 	void ProcessMouse(const Mouse::Event& event);
 	void ProcessTextBox(char character);
 	void Reset();
+	void EndScoreCount();
 
 public:
+	void AddPointsEndRound();
 	bool IsButtonClicked() const;
 	void NextRound();
 	void AddPoints(int points);
@@ -58,6 +60,19 @@ private:
 
 	float time = 0.0f;
 	bool timerWork = true;
+
+	static constexpr int pointsPerRound = 10000;
+	static constexpr int pointsPerHp = 4000;
+	static constexpr int pointsPerSecond = 100;
+	
+	int tempPlaceOfScore = 0;
+	int tempPlaceOfScoreMinus = 0;
+	float tempFullScore = 0.0f;
+	bool animationAddingPoints = false;
+	static constexpr float timeAddingPoints = 2.0f;
+	static constexpr float deltaAdd = 1.0f / timeAddingPoints;
+	float timeAddingPointsCount = 0.0f;
+
 
 	int round = 1;
 	const int nRounds;

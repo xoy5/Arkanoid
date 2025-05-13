@@ -155,6 +155,25 @@ void GameStats::DrawRanking(Graphics& gfx) const
 
 void GameStats::Update(float dt)
 {
+	if (animationAddingPoints)
+	{
+		timeAddingPointsCount += dt;
+		tempFullScore += tempPlaceOfScore * deltaAdd * dt;
+
+		if (tempFullScore >= 1.0f)
+		{
+			score += int(tempFullScore);
+			tempPlaceOfScoreMinus += int(tempFullScore);
+			tempFullScore -= int(tempFullScore);
+		}
+		
+		if (timeAddingPointsCount >= timeAddingPoints)
+		{
+			EndScoreCount();
+		}
+	}
+
+
 	if (timerWork)
 	{
 		time += dt;
@@ -183,11 +202,28 @@ void GameStats::ProcessTextBox(char character)
 
 void GameStats::Reset()
 {
+	EndScoreCount();
 	score = 0;
 	round = 1;
 	time = 0.0f;
 	GameEndReset();
 	HpReset();
+}
+
+void GameStats::EndScoreCount()
+{
+	animationAddingPoints = false;
+	tempPlaceOfScore -= tempPlaceOfScoreMinus;
+	score += tempPlaceOfScore;
+	score = std::round(score /= 100.0f) * 100;
+	tempPlaceOfScoreMinus = 0;
+	tempFullScore = 0.0f;
+	timeAddingPointsCount = 0.0f;
+}
+
+void GameStats::AddPointsEndRound()
+{
+	AddPoints(pointsPerHp * hp + pointsPerRound);
 }
 
 bool GameStats::IsButtonClicked() const
@@ -200,20 +236,21 @@ void GameStats::NextRound()
 	round++;
 	if (round > nRounds)
 	{
+		EndScoreCount();
 		gameEnd = true;
 	}
 }
 
 void GameStats::AddPoints(int points)
 {
-	if (score + points > 1'000'000)
-	{
-		score = 1'000'000;
-	}
-	else
-	{
-		score += points;
-	}
+	if (score >= 1'000'000)
+		return;
+
+	int availablePoints = std::min(points, 1'000'000 - score);
+
+	EndScoreCount();
+	tempPlaceOfScore = availablePoints;
+	animationAddingPoints = true;
 }
 
 void GameStats::ResumeTimer()

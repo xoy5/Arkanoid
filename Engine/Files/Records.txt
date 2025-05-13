@@ -6,10 +6,13 @@
 6;Czazubski;31700
 7;Spermiosz;30600
 8;Skoczek;26200
-9;Paluch;25400
-10;Kacper;20000
-11;Tum Sahur;18900
-12;proba og;15700
-13;Speed12;12600
-14;cw31;400
-15;dadax;300
+9;lekcja1305;26200
+10;Paluch;25400
+11;Kacper;20000
+12;Tum Sahur;18900
+13;proba og;15700
+14;Speed12;12600
+15;;5600
+16;cw31;400
+17;dadax;300
+18;lekcja13;0

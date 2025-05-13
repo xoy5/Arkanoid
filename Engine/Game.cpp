@@ -240,6 +240,7 @@ void Game::UpdateModel(float dt)
 				if (gf_brickGrid.IsRoundFinished())
 				{
 					isAnimationNextRound = true;
+					gameStats.AddPointsEndRound();
 					gf_ballManager.ShotBallOnPaddle();
 					gameStats.PauseTimer();
 				}

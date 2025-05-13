@@ -56,7 +56,7 @@ void updateRecords(const std::string& filename, const std::string& name, int sco
     }
     file.close();
 
-    Record newRecord{ 0, name.substr(0, 8), score };
+    Record newRecord{ 0, name.substr(0, 10), score };
     records.push_back(newRecord);
 
     std::sort(records.begin(), records.end(), [](const Record& a, const Record& b) {
