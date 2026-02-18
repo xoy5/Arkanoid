@@ -1,18 +1,9 @@
 1;xoy5;213769
-2;Kedzog;47300
-3;Aseret;47200
-4;Gimpson;41000
-5;Mikstat;38900
-6;Czazubski;31700
-7;Spermiosz;30600
-8;Skoczek;26200
-9;lekcja1305;26200
-10;Paluch;25400
-11;Kacper;20000
-12;Tum Sahur;18900
-13;proba og;15700
-14;Speed12;12600
-15;;5600
-16;cw31;400
-17;dadax;300
-18;lekcja13;0
+2;tobi;115700
+3;Kedzog;47300
+4;Aseret;47200
+5;Gimpson;41000
+6;Mikstat;38900
+7;Czazubski;31700
+8;Spermiosz;30600
+9;;0

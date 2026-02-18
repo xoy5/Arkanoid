@@ -77,6 +77,11 @@ void BreakableBrick::Draw(Graphics& gfx) const
 	gfx.DrawSprite(rect.left, rect.top, srcRect, *sprite, SpriteEffect::Copy());
 }
 
+void BreakableBrick::DrawGhost(Graphics& gfx) const
+{
+	gfx.DrawSprite(rect.left, rect.top, srcRect, *sprite, SpriteEffect::Ghost{Colors::Magenta});
+}
+
 void BreakableBrick::Save(std::ofstream& file) const
 {
 	Type breakable = Type::Breakable;
@@ -170,6 +175,11 @@ void BreakableHpBrick::Draw(Graphics& gfx) const
 	gfx.DrawRect(rect, color);
 }
 
+void BreakableHpBrick::DrawGhost(Graphics& gfx) const
+{
+	gfx.DrawRect(rect, color); // I dont even use that shit
+}
+
 void BreakableHpBrick::Save(std::ofstream& file) const
 {
 	Type breakableHp = Type::BreakableHp;
@@ -229,6 +239,16 @@ void UnbreakableBrick::Draw(Graphics& gfx) const
 	}
 	else {
 		gfx.DrawSprite(int(rect.left), int(rect.top), RectI(0, 55, 0, 20), *sprite, SpriteEffect::Copy{});
+	}
+}
+
+void UnbreakableBrick::DrawGhost(Graphics& gfx) const
+{
+	if (activeAnimation) {
+		animation.Draw(Vei2(rect.GetPos()), gfx, SpriteEffect::Ghost{Colors::Magenta});
+	}
+	else {
+		gfx.DrawSprite(int(rect.left), int(rect.top), RectI(0, 55, 0, 20), *sprite, SpriteEffect::Ghost{Colors::Magenta});
 	}
 }
 

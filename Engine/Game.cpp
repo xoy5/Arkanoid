@@ -32,10 +32,10 @@ Game::Game(MainWindow& wnd)
 	selectionMenu(&font3Xl, Graphics::GetScreenCenter() - Vei2{ 0, 140 }),
 	gf_powerUpManager(*this, "Files/Sprites/PowerUpBox.bmp"),
 	gf_brickGrid(*this, "Files/BrickGrid/", "Files/Sprites/BricksRGBOP55x20x4.bmp", "Files/Sprites/UnbreakableBrick550x20.bmp"),
-	gf_ballManager(*this, "Files/Sprites/Ball19x19.bmp", 580.0f),
+	gf_ballManager(*this, "Files/Sprites/Ball19x19.bmp", 500.0f),
 	gf_editor(*this, &fontSm, rightPanelRect),
-	paddlePlayer1(Paddle::Player::Player1, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.bottom - 25 - (50 / 2)), 600.0f),
-	paddlePlayer2(Paddle::Player::Player2, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.top + 25 + (50 / 2)), 600.0f)
+	paddlePlayer1(Paddle::Player::Player1, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.bottom - 25 - (50 / 2)), 400.0f),
+	paddlePlayer2(Paddle::Player::Player2, "Files/Sprites/Paddle80x90x100x20.bmp", Vec2(walls.GetCenter().x, walls.top + 25 + (50 / 2)), 400.0f)
 {
 }
 

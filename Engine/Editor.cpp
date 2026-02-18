@@ -52,7 +52,7 @@ Editor::Editor(Game& game, const Font* font, const RectI& rect)
 
 	buttonLoad.SetSizeWidthBorderBox(width);
 	buttonSave.SetSizeWidthBorderBox(width);
-	textBoxFilename.SetSizeWidthBorderBox(width);
+	textBoxFilename.SetSizeWidthBorderBox(width);  
 	buttonPlay.SetSizeWidthBorderBox(width);
 }
 
@@ -81,7 +81,7 @@ void Editor::Draw(Graphics& gfx) const
 	buttonPlay.Draw(gfx);
 
 	if (newBrick && newBrickInRect) {
-		newBrick->Draw(gfx);
+		newBrick->DrawGhost(gfx);
 	}
 
 	if (playing == false)

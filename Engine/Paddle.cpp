@@ -3,13 +3,14 @@
 
 #include "SpriteEffect.h"
 
-Paddle::Paddle(Player player, const std::string& filenamePaddleSprites, const Vec2& posCenter, const Color& color, Size size)
+Paddle::Paddle(Player player, const std::string& filenamePaddleSprites, const Vec2& posCenter, float speed, const Color& color, Size size)
 	:
 	player(player),
 	sprite(filenamePaddleSprites),
 	posCenter(posCenter),
 	color(color),
-	size(size)
+	size(size),
+	speed(speed)
 {
 }
 

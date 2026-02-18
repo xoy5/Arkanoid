@@ -21,6 +21,7 @@ public:
 	Brick(Type type);
 	Brick(const RectF& rect, const Sprite* sprite, Type type);
 	virtual void Draw(Graphics& gfx) const = 0;
+	virtual void DrawGhost(Graphics& gfx) const = 0;
 	virtual void Update(float dt);
 	virtual void Save(std::ofstream& file) const;
 	virtual void Load(std::ifstream& file, const Sprite* ptr);
@@ -67,6 +68,7 @@ public:
 	BreakableBrick();
 	BreakableBrick(const RectF& rect, const Sprite* sprite, const RectI& srcRect);
 	void Draw(Graphics& gfx) const override;
+	void DrawGhost(Graphics& gfx) const override;
 	void Save(std::ofstream& file) const override;
 	void Load(std::ifstream& file, const Sprite* sprite) override;
 
@@ -87,6 +89,7 @@ public:
 	BreakableHpBrick();
 	BreakableHpBrick(const RectF& rect, int hp, const Color& color);
 	void Draw(Graphics& gfx) const override;
+	void DrawGhost(Graphics& gfx) const override;
 	void Save(std::ofstream& file) const override;
 	void Load(std::ifstream& file, const Sprite* sprite) override;
 
@@ -107,6 +110,7 @@ public:
 	UnbreakableBrick();
 	UnbreakableBrick(const RectF& rect, const Sprite* sprite);
 	void Draw(Graphics& gfx) const override;
+	void DrawGhost(Graphics& gfx) const override;
 	void Update(float dt) override;
 	void Save(std::ofstream& file) const override;
 	void Load(std::ifstream& file, const Sprite* sprite) override;

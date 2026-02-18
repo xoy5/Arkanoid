@@ -23,7 +23,7 @@ public:
 		Large
 	};
 public:
-	explicit Paddle(Player player, const std::string& filenamePaddleSprites, const Vec2& pos, const Color& color = Colors::White, Size size = Size::Small);
+	explicit Paddle(Player player, const std::string& filenamePaddleSprites, const Vec2& pos, float speed, const Color& color = Colors::White, Size size = Size::Small);
 	void Draw(Graphics& gfx, const RectI& walls) const;
 	void Update(float dt, const Keyboard& kbd);
 	void UpdateAnimationScene(float dt, float rightWall);
